@@ -1,0 +1,28 @@
+[
+    {
+    "courseID": "7",
+    "members": 
+        [
+            {
+            "personID": "rasmus",
+            "courseRole": "3",
+            "parallelGroup":
+                [
+                    {
+                    "id": "11"
+                    }
+                ]
+            },
+            {
+            "personID": "noackorama",
+            "courseRole": "3",
+            "parallelGroup":
+                [
+                    {
+                    "id": "12"
+                    }
+                ]
+            }
+        ]
+    }
+]

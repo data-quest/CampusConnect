@@ -1,0 +1,57 @@
+[
+    {
+    "directoryTreeTitle": "SS 2013",
+    "id": "1",
+    "title": "MINT-Faecher",
+    "order": "1",
+    "parent": 
+        {
+        "id": null
+        },
+    "rootID": "tree"
+    },
+    {
+    "directoryTreeTitle": "SS 2013",
+    "id": "2",
+    "title": "Physik",
+    "order": "1",
+    "parent": 
+        {
+        "id": "1"
+        },
+    "rootID": "tree"
+    },
+    {
+    "directoryTreeTitle": "SS 2013",
+    "id": "1234",
+    "title": "Mathematik",
+    "order": "2",
+    "parent": 
+        {
+        "id": "1"
+        },
+    "rootID": "tree"
+    },
+    {
+    "directoryTreeTitle": "SS 2013",
+    "id": "5",
+    "title": "Numerische Mathematik",
+    "order": "1",
+    "parent": 
+        {
+        "id": "1234"
+        },
+    "rootID": "tree"
+    },
+    {
+    "directoryTreeTitle": "SS 2013",
+    "id": "6",
+    "title": "Stochastik",
+    "order": "2",
+    "parent": 
+        {
+        "id": "1234"
+        },
+    "rootID": "tree"
+    }
+]

@@ -1,0 +1,67 @@
+[
+    {
+    "basicData":
+        {
+        "organisation":"lsf_proxy",
+        "id":"7",
+        "term":"SS 2013",
+        "number":"1",
+        "title":"Mathematik I",
+        "courseType":"Seminar",
+        "hoursPerWeek":"3",
+        "maxParticipants":"100",
+        "parallelGroupScenario":0
+        },
+    "lecturers":
+        [
+            {
+            "firstName":"Rasmus",
+            "lastName":"Fuhse"
+            },
+            {
+            "firstName":"Andre",
+            "lastName":"Noack"
+            }
+        ],
+    "degreeProgrammes":
+        [
+            {
+            "id":"1234",
+            "title":"Mathematik",
+            "code":"1235"
+            }
+        ],
+    "organisationalUnits":
+        [
+            {
+            "id":"56465",
+            "title":"Test Lehrstuhl"
+            }
+        ],
+    "parallelGroups":
+        [
+            {
+            "title":"Mathematik I - Uebungsgruppe",
+            "id":"11",
+            "lecturers":
+                [
+                    {
+                    "firstName":"Rasmus",
+                    "lastName":"Fuhse"
+                    }
+                ]
+            },
+            {
+            "title":"Mathematik 1 Uebungsgruppe",
+            "id":"12",
+            "lecturers":
+                [
+                    {
+                    "firstName":"Andre",
+                    "lastName":"Noack"
+                    }
+                ]
+            }
+        ]
+    }
+]
