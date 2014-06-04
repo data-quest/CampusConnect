@@ -160,7 +160,21 @@ class CourselinkController extends ApplicationController {
                     $user['Nachname'] = studip_utf8decode(Request::get("ecs_lastname"));
                     $user['Email'] = studip_utf8decode(Request::get("ecs_email"));
                     $user['perms'] = "autor";
+                    $user['password'] = "";
+                    $user['validation_key'] = "";
                     $user['auth_plugin'] = "ecs";
+                    $user['hobby'] = "";
+                    $user['publi'] = "";
+                    $user['schwerp'] = "";
+                    $user['Home'] = "";
+                    $user['privatnr'] = "";
+                    $user['privatcell'] = "";
+                    $user['privatadr'] = "";
+                    $user['title_front'] = "";
+                    $user['title_rear'] = "";
+                    $user['smsforward_rec'] = "";
+                    $user['smiley_favourite'] = "";
+                    $user['motto'] = "";
                     $user->store();
 
                     $user_mapping = new CampusConnectEntity();
