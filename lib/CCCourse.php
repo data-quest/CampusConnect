@@ -481,6 +481,7 @@ class CCCourse extends Course
         $coursemember = new CourseMember();
         $coursemember['user_id'] = $dozent->getId();
         $coursemember['status'] = "dozent";
+        $coursemember['position'] = 1;
         return $coursemember;
     }
 
