@@ -11,5 +11,5 @@ CampusConnect is a project to connect various elearning-service-platforms with e
 Here is a comprehensive tutorial in german with all necessary steps and a small cheat-sheet you can use as a checklist for your installation:
 
 * [Tutorial for this plugin (german)](https://github.com/data-quest/CampusConnect/wiki/tutorial_de)
-* [Cheat-sheet for installing (germen)](https://github.com/data-quest/CampusConnect/wiki/cheatsheet_de)
+* [Cheat-sheet for installing (german)](https://github.com/data-quest/CampusConnect/wiki/cheatsheet_de)
 
