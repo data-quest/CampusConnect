@@ -8,12 +8,12 @@
  * the License, or (at your option) any later version.
  */
 
-require 'application.php';
+require __DIR__.'/application.php';
 
-require_once dirname(__file__)."/../lib/CCCourse.php";
-require_once dirname(__file__)."/../lib/CCTerms.php";
-require_once dirname(__file__)."/../lib/CCInstitutes.php";
-require_once dirname(__file__)."/../lib/CCStudyArea.php";
+require_once __DIR__."/../lib/CCCourse.php";
+require_once __DIR__."/../lib/CCTerms.php";
+require_once __DIR__."/../lib/CCInstitutes.php";
+require_once __DIR__."/../lib/CCStudyArea.php";
 
 /**
  * Der Controller, der vom ECS angesteuert wird und die über Cronjob Änderungen

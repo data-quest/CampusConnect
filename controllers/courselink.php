@@ -1,8 +1,8 @@
 <?php
 
-require 'application.php';
-require_once dirname(__file__)."/../lib/CCCourse.php";
-require_once dirname(__file__)."/../lib/ECSAuthToken.class.php";
+require __DIR__.'/application.php';
+require_once __DIR__."/../lib/CCCourse.php";
+require_once __DIR__."/../lib/ECSAuthToken.class.php";
 
 class CourselinkController extends ApplicationController {
 

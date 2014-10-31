@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__file__)."/CampusConnectLog.php";
+require_once __DIR__."/CampusConnectLog.php";
 
 class EcsClient
 {

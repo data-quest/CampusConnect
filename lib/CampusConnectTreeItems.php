@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__file__)."/CCStudyArea.php";
+require_once __DIR__."/CCStudyArea.php";
 
 class CampusConnectTreeItems extends SimpleORMap
 {

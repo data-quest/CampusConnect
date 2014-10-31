@@ -8,17 +8,17 @@
  *  the License, or (at your option) any later version.
  */
 
-require_once 'lib/CCParticipant.php';
-require_once 'lib/CampusConnectLog.php';
-require_once "lib/CampusConnectHelper.php";
-require_once 'lib/EcsClient.php';
-require_once 'lib/EcsResult.php';
-require_once 'lib/CampusConnectClient.php';
-require_once 'lib/CampusConnectTriggerStack.php';
-require_once 'lib/CampusConnectEntity.php';
-require_once 'lib/CampusConnectSentItem.php';
-require_once 'lib/CCCourse.php';
-require_once 'lib/CCRessources.php';
+require_once __DIR__.'/lib/CCParticipant.php';
+require_once __DIR__.'/lib/CampusConnectLog.php';
+require_once __DIR__.'/lib/CampusConnectHelper.php';
+require_once __DIR__.'/lib/EcsClient.php';
+require_once __DIR__.'/lib/EcsResult.php';
+require_once __DIR__.'/lib/CampusConnectClient.php';
+require_once __DIR__.'/lib/CampusConnectTriggerStack.php';
+require_once __DIR__.'/lib/CampusConnectEntity.php';
+require_once __DIR__.'/lib/CampusConnectSentItem.php';
+require_once __DIR__.'/lib/CCCourse.php';
+require_once __DIR__.'/lib/CCRessources.php';
 
 
 class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin

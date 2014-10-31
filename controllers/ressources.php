@@ -1,5 +1,5 @@
 <?php
-require 'application.php';
+require __DIR__.'/application.php';
 
 class RessourcesController extends ApplicationController {
 

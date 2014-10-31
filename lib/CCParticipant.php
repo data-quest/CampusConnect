@@ -9,8 +9,8 @@
  *  the License, or (at your option) any later version.
  */
 
-require_once dirname(__file__)."/CampusConnectConfig.php";
-require_once dirname(__file__)."/EcsClient.php";
+require_once __DIR__."/CampusConnectConfig.php";
+require_once __DIR__."/EcsClient.php";
 
 class CCParticipant extends CampusConnectConfig {
 

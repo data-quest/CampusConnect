@@ -10,8 +10,8 @@
  */
 
 require_once 'lib/models/Institute.class.php';
-require_once dirname(__file__)."/CampusConnectTreeItems.php";
-require_once dirname(__file__)."/CampusConnectTree.php";
+require_once __DIR__."/CampusConnectTreeItems.php";
+require_once __DIR__."/CampusConnectTree.php";
 
 class CCStudyArea extends StudipStudyArea
 {

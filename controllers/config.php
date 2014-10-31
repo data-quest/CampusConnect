@@ -1,9 +1,9 @@
 <?php
-require 'application.php';
+require __DIR__.'/application.php';
 require_once 'lib/classes/Institute.class.php';
-require_once dirname(__file__).'/../lib/CampusConnectTreeItems.php';
-require_once dirname(__file__).'/../lib/CampusConnectTree.php';
-require_once dirname(__file__).'/../lib/SemTreeSearch.class.php';
+require_once __DIR__.'/../lib/CampusConnectTreeItems.php';
+require_once __DIR__.'/../lib/CampusConnectTree.php';
+require_once __DIR__.'/../lib/SemTreeSearch.class.php';
 
 class ConfigController extends ApplicationController {
 
