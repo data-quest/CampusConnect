@@ -9,7 +9,9 @@
  *  the License, or (at your option) any later version.
  */
 
-require_once 'lib/models/Institute.class.php';
+if (file_exists('lib/classes/Institute.class.php')) {
+    require_once 'lib/classes/Institute.class.php';
+} //otherwise we have autoloader
 
 class CCInstitutes extends Institute
 {

@@ -1,6 +1,8 @@
 <?php
 require __DIR__.'/application.php';
-require_once 'lib/classes/Institute.class.php';
+if (file_exists('lib/classes/Institute.class.php')) {
+    require_once 'lib/classes/Institute.class.php';
+} //otherwise we have autoloader
 require_once __DIR__.'/../lib/CampusConnectTreeItems.php';
 require_once __DIR__.'/../lib/CampusConnectTree.php';
 require_once __DIR__.'/../lib/SemTreeSearch.class.php';
