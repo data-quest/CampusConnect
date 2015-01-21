@@ -9,6 +9,7 @@ class EcsClient
     protected $header = array();
     protected $request_method = 'GET';
     public $timeout = 5;
+    public $last_cert_error;
     public $last_error;
     public $last_error_number;
 
@@ -84,8 +85,17 @@ class EcsClient
             default:
                 curl_setopt($c, CURLOPT_SSL_VERIFYPEER, true);
                 curl_setopt($c, CURLOPT_SSL_VERIFYHOST, 2);
+                if (!file_exists($this->config['ca_cert_path'])) {
+                    $this->last_cert_error = "Cannot find CA cert at ".$this->config['ca_cert_path'];
+                }
                 curl_setopt($c, CURLOPT_CAINFO, $this->config['ca_cert_path']);
+                if (!file_exists($this->config['client_cert_path'])) {
+                    $this->last_cert_error = "Cannot find client cert at ".$this->config['client_cert_path'];
+                }
                 curl_setopt($c, CURLOPT_SSLCERT, $this->config['client_cert_path']);
+                if (!file_exists($this->config['key_path'])) {
+                    $this->last_cert_error = "Cannot find cert key at ".$this->config['key_path'];
+                }
                 curl_setopt($c, CURLOPT_SSLKEY, $this->config['key_path']);
                 curl_setopt($c, CURLOPT_SSLKEYPASSWD, $this->config['key_password']);
                 break;

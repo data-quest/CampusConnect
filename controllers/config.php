@@ -25,6 +25,9 @@ class ConfigController extends ApplicationController {
 
     function index_action()
     {
+        if (!function_exists("curl_init")) {
+            PageLayout::postMessage(MessageBox::error(_("Das PHP-cURL Modul ist nicht aktiv. Ohne das wird dieser Konnektor nicht arbeiten können.")));
+        }
         $this->imported_courses = count(CampusConnectEntity::findByType("course"));
         $this->imported_users = count(CampusConnectEntity::findByType("user"));
         $this->imported_institutes = count(CampusConnectEntity::findByType("institute"));
@@ -133,7 +136,7 @@ class ConfigController extends ApplicationController {
     function participant_save_action()
     {
         $server = new CampusConnectConfig(Request::get("id") ? Request::get("id") : null);
-        if ((!$server->isNew() && $server['type'] !== "participants") || (!count($_POST))) {
+        if ((!$server->isNew() && $server['type'] !== "participants") || (!Request::isPost())) {
             return;
         }
         $server['type'] = "participants";
@@ -145,6 +148,7 @@ class ConfigController extends ApplicationController {
         $server['data'] = $data;
 
         $data_array = Request::getArray("data");
+        $data_array['import_settings']['sem_tree'] = Request::option("data__import_settings____sem_tree__");
         $data_array = CampusConnectHelper::rec_utf8_decode($data_array);
         $server['data'] = CampusConnectHelper::rec_array_merge($server['data'], $data_array);
         if ($server['active'] && $server['data']['import_setting']['course_entity_type'] === "cms") {
@@ -198,8 +202,9 @@ class ConfigController extends ApplicationController {
         $result_header = $result->getResponseHeader();
         $this->render_json(array(
             'is_error' => $result->isError(),
-            'status' => $result_header['Status'])
-        );
+            'status'   => $result_header['Status'],
+            'error'    => $client->last_cert_error ?: $client->last_error
+        ));
     }
 
     protected function anotherCMS($participant_id, $import = true)

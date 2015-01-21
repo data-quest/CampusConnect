@@ -106,13 +106,13 @@ $server; //server-data of participant
             <td colspan="2"><hr class="grey"></td>
         </tr>
         <tr>
-            <td><label for="import_settings__sem_tree"><?= _("Default-Studienbereich") ?></label></td>
+            <td><label for="data__import_settings____sem_tree___1"><?= _("Default-Studienbereich") ?></label></td>
             <td>
-                <select name="data[import_settings][sem_tree]" id="import_settings__sem_tree">
-                    <? foreach ($study_areas as $area) : ?>
-                    <option value="<?= htmlReady($area['sem_tree_id']) ?>"><?= htmlReady($area['name']) ?></option>
-                    <? endforeach ?>
-                </select>
+                <?= QuickSearch::get(
+                    "data__import_settings____sem_tree__",
+                    new SQLSearch("SELECT sem_tree_id, name FROM sem_tree WHERE name LIKE :input", _("Studienbereich wählen"))
+                    )->defaultValue($server['data']['import_settings']['sem_tree'], "bla")
+                    ->render() ?>
             </td>
         </tr>
         <tr class="kurslink_only">

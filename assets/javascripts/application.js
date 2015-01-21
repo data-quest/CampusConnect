@@ -219,7 +219,11 @@ STUDIP.CC.ECS = {
             'type': "post",
             'dataType': "json",
             'success': function (ret) {
-                window.alert('Verbindung ' + (!ret.is_error ? 'erfolgreich' : 'fehlgeschlagen') + '\nStatus: ' + ret.status);
+                window.alert(
+                    'Verbindung ' + (!ret.is_error ? 'erfolgreich' : 'fehlgeschlagen') +
+                    '\nStatus: ' + ret.status +
+                    (ret.error ? '\nFehler: ' + ret.error : '')
+                );
             }
         });
     },
