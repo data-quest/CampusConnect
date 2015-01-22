@@ -120,29 +120,35 @@
 <div id="ecs_edit_window_title_new" style="display: none;"><?= _("Neuen ECS registrieren") ?></div>
 
 <?
-$infobox = array(
-    array(
-        'kategorie' => _("Information"),
-        'eintrag'   => array(
-            array(
-                'icon' => "icons/16/black/info",
-                'text' => _("Hier sehen Sie alle ECS (elearning community server), können sie konfigurieren oder inaktiv schalten.")
+if (class_exists("Sidebar")) {
+    $actions = new ActionsWidget();
+    $actions->addLink(_("Stellen Sie eine Verbindung zu einem neuen ECS her."), "#", "icons/16/black/add", array('onclick' => "STUDIP.CC.ECS.new(); return false;"));
+    Sidebar::Get()->addWidget($actions);
+} else {
+    $infobox = array(
+        array(
+            'kategorie' => _("Information"),
+            'eintrag'   => array(
+                array(
+                    'icon' => "icons/16/black/info",
+                    'text' => _("Hier sehen Sie alle ECS (elearning community server), können sie konfigurieren oder inaktiv schalten.")
+                )
+            )
+        ),
+        array(
+            'kategorie' => _("Aktionen"),
+            'eintrag'   => array(
+                array(
+                    'icon' => "icons/16/black/add",
+                    'text' => '<a href="#" onClick="STUDIP.CC.ECS.new(); return false;">'.
+                        _("Stellen Sie eine Verbindung zu einem neuen ECS her.").
+                    '</a>'
+                )
             )
         )
-    ),
-    array(
-        'kategorie' => _("Aktionen"),
-        'eintrag'   => array(
-            array(
-                'icon' => "icons/16/black/plus",
-                'text' => '<a href="#" onClick="STUDIP.CC.ECS.new(); return false;">'.
-                    _("Stellen Sie eine Verbindung zu einem neuen ECS her.").
-                '</a>'
-            )
-        )
-    )
-);
-$infobox = array(
-    'picture' => $assets_url . "/images/network.png",
-    'content' => $infobox
-);
+    );
+    $infobox = array(
+        'picture' => $assets_url . "/images/network.png",
+        'content' => $infobox
+    );
+}

@@ -60,18 +60,22 @@
 </div>
 
 <?
-$infobox = array(
-    array(
-        'kategorie' => _("Information"),
-        'eintrag' => array(
-            array(
-                'icon' => "icons/16/black/info",
-                'text' => _("Diese Seite soll Ihnen einen schnellen Überblick darüber geben, ob alles reibungslos läuft. Die Konfigurationen der ECS und der Teilnehmer findet auf den anderen Reitern statt.")
+if (class_exists("Sidebar")) {
+    
+} else {
+    $infobox = array(
+        array(
+            'kategorie' => _("Information"),
+            'eintrag' => array(
+                array(
+                    'icon' => "icons/16/black/info",
+                    'text' => _("Diese Seite soll Ihnen einen schnellen Überblick darüber geben, ob alles reibungslos läuft. Die Konfigurationen der ECS und der Teilnehmer findet auf den anderen Reitern statt.")
+                )
             )
         )
-    )
-);
-$infobox = array(
-    'picture' => $assets_url . "/images/network.png",
-    'content' => $infobox
-);
+    );
+    $infobox = array(
+        'picture' => $assets_url . "/images/network.png",
+        'content' => $infobox
+    );
+}

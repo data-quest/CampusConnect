@@ -121,18 +121,22 @@ jQuery(STUDIP.CC.participants.showImportFields);
 </script>
 
 <?
-$infobox = array(
-    array(
-        'kategorie' => _("Information"),
-        'eintrag'   => array(
-            array(
-                'icon' => "icons/16/black/info",
-                'text' => _("Hier sehen Sie die Informationen des Teilnehmers und können sie konfigurieren.")
+if (class_exists("Sidebar")) {
+
+} else {
+    $infobox = array(
+        array(
+            'kategorie' => _("Information"),
+            'eintrag'   => array(
+                array(
+                    'icon' => "icons/16/black/info",
+                    'text' => _("Hier sehen Sie die Informationen des Teilnehmers und können sie konfigurieren.")
+                )
             )
         )
-    )
-);
-$infobox = array(
-    'picture' => $assets_url . "/images/network.png",
-    'content' => $infobox
-);
+    );
+    $infobox = array(
+        'picture' => $assets_url . "/images/network.png",
+        'content' => $infobox
+    );
+}
