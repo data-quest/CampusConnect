@@ -6,6 +6,8 @@ if (file_exists('lib/classes/Institute.class.php')) {
 require_once __DIR__.'/../lib/CampusConnectTreeItems.php';
 require_once __DIR__.'/../lib/CampusConnectTree.php';
 require_once __DIR__.'/../lib/SemTreeSearch.class.php';
+require_once __DIR__.'/../lib/StudyAreaSelector.class.php';
+
 
 class ConfigController extends ApplicationController {
 

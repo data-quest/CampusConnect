@@ -37,15 +37,9 @@
             </td>
             <td>
                 <?= _("Nur Veranstaltungen exportieren, die den folgenden Studienbereichen zugeordnet sind.") ?>
-                <div style="height: 200px; max-height: 200px; overflow: scroll;">
-                    <ul class="sem_tree_list">
-                    <? foreach ($study_areas as $area) : ?>
-                        <? if ($area['parent_id'] === "root") : ?>
-                        <?= $this->render_partial("config/_export_study_area", array('study_areas' => $study_areas, 'sem_tree_id' => $area['sem_tree_id'], 'server' => $server)) ?>
-                        <? endif ?>
-                    <? endforeach ?>
-                    </ul>
-                </div>
+                <?= \CampusConnect\StudyAreaSelector::create("data[export_settings][filter_sem_tree]", "multiple")
+                        ->setDefault(array_keys(array_filter($server['data']['export_settings']['filter_sem_tree'])))
+                        ->render() ?>
             </td>
         </tr>
         <tr id="filter_datafields"<?= !$server['data']['export_settings']['filter_datafields_activate'] ? ' style="display: none;"' : "" ?>>

@@ -263,6 +263,7 @@ STUDIP.CC.participants = {
             'success': function (ret) {
                 if (ret.message) {
                     jQuery("#messages").html(ret.message);
+                    jQuery(".ui-dialog-content").dialog("close");
                 }
             }
         });
