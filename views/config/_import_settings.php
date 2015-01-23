@@ -111,7 +111,7 @@ $server; //server-data of participant
                 <?= QuickSearch::get(
                     "data__import_settings____sem_tree__",
                     new SQLSearch("SELECT sem_tree_id, name FROM sem_tree WHERE name LIKE :input", _("Studienbereich wählen"))
-                    )->defaultValue($server['data']['import_settings']['sem_tree'], "bla")
+                    )->defaultValue($server['data']['import_settings']['sem_tree'], $server['data']['import_settings']['sem_tree'] ? \StudipStudyArea::find($server['data']['import_settings']['sem_tree'])->name : "")
                     ->render() ?>
             </td>
         </tr>

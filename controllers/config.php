@@ -103,24 +103,7 @@ class ConfigController extends ApplicationController {
         if (!Request::get("id")) {
             return;
         }
-        $db = DBManager::get();
-        $statement = $db->prepare(
-            "SELECT sem_tree.sem_tree_id, sem_tree.parent_id, sem_tree.priority, IF(Institute.Name IS NULL, sem_tree.name, Institute.Name) AS name " .
-            "FROM sem_tree " .
-                "LEFT JOIN Institute ON (Institute.Institut_id = sem_tree.studip_object_id) " .
-            "ORDER BY priority ASC " .
-        "");
-        $statement->execute();
-        $study_areas2 = $statement->fetchAll(PDO::FETCH_ASSOC);
-        $this->study_areas = array();
-        foreach ($study_areas2 as $area) {
-            $this->study_areas[$area['sem_tree_id']] = $area;
-        }
-        foreach ($this->study_areas as $key => $area) {
-            $this->study_areas[$area['parent_id']]['children'][] = $key;
-        }
-
-        $statement = $db->prepare(
+        $statement = DBManager::get()->prepare(
             "SELECT * " .
             "FROM datafields " .
             "WHERE object_type = 'sem' " .
