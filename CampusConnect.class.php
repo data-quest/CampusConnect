@@ -19,6 +19,7 @@ require_once __DIR__.'/lib/CampusConnectEntity.php';
 require_once __DIR__.'/lib/CampusConnectSentItem.php';
 require_once __DIR__.'/lib/CCCourse.php';
 require_once __DIR__.'/lib/CCRessources.php';
+require_once __DIR__.'/lib/CampusConnector.php';
 
 
 class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin

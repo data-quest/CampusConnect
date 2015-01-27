@@ -1,11 +1,11 @@
 <?php
-class AddCronjobMigration extends DBMigration
+class AddCronjob2Migration extends DBMigration
 {
-    function up()
+    function up() 
     {
         $new_job = array(
-            'filename'    => 'public/plugins_packages/data-quest/CampusConnect/fetch_updates.cronjob.php',
-            'class'       => 'FetchUpdatesJob',
+            'filename'    => 'public/plugins_packages/data-quest/CampusConnect/send_changes.cronjob.php',
+            'class'       => 'SendChangesJob',
             'priority'    => 'normal',
             'minute'      => '-1'
         );

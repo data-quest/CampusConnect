@@ -1,13 +1,13 @@
 <?php
 
-class FetchUpdatesJob extends CronJob
+class SendChangesJob extends CronJob
 {
     /**
      * Returns the name of the cronjob.
      */
     public static function getName()
     {
-        return _('CampusConnect-Updates (vom ECS)');
+        return _('CampusConnect-Updates (zum ECS)');
     }
 
     /**
@@ -15,7 +15,7 @@ class FetchUpdatesJob extends CronJob
      */
     public static function getDescription()
     {
-        return _('Holt Daten vom ECS ab und pflegt sie in Stud.IP ein.');
+        return _('Führt die Synchronisation mit dem ECS aus und sendet alle relevanten Änderungen von Stud.IP zum ECS.');
     }
 
     public function setUp() {
@@ -45,6 +45,6 @@ class FetchUpdatesJob extends CronJob
      */
     public function execute($last_result, $parameters = array())
     {
-        CampusConnector::fetch_updates();
+        CampusConnector::send_changes();
     }
 }
