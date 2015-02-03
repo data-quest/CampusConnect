@@ -169,7 +169,12 @@ class CourselinkController extends ApplicationController {
                     $user['Home'] = "";
                     $user['privatnr'] = "";
                     $user['privatcell'] = "";
-                    $user['privatadr'] = "";
+                    if ($user->isField("privatadr")) {
+                        $user['privatadr'] = "";
+                    }
+                    if ($user->isField("privadr")) {
+                        $user['privadr'] = "";
+                    }
                     $user['title_front'] = "";
                     $user['title_rear'] = "";
                     $user['smsforward_rec'] = "";
