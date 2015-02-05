@@ -11,7 +11,9 @@ class CourselinkController extends ApplicationController {
         if (!$GLOBALS['perm']->have_studip_perm("user", $_SESSION['SessionSeminar'])) {
             throw new AccessDeniesException("Kein Zugriff");
         }
-        Navigation::getItem("/course/main")->setImage(Assets::image_path("icons/16/black/infopage"));
+        if (Navigation::hasItem("/course/main")) {
+            Navigation::getItem("/course/main")->setImage(Assets::image_path("icons/16/black/infopage"));
+        }
         $this->course = new Course($_SESSION['SessionSeminar']);
         $sem_type = $GLOBALS['SEM_TYPE'][$this->course['status']];
         $this->coursedata = new CampusConnectEntity(array($_SESSION['SessionSeminar'], "course"));
