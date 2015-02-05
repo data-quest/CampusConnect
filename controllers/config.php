@@ -30,6 +30,9 @@ class ConfigController extends ApplicationController {
         if (!function_exists("curl_init")) {
             PageLayout::postMessage(MessageBox::error(_("Das PHP-cURL Modul ist nicht aktiv. Ohne das wird dieser Konnektor nicht arbeiten können.")));
         }
+        if (!$this->isNobodyAllowed()) {
+            PageLayout::postMessage(MessageBox::error(_("Das CampusConnect-Plugin ist nicht für nobody zugelassen. Damit werden Kurslinks nicht korrekt funktionieren.")));
+        }
         $this->imported_courses = count(CampusConnectEntity::findByType("course"));
         $this->imported_users = count(CampusConnectEntity::findByType("user"));
         $this->imported_institutes = count(CampusConnectEntity::findByType("institute"));
@@ -201,6 +204,19 @@ class ConfigController extends ApplicationController {
             }
         }
         return false;
+    }
+
+    private function isNobodyAllowed()
+    {
+        $rolepersistence = new RolePersistence();
+        $plugin_roles = $rolepersistence->getAssignedPluginRoles($this->plugin->getPluginId());
+        $nobody_allowed = false;
+        foreach ($plugin_roles as $role) {
+            if ($role->getRolename() === "Nobody") {
+                $nobody_allowed = true;
+            }
+        }
+        return $nobody_allowed;
     }
 
 }
