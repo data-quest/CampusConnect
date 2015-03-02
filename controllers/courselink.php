@@ -180,7 +180,9 @@ class CourselinkController extends ApplicationController {
                     $user['title_front'] = "";
                     $user['title_rear'] = "";
                     $user['smsforward_rec'] = "";
-                    $user['smiley_favourite'] = "";
+                    if ($user->isField("smiley_favourite")) {
+                        $user['smiley_favourite'] = "";
+                    }
                     $user['motto'] = "";
                     $user->store();
 
