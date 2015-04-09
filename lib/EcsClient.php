@@ -71,6 +71,9 @@ class EcsClient
         curl_setopt($c, CURLOPT_RETURNTRANSFER,1);
         curl_setopt($c, CURLOPT_VERBOSE, 0);
         curl_setopt($c, CURLOPT_CONNECTTIMEOUT, $this->timeout);
+        if ($GLOBALS['user']->id === "cli") {
+            curl_setopt($c, CURLOPT_TIMEOUT, get_config("CRONJOBS_ESCALATION ") - 1);
+        }
         switch($this->config['auth_type'])
         {
             case 1:
