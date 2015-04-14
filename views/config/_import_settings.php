@@ -156,15 +156,40 @@ $server; //server-data of participant
             <td colspan="2"><hr class="grey"></td>
         </tr>
         <tr class="cms_only">
-            <td><label for="import_settings__cms__user_identifier"><?= _("Personen werden folgendermaßen identifiziert") ?></label></td>
             <td>
-                <select id="import_settings__cms__user_identifier" name="data[import_settings][cms][user_identifier]">
-                    <option value="username"<?= $server['data']['import_settings']['cms']['user_identifier'] === "username" ? " selected" : "" ?>>username</option>
-                    <option value="email"<?= $server['data']['import_settings']['cms']['user_identifier'] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
-                    <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
-                    <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['cms']['user_identifier'] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
-                    <? endforeach ?>
-                </select>
+                <?= _("Personen werden folgendermaßen identifiziert") ?>
+            </td>
+            <td>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><label><?= _("Standard") ?></label></td>
+                            <td><select id="import_settings__cms__user_identifier" name="data[import_settings][cms][user_identifier]">
+                                    <option value="username"<?= $server['data']['import_settings']['cms']['user_identifier'] === "username" ? " selected" : "" ?>>username</option>
+                                    <option value="email"<?= $server['data']['import_settings']['cms']['user_identifier'] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
+                                    <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
+                                        <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['cms']['user_identifier'] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
+                                    <? endforeach ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <? foreach (array("ecs_PersonalUniqueCode", "ecs_ePPN", "ecs_login", "ecs_loginUID", "ecs_uid", "ecs_email") as $param) : ?>
+                            <tr>
+                                <td><label for="import_settings__cms__user_identifiers_<?= $param ?>"><?= htmlReady($param) ?></label></td>
+                                <td>
+                                    <select id="import_settings__cms__user_identifiers_<?= $param ?>" name="data[import_settings][cms][user_identifiers][<?= $param ?>]">
+                                        <option value=""> - </option>
+                                        <option value="username"<?= $server['data']['import_settings']['cms']['user_identifiers'][$param] === "username" ? " selected" : "" ?>>username</option>
+                                        <option value="email"<?= $server['data']['import_settings']['cms']['user_identifiers'][$param] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
+                                        <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
+                                            <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['cms']['user_identifiers'][$param] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
+                                        <? endforeach ?>
+                                    </select>
+                                </td>
+                            </tr>
+                        <? endforeach ?>
+                    </tbody>
+                </table>
             </td>
         </tr>
 

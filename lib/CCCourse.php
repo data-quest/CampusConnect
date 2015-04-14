@@ -987,7 +987,14 @@ class CCCourse extends Course
             foreach ($message['members'] as $member) {
                 $rights = array(1 => 'autor', 2 => 'tutor', 3 => 'dozent');
 
-                switch ($participant['data']['import_settings']['cms']['user_identifier']) {
+                if ($member['personIDtype']
+                        && $participant['data']['import_settings']['cms']['user_identifiers'][$member['personIDtype']]) {
+                    //Es ist ein personIDtype angegeben und dieser personIDtype ist auch konfiguriert:
+                    $idtype = $participant['data']['import_settings']['cms']['user_identifiers'][$member['personIDtype']];
+                } else {
+                    $idtype = $participant['data']['import_settings']['cms']['user_identifier'];
+                }
+                switch ($idtype) {
                     case "username":
                         $user = User::findByUsername($member['personID']);
                         break;
@@ -996,13 +1003,16 @@ class CCCourse extends Course
                         $user = isset($user[0]) ? $user[0] : null;
                         break;
                     default:
-                        //Datenfeld
-                        $user = User::findByDatafield(
-                            $participant['data']['import_settings']['cms']['user_identifier'],
-                            $member['personID']
-                        );
-                        $user = count($user) === 1 ? $user[0] : null;
+                        if ($idtype) {
+                            //Datenfeld
+                            $user = User::findByDatafield(
+                                $idtype,
+                                $member['personID']
+                            );
+                            $user = count($user) === 1 ? $user[0] : null;
+                        }
                 }
+
                 if ($user) {
                     //erst einmal herausfinden, ob es dieses Seminar überhaupt sein soll.
                     $insert_into_group = false;
