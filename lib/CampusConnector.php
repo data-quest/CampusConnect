@@ -257,4 +257,79 @@ class CampusConnector {
             }
         }
     }
+
+    static public function send_everything()
+    {
+        $changes = CampusConnectSentItem::findAll();
+        $ecs = CampusConnectConfig::findByType("server");
+        foreach ($ecs as $ecs_server) {
+            if ($ecs_server['active']) {
+                $ecs_client = new ECSClient($ecs_server['data']);
+                foreach ($changes as $change) {
+                    //Für jeden Kurs müssen wir pro ECS generell zwei Nachrichten absetzen:
+                    //Die erste für Courselinks und die zweite für Courses.
+                    switch ($change['object_type']) {
+                        case "course":
+                            $course = new CCCourse($change['item_id']);
+                            //Courselinks:
+                            $path = "/campusconnect/courselinks";
+
+                            $receiver_participants = $course->getReceivingParticipantsForECS($ecs_server, "kurslink");
+                            $message = $course->getCourselinkMessage();
+                            $resource_id = $course->already_synced('kurslink');
+                            if ($resource_id) {
+                                $result = $ecs_client->updateResourceMessage(
+                                    $path,
+                                    $resource_id,
+                                    $message,
+                                    $receiver_participants
+                                );
+                                if ($result->getResponseCode() >= 400) {
+                                    echo "\n".$result->getResult();
+                                }
+                            } elseif(count($receiver_participants)) {
+                                $result = $ecs_client->createResourceMessage(
+                                    $path,
+                                    $course->getCourselinkMessage(),
+                                    $receiver_participants
+                                );
+                                $header = $result->getResponseHeader();
+                                $resource_id = strrpos($header['Location'], "/") !== false
+                                    ? substr($header['Location'], strrpos($header['Location'], "/") + 1)
+                                    : $header['Location'];
+                                if ($resource_id) {
+                                    $sent_item = new CampusConnectSentItem();
+                                    $sent_item['item_id'] = $course->getId();
+                                    $sent_item['object_type'] = "kurslink";
+                                    $sent_item['resource_id'] = $resource_id;
+                                    $sent_item->store();
+                                }
+                            }
+
+                            //Courses:
+                            $path = "/campusconnect/courses";
+                            $receiver_participants = $course->getReceivingParticipantsForECS($ecs_server, "kurs");
+                            $resource_id = $course->already_synced('kurslink');
+                            if (count($receiver_participants)) {
+                                //$message = array($course->getCourseMessage());
+                                $ecs_client->createResourceMessage(
+                                    $path,
+                                    $course->getCourseMessage(),
+                                    $receiver_participants
+                                );
+                                $ecs_client->createResourceMessage(
+                                    "/campusconnect/course_members",
+                                    $course->getCourseMemberMessage(),
+                                    $receiver_participants,
+                                    true //means we only send the uri-list and the other participants have to fetch the info from us.
+                                );
+                            }
+                            break;
+                        case "institut":
+                            break;
+                    }
+                }
+            }
+        }
+    }
 }

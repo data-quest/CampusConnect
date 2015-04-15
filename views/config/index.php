@@ -58,6 +58,16 @@
     </div>
     <div id="progress_time" style="display: none;"><?= $_SESSION['unit_test_progress_time'] ? (int) $_SESSION['unit_test_progress_time'] : "8000" ?></div>
 </div>
+<div class="overview">
+    <div class="overview_header">
+        <a href="#" onClick="STUDIP.CC.ECS.export_everything(); return false;">
+            <?= _("Alle Daten nochmal zum Update senden") ?>
+        </a>
+    </div>
+    <span style="display: none;" id="update_everything_loader">
+        <?= Assets::img("ajax_indicator_small.gif") ?>
+    </span>
+</div>
 
 <?
 if (class_exists("Sidebar")) {

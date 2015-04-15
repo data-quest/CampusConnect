@@ -39,5 +39,13 @@ class ConnectorController extends ApplicationController
         CampusConnector::fetch_updates();
         $this->render_nothing();
     }
+
+    function update_everything_action()
+    {
+        CampusConnector::send_everything();
+        $this->render_nothing();
+    }
+
+
 }
 

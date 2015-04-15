@@ -11,6 +11,13 @@
 
 class CampusConnectSentItem extends SimpleORMap {
 
+    static public function findAll($where = "") {
+        return self::findBySQL(
+            ($where ? $where . " " : "1=1 ") .
+            "GROUP BY object_type, item_id"
+        );
+    }
+
     public function __construct($id = null) {
         $this->db_table = "campus_connect_sent_items";
         parent::__construct($id);

@@ -237,6 +237,15 @@ STUDIP.CC.ECS = {
             }
         });
     },
+    'export_everything': function () {
+        jQuery('#update_everything_loader').show();
+        jQuery.ajax({
+            'url': STUDIP.ABSOLUTE_URI_STUDIP + "plugins.php/campusconnect/connector/update_everything",
+            'success': function () {
+                jQuery('#update_everything_loader').hide();
+            }
+        });
+    },
     'import_changes': function () {
         jQuery('#import_sync_loader').show();
         jQuery.ajax({
