@@ -146,10 +146,91 @@ $server; //server-data of participant
         <tr class="kurslink_only">
             <td><label for="import_settings__auth"><?= _("SingleSignOn-Mechanismus des Teilnehmers") ?></label></td>
             <td>
-                <select id="import_settings__auth" name="data[import_settings][auth]">
-                    <option value="ecs_token"><?= _("Über ECS") ?></option>
-                    <option value=""><?= _("Kein SSO über CampusConect") ?></option>
+                <select id="import_settings__auth" name="data[import_settings][auth]" onChange="if (this.value=== 'ecs_token') { jQuery('#import_settings__auth_token').fadeIn(); } else { jQuery('#import_settings__auth_token').fadeOut(); }">
+                    <option value="ecs_token"<?= $server['data']['import_settings']['auth'] === "ecs_token" ? " selected" : "" ?>><?= _("Über ECS") ?></option>
+                    <option value="no"<?= $server['data']['import_settings']['auth'] === "no" ? " selected" : "" ?>><?= _("Kein SSO über CampusConect") ?></option>
                 </select>
+            </td>
+        </tr>
+        <tr id="import_settings__auth_token" class="kurslink_only" style="<?= $server['data']['import_settings']['auth'] === "no" ? "display: none;" : "" ?>">
+            <!-- Stud.IP import Kurslinks, die eigenen Nutzer brauchen einen Auth-Token, um zum Fremdsystem zu kommen, wie soll der aussehen? -->
+            <td><?= _("ECS-Auth-Token Konfiguration") ?></td>
+            <td>
+                <table class="default">
+                    <tbody id="data__import_settings__auth_token__attributes">
+                    <tr>
+                        <td>
+                            <label>
+                                <div><?= _("Identifizierer") ?></div>
+                                <select name="data[import_settings][auth_token][id_type]">
+                                    <option>ecs_uid</option>
+                                    <option>ecs_loginUID</option>
+                                    <option>ecs_login</option>
+                                    <option>ecs_email</option>
+                                    <option>ecs_PersonalUniqueCode</option>
+                                    <option>ecs_custom</option>
+                                </select>
+                            </label>
+                        </td>
+                        <td>
+                            <select name="data[import_settings][auth_token][id]">
+                                <option value="user_id">user_id</option>
+                                <option value="username"<?= $server['data']['import_settings']['auth_token']['id'] === "username" ? " selected" : "" ?>>username</option>
+                                <option value="email"<?= $server['data']['import_settings']['auth_token']['id'] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
+                                <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
+                                    <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['auth_token']['id'] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
+                                <? endforeach ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <? foreach ((array) $server['data']['import_settings']['auth_token']['attributes'] as $name => $mapping) : ?>
+                    <tr>
+                        <td><input type="text" placeholder="<?= _("Weiteres Attribut") ?>" value="<?= htmlReady($name) ?>" onChange="var select = jQuery(this).closest('tr').find('select'); select.attr('name', select.data('name').replace('__REPLACE__', this.value));"></td>
+                        <td>
+                            <select name="data[import_settings][auth_token][attributes][<?= htmlReady($name) ?>]" data-name="data[import_settings][auth_token][attributes][__REPLACE__]">
+                                <option value="user_id"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === "user_id" ? " selected" : "" ?>>user_id</option>
+                                <option value="username"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === "username" ? " selected" : "" ?>>username</option>
+                                <option value="email"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
+                                <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
+                                    <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
+                                <? endforeach ?>
+                            </select>
+                            <a href="#" onClick="if (window.confirm('<?= _("Wirklich löschen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
+                                <?= Assets::img("icons/16/blue/trash", array('class' => "text-bottom")) ?>
+                            </a>
+                        </td>
+                    </tr>
+                    <? endforeach ?>
+                    </tbody>
+                    <tobdy>
+                        <tr id="data__import_settings__auth_token__attributes_template" style="display: none;">
+                            <td><input type="text" placeholder="<?= _("Weiteres Attribut") ?>" onChange="var select = jQuery(this).closest('tr').find('select'); select.attr('name', select.data('name').replace('__REPLACE__', this.value));"></td>
+                            <td>
+                                <select data-name="data[import_settings][auth_token][attributes][__REPLACE__]">
+                                    <option value="user_id">user_id</option>
+                                    <option value="username"<?= $server['data']['import_settings']['auth_token']['id'] === "username" ? " selected" : "" ?>>username</option>
+                                    <option value="email"<?= $server['data']['import_settings']['auth_token']['id'] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
+                                    <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
+                                        <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['auth_token']['id'] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
+                                    <? endforeach ?>
+                                </select>
+                                <a href="#" onClick="if (window.confirm('<?= _("Wirklich löschen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
+                                    <?= Assets::img("icons/16/blue/trash", array('class' => "text-bottom")) ?>
+                                </a>
+                            </td>
+                        </tr>
+                    </tobdy>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2">
+                                <a href="#" onClick="jQuery('#data__import_settings__auth_token__attributes_template').clone().removeAttr('id').appendTo('#data__import_settings__auth_token__attributes').fadeIn(); return false;">
+                                    <?= Assets::img("icons/16/blue/add") ?>
+                                </a>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+
             </td>
         </tr>
         <tr class="cms_only">

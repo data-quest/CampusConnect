@@ -107,20 +107,23 @@ class CourselinkController extends ApplicationController {
         $ecs_uid_hash = Request::get("ecs_uid_hash") 
             ? studip_utf8decode(Request::get("ecs_uid_hash"))
             : studip_utf8decode(Request::get("ecs_uid"));
+        $ecs_hash = Request::get("ecs_hash")
+            ? studip_utf8decode(Request::get("ecs_hash"))
+            : studip_utf8decode(Request::get("ecs_hash_url"));
         if ($GLOBALS['user']->id == 'nobody'
-                && Request::get("ecs_hash_url")
+                && $ecs_hash
                 && Request::get("ecs_login")
                 && $ecs_uid_hash
                 && Request::get("ecs_email")) {
             //ECS anhand der URL ausfindig machen.
             //Schauen, ob ECS und Auth über ECS lokal aktiviert ist.
             $accept = false;
-            CampusConnectLog::_(sprintf("ecs-auth: checking hash: %s", Request::get("ecs_hash_url")), CampusConnectLog::DEBUG);
+            CampusConnectLog::_(sprintf("ecs-auth: checking hash: %s", $ecs_hash), CampusConnectLog::DEBUG);
             $ecs_found = false;
-            $ecs_hash = substr(Request::get("ecs_hash_url"), strripos(Request::get("ecs_hash_url"), "/") + 1);
+            $ecs_hash = substr($ecs_hash, strripos($ecs_hash, "/") + 1);
             foreach (CampusConnectConfig::findByType("server") as $ecs) {
                 $ecs_url = parse_url($ecs['data']['server']);
-                $token_url = parse_url(Request::get("ecs_hash_url"));
+                $token_url = parse_url($ecs_hash);
                 if (($token_url['host'] === $ecs_url['host'])
                         && $ecs['active']
                         ) {

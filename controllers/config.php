@@ -133,6 +133,8 @@ class ConfigController extends ApplicationController {
         //clear only some arrays:
         $data = $server['data'];
         $data['import_settings']['sem_type_matching'] = array();
+        $data['import_settings']['auth_token'] = array();
+        $data['export_settings']['auth_token'] = array();
         $server['data'] = $data;
 
         $data_array = Request::getArray("data");
