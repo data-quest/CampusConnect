@@ -145,8 +145,8 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
             header("Location: " . PluginEngine::getUrl($this), 302);
             return false;
         }
-        if ($GLOBALS['CAMPUSCONNECT_LOGFILE']) {
-            CampusConnectLog::get()->setHandler($GLOBALS['CAMPUSCONNECT_LOGFILE']);
+        if (get_config("CAMPUSCONNECT_LOGFILE")) {
+            CampusConnectLog::get()->setHandler(get_config("CAMPUSCONNECT_LOGFILE"));
         }
         CampusConnectLog::get()->setLogLevel(CampusConnectLog::DEBUG);
         $trails_root = $this->getPluginPath();
