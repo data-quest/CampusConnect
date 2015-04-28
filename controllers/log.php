@@ -11,8 +11,8 @@ class LogController extends ApplicationController {
 	
     function view_action()
     {
-        if ($GLOBALS['CAMPUSCONNECT_LOGFILE']) {
-            CampusConnectLog::get()->setHandler($GLOBALS['CAMPUSCONNECT_LOGFILE']);
+        if (get_config("CAMPUSCONNECT_LOGFILE")) {
+            CampusConnectLog::get()->setHandler($GLOBALS['TMP_PATH']."/".get_config("CAMPUSCONNECT_LOGFILE"));
         }
         $this->logfile = $this->logfile ? $this->logfile : (CampusConnectLog::get()->getHandler() ?: $GLOBALS['TMP_PATH']."/studip.log");
     }
