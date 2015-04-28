@@ -69,7 +69,7 @@ class CampusConnectLink extends StudIPPlugin implements StandardPlugin, SystemPl
             return false;
         }
         if (get_config("CAMPUSCONNECT_LOGFILE")) {
-            CampusConnectLog::get()->setHandler(get_config("CAMPUSCONNECT_LOGFILE"));
+            CampusConnectLog::get()->setHandler($GLOBALS['TMP_PATH']."/".get_config("CAMPUSCONNECT_LOGFILE"));
         }
         CampusConnectLog::get()->setLogLevel(CampusConnectLog::DEBUG);
         $trails_root = $this->getPluginPath();
