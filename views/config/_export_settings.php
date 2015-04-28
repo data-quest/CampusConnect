@@ -9,7 +9,7 @@
  *  the License, or (at your option) any later version.
  */
 ?>
-<table>
+<table class="cc_settings">
     <tbody>
         <tr>
             <td>
@@ -69,12 +69,12 @@
                                     <td><input type="text" placeholder="<?= _("Weiteres Attribut") ?>" value="<?= htmlReady($name) ?>" onChange="var select = jQuery(this).closest('tr').find('select'); select.attr('name', select.data('name').replace('__REPLACE__', this.value));"></td>
                                     <td>
                                         <select name="data[export_settings][auth_token][attributes][<?= htmlReady($name) ?>]" data-name="data[export_settings][auth_token][attributes][__REPLACE__]">
-                                            <option value="user_id"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === "user_id" ? " selected" : "" ?>>user_id</option>
-                                            <option value="username"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === "username" ? " selected" : "" ?>>username</option>
-                                            <option value="email"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
-                                            <option value="institut"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === "institut" ? " selected" : "" ?>><?= _("Heimateinrichtung") ?></option>
+                                            <option value="user_id"<?= $mapping === "user_id" ? " selected" : "" ?>>user_id</option>
+                                            <option value="username"<?= $mapping === "username" ? " selected" : "" ?>>username</option>
+                                            <option value="email"<?= $mapping === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
+                                            <option value="institut"<?= $mapping === "institut" ? " selected" : "" ?>><?= _("Heimateinrichtung") ?></option>
                                             <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
-                                                <option value="<?= $datafield->getId() ?>"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
+                                                <option value="<?= $datafield->getId() ?>"<?= $mapping === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                             <? endforeach ?>
                                         </select>
                                         <a href="#" onClick="if (window.confirm('<?= _("Wirklich löschen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">

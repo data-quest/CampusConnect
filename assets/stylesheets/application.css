@@ -105,3 +105,7 @@ hr.grey {
 .tree_mapping_tree li.node_selected {
     border: thin dotted red;
 }
+
+.cc_settings .hidden {
+    display: none !important;
+}

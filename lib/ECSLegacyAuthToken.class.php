@@ -9,17 +9,16 @@
  *  the License, or (at your option) any later version.
  */
 
-class ECSAuthToken {
+class ECSLegacyAuthToken {
 
     protected $ecs_id = null;
     protected $url = null;
-    protected $parameter = array();
 
     public function __construct($ecs_id) {
         $this->ecs_id = $ecs_id;
     }
 
-    public function validateAndMap($ecs_hash, $parameter, $user) {
+    public function validate($ecs_hash, $parameter) {
         $ecs_server = new CampusConnectConfig($this->ecs_id);
         $ecs_client = new EcsClient($ecs_server['data']);
 
@@ -31,13 +30,12 @@ class ECSAuthToken {
         }
         //URL bis zum ecs_hash_url -Parameter
         $url .= stripos($_SERVER['REQUEST_URI'], "?") === false
-            ? $_SERVER['REQUEST_URI']
-            : substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], "?"));
+                ? $_SERVER['REQUEST_URI']
+                : substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], "?"));
         $realm = self::getRealm(
             $url,
             $parameter
         );
-
         CampusConnectLog::_(sprintf("ecs-auth: checking realm: %s\n%s",$realm, print_r($this->ecs,1)), CampusConnectLog::DEBUG);
         $result = $ecs_client->checkAuths($ecs_hash);
         $ecs_token = $result->getResult();
@@ -46,15 +44,8 @@ class ECSAuthToken {
             CampusConnectLog::_(sprintf("ecs-auth: realm does not match: %s", $realm), CampusConnectLog::DEBUG);
         }
 
-        if ($realm === $ecs_token['realm']
-        || (!$ecs_token['realm'] && $ecs_token['url'])) {
-            $this->parameter = $parameter;
-            //$user['Vorname'] = studip_utf8decode(); //do some mapping
-
-            return true;
-        } else {
-            return false;
-        }
+        return $realm === $ecs_token['realm']
+            || (!$ecs_token['realm'] && $ecs_token['url']);
     }
 
     public function getHash($mid, $url, $parameter) {
@@ -68,14 +59,12 @@ class ECSAuthToken {
         $result = $ecs_client->getAuths($mid, $realm, $url);
         $ecs_auth = $result->getResult();
         $this->url = $ecs_client->getUrl('/sys/auths')."/".$ecs_auth['hash'];
-        $this->parameter = $parameter;
         return $ecs_auth;
     }
 
     static public function getRealm($url, $parameter) {
         return sha1(self::getRealmBeforeHashing(
-            $url,
-            $parameter
+            $url, $parameter
         ));
     }
 
@@ -91,10 +80,6 @@ class ECSAuthToken {
 
     public function getURL() {
         return $this->url;
-    }
-
-    public function getParameter() {
-        return $this->parameter;
     }
 
 }

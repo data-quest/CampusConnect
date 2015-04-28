@@ -3,6 +3,7 @@
 require __DIR__.'/application.php';
 require_once __DIR__."/../lib/CCCourse.php";
 require_once __DIR__."/../lib/ECSAuthToken.class.php";
+require_once __DIR__."/../lib/ECSLegacyAuthToken.class.php";
 
 class CourselinkController extends ApplicationController {
 
@@ -49,41 +50,52 @@ class CourselinkController extends ApplicationController {
             $url = $coursedata['data']['url'];
         }
         if ($url) {
-            if ($participant['data']['import_settings']['auth'] === "ecs_token") {
+            if (in_array($participant['data']['import_settings']['auth'], array("ecs_token", "legacy_ecs_token"))) {
                 $user = new User($GLOBALS['user']->id);
-                $ecs_login = $user['username'];
-                $ecs_firstname = $user['Vorname'];
-                $ecs_lastname = $user['Nachname'];
-                $ecs_email = $user['Email'];
-                $ecs_institution = "";
-                $ecs_uid = $user->getId();
+
+                $auth_token_parameter = array(
+                    'ecs_login' => $user['username'],
+                    'ecs_firstname' => $user['Vorname'],
+                    'ecs_lastname' => $user['Nachname'],
+                    'ecs_email' => $user['Email'],
+                    'ecs_institution' => "",
+                    'ecs_uid' => $user->getId()
+                );
+                if ($participant['data']['import_settings']['auth'] === "ecs_token") {
+                    $auth_token_parameter['ecs_person_id_type'] = $participant['data']['import_settings']['auth_token']['id_type'];
+                    if (!in_array($auth_token_parameter['ecs_person_id_type'], array("ecs_uid", "ecs_email", "ecs_login"))) {
+                        $auth_token_parameter[$auth_token_parameter['ecs_person_id_type']]
+                            = $participant['data']['import_settings']['auth_token']['id'];
+                    }
+                    foreach ($participant['data']['import_settings']['auth_token']['attributes'] as $index => $value) {
+                        if ($user->isField($index)) {
+                            $auth_token_parameter[$index] = $user[$index];
+                        } else {
+                            $datafield_entry = DatafieldEntryModel::findBySQL("datafield_id = ? AND object_id = ?", array($index, $user->getId()));
+                            $datafield_entry = $datafield_entry[0];
+                            $auth_token_parameter[$index] = $datafield_entry['content'];
+                        }
+                    }
+                }
 
                 $ecs_data = new CampusConnectConfig($participant['data']['ecs'][0]);
-                $ecs = new EcsClient($ecs_data['data']);
 
-                $token = new ECSAuthToken($participant['data']['ecs'][0]);
+                if ($participant['data']['import_settings']['auth'] === "ecs_token") {
+                    $token = new ECSAuthToken($participant['data']['ecs'][0]);
+                } else {
+                    $token = new ECSLegacyAuthToken($participant['data']['ecs'][0]);
+                }
                 $mid = array_values($participant['data']['mid']);
                 $ecs_auth = $token->getHash(
                     $mid[0],
                     $url,
-                    $ecs_login,
-                    $ecs_firstname,
-                    $ecs_lastname,
-                    $ecs_email,
-                    $ecs_institution,
-                    $ecs_uid
+                    $auth_token_parameter
                 );
-
-                $url = URLHelper::getURL($url, array(
-                    'ecs_hash_url' => $token->getURL(),
-                    'ecs_login' => studip_utf8encode($user['username']),
-                    'ecs_firstname' => studip_utf8encode($user['Vorname']),
-                    'ecs_lastname' => studip_utf8encode($user['Nachname']),
-                    'ecs_email' => studip_utf8encode($user['Email']),
-                    'ecs_institution' => studip_utf8encode(""),
-                    'ecs_uid' => $user->getId(),
-                    'ecs_uid_hash' => $user->getId() //deprecated
-                ), true);
+                $url_parameter = array('ecs_hash_url' => $token->getURL());
+                foreach ($auth_token_parameter as $index => $value) {
+                    $url_parameter[$index] = $value;
+                }
+                $url = URLHelper::getURL($url, $url_parameter, true);
             }
             CampusConnectLog::_(sprintf("ecs-auth: refering user now to %s", $url), CampusConnectLog::DEBUG);
             header("Location: ".$url);
@@ -104,16 +116,16 @@ class CourselinkController extends ApplicationController {
     public function to_action($cid) {
         CampusConnectLog::_(sprintf("ecs-auth: start: %s", print_r($_REQUEST,1), CampusConnectLog::DEBUG));
         $course_url = URLHelper::getURL("details.php", array('sem_id' => $cid));
-        $ecs_uid_hash = Request::get("ecs_uid_hash") 
-            ? studip_utf8decode(Request::get("ecs_uid_hash"))
-            : studip_utf8decode(Request::get("ecs_uid"));
+        $ecs_uid_hash = Request::get("ecs_uid")
+            ? studip_utf8decode(Request::get("ecs_uid"))
+            : studip_utf8decode(Request::get("ecs_uid_hash"));
         $ecs_hash = Request::get("ecs_hash")
             ? studip_utf8decode(Request::get("ecs_hash"))
             : studip_utf8decode(Request::get("ecs_hash_url"));
         if ($GLOBALS['user']->id == 'nobody'
                 && $ecs_hash
                 && Request::get("ecs_login")
-                && $ecs_uid_hash
+                && ($ecs_uid_hash || Request::get("ecs_person_id_type"))
                 && Request::get("ecs_email")) {
             //ECS anhand der URL ausfindig machen.
             //Schauen, ob ECS und Auth über ECS lokal aktiviert ist.
@@ -129,29 +141,48 @@ class CourselinkController extends ApplicationController {
                         ) {
                     $ecs_found = true;
                     CampusConnectLog::_(sprintf("ecs-auth: found-ecs to auth-token: %s", $ecs['data']['server']), CampusConnectLog::DEBUG);
-                    $token = new ECSAuthToken($ecs->getId());
-                    $accept = $token->validate(
-                        $ecs_hash,
-                        studip_utf8decode(Request::get("ecs_login")),
-                        studip_utf8decode(Request::get("ecs_firstname")),
-                        studip_utf8decode(Request::get("ecs_lastname")),
-                        studip_utf8decode(Request::get("ecs_email")),
-                        studip_utf8decode(Request::get("ecs_institution")),
-                        $ecs_uid_hash
+
+                    $user_mapping = CampusConnectEntity::findByForeignID(
+                        'user',
+                        $ecs_uid_hash,
+                        $ecs['id']
                     );
+                    $user = new User($user_mapping['item_id']);
+
+                    if (Request::get("ecs_person_id_type")) {
+                        $token = new ECSAuthToken($ecs->getId());
+                        $parameter = array();
+                        foreach ($_GET as $index => $value) {
+                            $parameter[$index] = studip_utf8decode($value);
+                        }
+                        $accept = $token->validateAndMap(
+                            $ecs_hash,
+                            $parameter,
+                            $user
+                        );
+                    } else {
+                        $token = new ECSLegacyAuthToken($ecs->getId());
+                        $accept = $token->validate(
+                            $ecs_hash,
+                            array(
+                                'ecs_login' => studip_utf8decode(Request::get("ecs_login")),
+                                'ecs_firstname' => studip_utf8decode(Request::get("ecs_firstname")),
+                                'ecs_lastname' => studip_utf8decode(Request::get("ecs_lastname")),
+                                'ecs_email' => studip_utf8decode(Request::get("ecs_email")),
+                                'ecs_institution' => studip_utf8decode(Request::get("ecs_institution")),
+                                'ecs_uid' => $ecs_uid_hash
+                            )
+                        );
+                    }
                     $active_ecs = $ecs;
                     break;
                 }
             }
             $participant_id = $active_ecs['id'];
+
             if ($accept) {
                 //Gegebenenfalls neuen Nutzeraccount und Mapping anlegen.
-                $user_mapping = CampusConnectEntity::findByForeignID(
-                    'user',
-                    $ecs_uid_hash,
-                    $participant_id
-                );
-                if (!$user_mapping || !User::find($user_mapping['item_id'])) {
+                if (!$user_mapping || $user->isNew()) {
                     if ($user_mapping) {
                         $user_mapping->delete();
                     }
@@ -202,16 +233,34 @@ class CourselinkController extends ApplicationController {
                     $user['Vorname'] = studip_utf8decode(Request::get("ecs_firstname"));
                     $user['Nachname'] = studip_utf8decode(Request::get("ecs_lastname"));
                     $user['Email'] = studip_utf8decode(Request::get("ecs_email"));
+
                     $user->store();
                 }
-                /*$course = new CCCourse($cid);
-                if (!$course['members']->find($course->getId()."_".$user->id)) {
-                    $coursemember = new CourseMember();
-                    $coursemember['user_id'] = $user->getId();
-                    $coursemember['status'] = "autor";
-                    $course['members'][] = $coursemember;
-                    $course->store();
-                }*/
+
+                //Datenabgleich:
+                if (Request::get("ecs_person_id_type")) {
+                    $participant = new CCParticipant($participant_id);
+                    foreach ((array) $participant['data']['export_settings']['auth_token']['attributes'] as $name => $map) {
+                        if (Request::get(studip_utfencode($name))) {
+                            $value = studip_utf8decode(Request::get(studip_utfencode($name)));
+                            if (in_array($name, array("user_id", "username", "email"))) {
+                                $user[$name] = $value;
+                                $user->store();
+                            } elseif($name === "institut") {
+                                $institut = Institute::findBySQL("Name = ? LIMIT 1", array($value));
+                                $institut = $institut[0];
+                                $institut_member = new InstituteMember(array($institut->getId(), $user->getId()));
+                                $institut_member->store();
+                            } else {
+                                $datafield_entry = new DatafieldEntryModel(array($map, $user->getId(), ""));
+                                $datafield_entry['content'] = $value;
+                                $datafield_entry->store();
+                            }
+                        }
+                    }
+                }
+
+
                 //register user-session
                 if (!$user->isNew()) {
                     global $sess,$auth;

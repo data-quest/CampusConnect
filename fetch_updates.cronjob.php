@@ -31,6 +31,14 @@ class FetchUpdatesJob extends CronJob
         require_once __DIR__.'/lib/CCCourse.php';
         require_once __DIR__.'/lib/CCRessources.php';
         require_once __DIR__.'/lib/CampusConnector.php';
+        foreach (scandir(__DIR__."/config") as $file) {
+            if (stripos($file, ".php") !== false) {
+                include_once __DIR__."/config/".$file;
+            }
+        }
+        if ($GLOBALS['CAMPUSCONNECT_LOGFILE']) {
+            CampusConnectLog::get()->setHandler($GLOBALS['CAMPUSCONNECT_LOGFILE']);
+        }
     }
 
     /**

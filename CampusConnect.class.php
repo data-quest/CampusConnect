@@ -20,7 +20,11 @@ require_once __DIR__.'/lib/CampusConnectSentItem.php';
 require_once __DIR__.'/lib/CCCourse.php';
 require_once __DIR__.'/lib/CCRessources.php';
 require_once __DIR__.'/lib/CampusConnector.php';
-
+foreach (scandir(__DIR__."/config") as $file) {
+    if (stripos($file, ".php") !== false) {
+        include_once __DIR__."/config/".$file;
+    }
+}
 
 class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
 {
@@ -140,6 +144,9 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
         if(!$unconsumed_path) {
             header("Location: " . PluginEngine::getUrl($this), 302);
             return false;
+        }
+        if ($GLOBALS['CAMPUSCONNECT_LOGFILE']) {
+            CampusConnectLog::get()->setHandler($GLOBALS['CAMPUSCONNECT_LOGFILE']);
         }
         CampusConnectLog::get()->setLogLevel(CampusConnectLog::DEBUG);
         $trails_root = $this->getPluginPath();

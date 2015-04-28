@@ -1,0 +1,2 @@
+<?php
+$GLOBALS['CAMPUSCONNECT_LOGFILE'] = $GLOBALS['TMP_PATH']."/studip.log";

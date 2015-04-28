@@ -10,7 +10,7 @@
  */
 $server; //server-data of participant
 ?>
-<table style="margin-left: auto; margin-right: auto;">
+<table style="margin-left: auto; margin-right: auto;" class="cc_settings">
     <tbody>
         <tr class="kurs_only kurslink_only">
             <td colspan="2"><hr class="grey"></td>
@@ -146,22 +146,28 @@ $server; //server-data of participant
         <tr class="kurslink_only">
             <td><label for="import_settings__auth"><?= _("SingleSignOn-Mechanismus des Teilnehmers") ?></label></td>
             <td>
-                <select id="import_settings__auth" name="data[import_settings][auth]" onChange="if (this.value=== 'ecs_token') { jQuery('#import_settings__auth_token').fadeIn(); } else { jQuery('#import_settings__auth_token').fadeOut(); }">
-                    <option value="ecs_token"<?= $server['data']['import_settings']['auth'] === "ecs_token" ? " selected" : "" ?>><?= _("Über ECS") ?></option>
+                <select id="import_settings__auth" name="data[import_settings][auth]" onChange="if (this.value=== 'ecs_token') { jQuery('#import_settings__auth_token').removeClass('hidden'); } else { jQuery('#import_settings__auth_token').addClass('hidden'); }">
+                    <option value="ecs_token"<?= $server['data']['import_settings']['auth'] === "ecs_token" ? " selected" : "" ?>><?= _("ECS-Auth-Token") ?></option>
+                    <option value="legacy_ecs_token"<?= $server['data']['import_settings']['auth'] === "legacy_ecs_token" ? " selected" : "" ?>><?= _("Legacy ECS-Auth-Token (veraltet)") ?></option>
                     <option value="no"<?= $server['data']['import_settings']['auth'] === "no" ? " selected" : "" ?>><?= _("Kein SSO über CampusConect") ?></option>
                 </select>
             </td>
         </tr>
-        <tr id="import_settings__auth_token" class="kurslink_only" style="<?= $server['data']['import_settings']['auth'] === "no" ? "display: none;" : "" ?>">
+        <tr id="import_settings__auth_token" class="kurslink_only<?= !$server['data']['import_settings']['auth'] || $server['data']['import_settings']['auth'] !== "ecs_token" ? " hidden" : "" ?>">
             <!-- Stud.IP import Kurslinks, die eigenen Nutzer brauchen einen Auth-Token, um zum Fremdsystem zu kommen, wie soll der aussehen? -->
             <td><?= _("ECS-Auth-Token Konfiguration") ?></td>
             <td>
                 <table class="default">
+                    <thead>
+                    <tr>
+                        <th><?= _("Identifizierer") ?></th>
+                        <th><?= _("Stud.IP-Attribut") ?></th>
+                    </tr>
+                    </thead>
                     <tbody id="data__import_settings__auth_token__attributes">
                     <tr>
                         <td>
                             <label>
-                                <div><?= _("Identifizierer") ?></div>
                                 <select name="data[import_settings][auth_token][id_type]">
                                     <option>ecs_uid</option>
                                     <option>ecs_loginUID</option>
