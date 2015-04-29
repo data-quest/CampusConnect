@@ -145,7 +145,7 @@
             <td>
                 <?= _("Nur Veranstaltungen exportieren, die den folgenden Studienbereichen zugeordnet sind.") ?>
                 <?= \CampusConnect\StudyAreaSelector::create("data[export_settings][filter_sem_tree]", "multiple")
-                        ->setDefault(array_keys(array_filter($server['data']['export_settings']['filter_sem_tree'])))
+                        ->setDefault(array_keys(array_filter((array) $server['data']['export_settings']['filter_sem_tree'])))
                         ->render() ?>
             </td>
         </tr>

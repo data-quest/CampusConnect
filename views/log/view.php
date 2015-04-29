@@ -28,6 +28,7 @@ if (file_exists($logfile)) {
 
 
 ?>
+<h1><?= htmlReady($logfile) ?></h1>
 <? if (file_exists($logfile)) : ?>
 <?= nl2br(htmlReady(file_get_contents($logfile))) ?>
 <? else : ?>
