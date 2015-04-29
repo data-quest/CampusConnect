@@ -690,7 +690,7 @@ class CCCourse extends Course
         $semester_name = $this->start_semester['name'];
 
         $study_areas = array();
-        foreach((array) $this->study_areas as $study_area) {
+        foreach($this->study_areas as $study_area) {
             $study_areas[] = array(
                 'title' => $study_area['Name'] ? $study_area['Name'] : Institute::find($study_area['studip_object_id'])->Name,
                 'code' => $study_area->getId()
@@ -798,7 +798,7 @@ class CCCourse extends Course
         $semester_name = $this->start_semester['name'];
 
         $study_areas = array();
-        foreach((array) $course->study_areas as $study_area) {
+        foreach((array) $this->study_areas as $study_area) {
             $study_areas[] = array(
                 'title' => $study_area['Name'] ? $study_area['Name'] : Institute::find($study_area['studip_object_id'])->Name,
                 'code' => $study_area->getId()
