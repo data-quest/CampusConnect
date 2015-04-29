@@ -56,7 +56,7 @@ class CCCourse extends Course
         //termine
         self::createDates($course, (array) $message['datesAndVenues']);
 
-        if ($message['avatar']) {
+        if ($message['avatar'] && (stripos($message['avatar'], "http") === 0)) {
             $file_content = file_get_contents($message['avatar']);
             if ($file_content) {
                 $tmp_file = $GLOBALS['TMP_PATH']."/".md5(uniqid());
@@ -690,7 +690,7 @@ class CCCourse extends Course
         $semester_name = $this->start_semester['name'];
 
         $study_areas = array();
-        foreach((array) $course->study_areas as $study_area) {
+        foreach((array) $this->study_areas as $study_area) {
             $study_areas[] = array(
                 'title' => $study_area['Name'] ? $study_area['Name'] : Institute::find($study_area['studip_object_id'])->Name,
                 'code' => $study_area->getId()
@@ -780,7 +780,7 @@ class CCCourse extends Course
         );
 
         //additional nondocumented infos
-        $resource['avatar'] = CourseAvatar::getAvatar($this->getId())->getURL(Avatar::NORMAL);
+        $resource['avatar'] = $GLOBALS['ABSOLUTE_URI_STUDIP'].CourseAvatar::getAvatar($this->getId())->getURL(Avatar::NORMAL);
 
         return $resource;
     }

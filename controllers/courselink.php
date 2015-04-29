@@ -71,7 +71,7 @@ class CourselinkController extends ApplicationController {
                         if ($user->isField($index)) {
                             $auth_token_parameter[$index] = $user[$index];
                         } else {
-                            $datafield_entry = DatafieldEntryModel::findBySQL("datafield_id = ? AND object_id = ?", array($index, $user->getId()));
+                            $datafield_entry = DatafieldEntryModel::findBySQL("datafield_id = ? AND range_id = ?", array($index, $user->getId()));
                             $datafield_entry = $datafield_entry[0];
                             $auth_token_parameter[$index] = $datafield_entry['content'];
                         }

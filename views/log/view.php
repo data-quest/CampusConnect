@@ -32,5 +32,5 @@ if (file_exists($logfile)) {
 <? if (file_exists($logfile)) : ?>
 <?= nl2br(htmlReady(file_get_contents($logfile))) ?>
 <? else : ?>
-<?= _("Konnte keine Logdatei finden. Entweder sie existiert nicht oder es wurde ein spezieller Log-Handler angegeben.") ?>
+<?= _("Konnte keine Logdatei finden.") ?>
 <? endif ?>
