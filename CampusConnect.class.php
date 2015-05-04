@@ -10,6 +10,7 @@
 
 require_once __DIR__.'/lib/CCParticipant.php';
 require_once __DIR__.'/lib/CampusConnectLog.php';
+require_once __DIR__.'/lib/CCLog.php';
 require_once __DIR__.'/lib/CampusConnectHelper.php';
 require_once __DIR__.'/lib/EcsClient.php';
 require_once __DIR__.'/lib/EcsResult.php';

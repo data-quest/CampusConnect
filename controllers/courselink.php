@@ -71,7 +71,7 @@ class CourselinkController extends ApplicationController {
                         if ($user->isField($index)) {
                             $auth_token_parameter[$index] = $user[$index];
                         } else {
-                            $datafield_entry = DatafieldEntryModel::findBySQL("datafield_id = ? AND range_id = ?", array($index, $user->getId()));
+                            $datafield_entry = DatafieldEntryModel::findBySQL("datafield_id = ? AND range_id = ?", array($value, $user->getId()));
                             $datafield_entry = $datafield_entry[0];
                             $auth_token_parameter[$index] = $datafield_entry['content'];
                         }
@@ -135,7 +135,7 @@ class CourselinkController extends ApplicationController {
             $ecs_hash = substr($ecs_hash, strripos($ecs_hash, "/") + 1);
             foreach (CampusConnectConfig::findByType("server") as $ecs) {
                 $ecs_url = parse_url($ecs['data']['server']);
-                $token_url = parse_url($ecs_hash);
+                $token_url = parse_url(Request::get("ecs_hash_url"));
                 if (($token_url['host'] === $ecs_url['host'])
                         && $ecs['active']
                         ) {
@@ -153,7 +153,9 @@ class CourselinkController extends ApplicationController {
                         $token = new ECSAuthToken($ecs->getId());
                         $parameter = array();
                         foreach ($_GET as $index => $value) {
-                            $parameter[$index] = studip_utf8decode($value);
+                            if ($index !== "ecs_hash_url") {
+                                $parameter[$index] = studip_utf8decode($value);
+                            }
                         }
                         $accept = $token->validateAndMap(
                             $ecs_hash,
@@ -239,22 +241,31 @@ class CourselinkController extends ApplicationController {
 
                 //Datenabgleich:
                 if (Request::get("ecs_person_id_type")) {
-                    $participant = new CCParticipant($participant_id);
-                    foreach ((array) $participant['data']['export_settings']['auth_token']['attributes'] as $name => $map) {
-                        if (Request::get(studip_utfencode($name))) {
-                            $value = studip_utf8decode(Request::get(studip_utfencode($name)));
-                            if (in_array($name, array("user_id", "username", "email"))) {
-                                $user[$name] = $value;
-                                $user->store();
-                            } elseif($name === "institut") {
-                                $institut = Institute::findBySQL("Name = ? LIMIT 1", array($value));
-                                $institut = $institut[0];
-                                $institut_member = new InstituteMember(array($institut->getId(), $user->getId()));
-                                $institut_member->store();
-                            } else {
-                                $datafield_entry = new DatafieldEntryModel(array($map, $user->getId(), ""));
-                                $datafield_entry['content'] = $value;
-                                $datafield_entry->store();
+                    $ecs = new CCParticipant($participant_id);
+                    $participant = null;
+                    foreach (CCParticipant::findAll() as $p) {
+                        if ($p['data']['pid'] === $token->token_data['pid']) {
+                            $participant = $p;
+                            break;
+                        }
+                    }
+                    if ($participant) {
+                        foreach ((array) $participant['data']['export_settings']['auth_token']['attributes'] as $name => $map) {
+                            if (Request::get(studip_utf8encode($name))) {
+                                $value = studip_utf8decode(Request::get(studip_utf8encode($name)));
+                                if (in_array($name, array("user_id", "username", "email"))) {
+                                    $user[$name] = $value;
+                                    $user->store();
+                                } elseif($name === "institut") {
+                                    $institut = Institute::findBySQL("Name = ? LIMIT 1", array($value));
+                                    $institut = $institut[0];
+                                    $institut_member = new InstituteMember(array($institut->getId(), $user->getId()));
+                                    $institut_member->store();
+                                } else {
+                                    $datafield_entry = new DatafieldEntryModel(array($map, $user->getId(), ""));
+                                    $datafield_entry['content'] = $value;
+                                    $datafield_entry->store();
+                                }
                             }
                         }
                     }

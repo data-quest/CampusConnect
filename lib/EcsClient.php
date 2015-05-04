@@ -151,6 +151,7 @@ class EcsClient
         };
         curl_setopt($c, CURLOPT_HEADERFUNCTION, $headerfunc);
         CampusConnectLog::_(sprintf('curl_exec: %s, %s, %s',$this->getUrl($path), $this->request_method, print_r($header,1)), CampusConnectLog::DEBUG);
+
         $result = curl_exec($c);
         $response_code = curl_getinfo($c, CURLINFO_HTTP_CODE);
         if ($result === false) {
@@ -161,6 +162,10 @@ class EcsClient
             $this->last_error_number = null;
             $this->last_error = null;
             CampusConnectLog::_(sprintf("curl_exec success: %s\n%s",$result, print_r($response_header,1)), CampusConnectLog::DEBUG);
+            switch ($path) {
+                case "/sys/memberships":
+                    CCLog::log("CC-get_memberships", sprintf('curl_exec: %s, %s, %s',$this->getUrl($path), $this->request_method, print_r($header,1)), $result);
+            }
         }
         curl_close($c);
         $this->unsetHeader();
