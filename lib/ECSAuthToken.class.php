@@ -13,6 +13,7 @@ class ECSAuthToken {
 
     protected $ecs_id = null;
     protected $url = null;
+    public $token_data = null;
     protected $parameter = array();
 
     public function __construct($ecs_id) {
@@ -40,17 +41,15 @@ class ECSAuthToken {
 
         CampusConnectLog::_(sprintf("ecs-auth: checking realm: %s\n%s",$realm, print_r($this->ecs,1)), CampusConnectLog::DEBUG);
         $result = $ecs_client->checkAuths($ecs_hash);
-        $ecs_token = $result->getResult();
-        CampusConnectLog::_(sprintf("ecs-auth: got result: %s", print_r($ecs_token,1)), CampusConnectLog::DEBUG);
-        if ($realm !== $ecs_token['realm']) {
+        $this->token_data = $result->getResult();
+        CampusConnectLog::_(sprintf("ecs-auth: got result: %s", print_r($this->token_data, 1)), CampusConnectLog::DEBUG);
+        if ($realm !== $this->token_data['realm']) {
             CampusConnectLog::_(sprintf("ecs-auth: realm does not match: %s", $realm), CampusConnectLog::DEBUG);
         }
 
-        if ($realm === $ecs_token['realm']
-        || (!$ecs_token['realm'] && $ecs_token['url'])) {
+        if ($realm === $this->token_data['realm']
+        || (!$this->token_data['realm'] && $this->token_data['url'])) {
             $this->parameter = $parameter;
-            //$user['Vorname'] = studip_utf8decode(); //do some mapping
-
             return true;
         } else {
             return false;

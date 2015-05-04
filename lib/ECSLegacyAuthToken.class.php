@@ -12,7 +12,6 @@
 class ECSLegacyAuthToken {
 
     public $token_data = null;
-    protected $pid = null;
     protected $url = null;
 
     public function __construct($ecs_id) {
@@ -45,8 +44,8 @@ class ECSLegacyAuthToken {
             CampusConnectLog::_(sprintf("ecs-auth: realm does not match: %s", $realm), CampusConnectLog::DEBUG);
         }
 
-        return $realm === $ecs_token['realm']
-            || (!$ecs_token['realm'] && $ecs_token['url']);
+        return $realm === $this->token_data['realm']
+            || (!$this->token_data['realm'] && $this->token_data['url']);
     }
 
     public function getHash($mid, $url, $parameter) {
