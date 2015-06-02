@@ -1,5 +1,5 @@
 <?php
-class CampusConnectCourseGroupMigration extends DBMigration
+class CampusConnectCourseGroupMigration extends Migration
 {
 	function up() {
 	    DBManager::get()->exec(

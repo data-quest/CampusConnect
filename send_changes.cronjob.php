@@ -7,7 +7,7 @@ class SendChangesJob extends CronJob
      */
     public static function getName()
     {
-        return _('CampusConnect-Updates (zum ECS)');
+        return _('CampusConnect Uploads');
     }
 
     /**

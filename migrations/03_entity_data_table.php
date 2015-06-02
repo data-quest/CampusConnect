@@ -1,5 +1,5 @@
 <?php
-class EntityDataTable extends DBMigration
+class EntityDataTable extends Migration
 {
 	function up() {
 	    DBManager::get()->exec(

@@ -1,5 +1,5 @@
 <?php
-class AddCronjob2Migration extends DBMigration
+class AddCronjob2Migration extends Migration
 {
     function up() 
     {

@@ -1,5 +1,5 @@
 <?php
-class CreateTriggerStack extends DBMigration
+class CreateTriggerStack extends Migration
 {
 	function up(){
 	    DBManager::get()->exec(

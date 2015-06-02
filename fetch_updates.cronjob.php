@@ -7,7 +7,7 @@ class FetchUpdatesJob extends CronJob
      */
     public static function getName()
     {
-        return _('CampusConnect-Updates (vom ECS)');
+        return _('CampusConnect Downloads');
     }
 
     /**
