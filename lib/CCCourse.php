@@ -803,6 +803,7 @@ class CCCourse extends Course
                 'title' => $study_area['Name'] ? $study_area['Name'] : Institute::find($study_area['studip_object_id'])->Name,
                 'code' => $study_area->getId()
             );
+            //TODO $study_area->getId() fatal error: Call to a member function getId() on a non-object
         }
 
         $datesAndVenues = array();

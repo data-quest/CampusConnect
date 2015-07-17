@@ -84,6 +84,7 @@ class CourselinkController extends ApplicationController {
                     $token = new ECSAuthToken($participant['data']['ecs'][0]);
                 } else {
                     $token = new ECSLegacyAuthToken($participant['data']['ecs'][0]);
+                    $auth_token_parameter['ecs_uid_hash'] = $user->getId();
                 }
                 $mid = array_values($participant['data']['mid']);
                 $ecs_auth = $token->getHash(
