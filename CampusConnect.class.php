@@ -63,6 +63,8 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
         NotificationCenter::addObserver($this, "synchronizeStudipItems", "CourseDidChangeSchedule");
         NotificationCenter::addObserver($this, "synchronizeStudipItems", "CourseDidChangeStudyArea");
         NotificationCenter::addObserver($this, "synchronizeStudipItems", "CourseDidChangeInstitutes");
+        NotificationCenter::addObserver($this, "synchronizeStudipItems", "DatafieldDidUpdate");
+
 
         /*******************************************************************
          *               Navigation für Kurse mit Kurs-URLs                *
@@ -94,6 +96,17 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
         if (strpos($event, "Institute") === 0) {
             $type = "institute";
             $id = $object->getId();
+        }
+        if (strpos($event, "DataFieldEntry") === 0) {
+            $range_id = $object->getRangeID();
+            $object_type = $object->structure->getID();
+            if ($object_type === "sem") {
+                $type = "course";
+                $id = $range_id;
+            } elseif($object_type === "inst") {
+                $type = "institute";
+                $id = $range_id;
+            }
         }
         if ($type) {
             CampusConnectTriggerStack::add($type, $id);
