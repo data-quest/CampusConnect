@@ -44,10 +44,10 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
             $navigation = new AutoNavigation("ECS", PluginEngine::getURL($this, array(), "config/ecs"));
             Navigation::addItem('/admin/campusconnect/ecs', $navigation);
 
-            $navigation = new AutoNavigation("Log", PluginEngine::getURL($this, array(), "log/view"));
+            $navigation = new Navigation("Log", PluginEngine::getURL($this, array(), "log/view"));
             Navigation::addItem('/admin/campusconnect/log', $navigation);
 
-            $navigation = new AutoNavigation("Log (old)", PluginEngine::getURL($this, array(), "log/view2"));
+            $navigation = new Navigation("Log (old)", PluginEngine::getURL($this, array(), "log/view2"));
             Navigation::addItem('/admin/campusconnect/log2', $navigation);
         }
 

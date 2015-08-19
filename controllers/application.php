@@ -1,6 +1,8 @@
 <?
 
-class ApplicationController extends Trails_Controller {
+require_once 'app/controllers/studip_controller.php';
+
+class ApplicationController extends StudipController {
 
     function __construct($dispatcher) {
         parent::__construct($dispatcher);
@@ -24,7 +26,6 @@ class ApplicationController extends Trails_Controller {
             array("href" => $this->assets_url.'stylesheets/application.css',
                   "rel" => "stylesheet"),
             "");
-        
     }
 
     function rescue($exception) {

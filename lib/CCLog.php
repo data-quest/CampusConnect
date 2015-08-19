@@ -22,14 +22,12 @@ class CCLog {
         return $success;
     }
 
-    static public function read($parameter = array())
+    static public function read($where = "", $params = array())
     {
-        $where = array();
-        $params = array();
         $statement = self::getDB()->prepare("
             SELECT *
             FROM cclogs
-            ".(count($where) ? "WHERE ".implode(" AND ", $where) : "")."
+            ".($where ? "WHERE ".$where : "")."
             ORDER BY log_id DESC
         ");
         $statement->execute($params);

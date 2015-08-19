@@ -109,3 +109,74 @@ hr.grey {
 .cc_settings .hidden {
     display: none !important;
 }
+
+
+
+.json_object_list table {
+    margin: 10px;
+    background-color: rgba(0,0,60,0.1);
+    border-radius: 4px;
+    border: thin solid rgba(0,0,60,0.3);
+    border-collapse: collapse;
+    width: calc(100% - 20px);
+}
+.json_object_list table > tbody > tr > td {
+    text-align: left;
+    padding: 3px;
+}
+.json_object_list tr:hover .key, .json_object_list tr:hover > td.value, .json_object_list tr:hover > td.match {
+    background-color: rgba(0,0,0,0.1);
+}
+.json_object_list tr:not(:hover) .key {
+    background-color: transparent;
+}
+.json_object_list td {
+    border: thin solid rgba(0,0,60,0.1);
+}
+.json_object_list td.key {
+    font-weight: bold;
+}
+.json_object_list td.value {
+    font-family: monospace;
+}
+.json_object_list td.match {
+    width: 20px;
+}
+.json_object_list td.match.matched, .json_object_list tr:hover td.match.matched {
+    background-color: black;
+}
+.json_object_list td.match .active {
+    display: none;
+}
+.json_object_list td.match.matched .active {
+    display: inline;
+}
+.json_object_list td.match.matched .inactive {
+    display: none;
+}
+.json_object_list td.match a {
+    cursor: pointer;
+}
+.json_object_list ol {
+    list-style-type: none;
+    padding: 10px;
+    border-left: 2px solid grey;
+    margin-left: 20px;
+}
+.json_object_list ol > *:before {
+    content: " ";
+    float: left;
+    border-bottom: 2px solid grey;
+    width: 20px;
+    margin-top: 27px;
+    margin-left: -10px;
+}
+.json_object_list ol > *:hover:before {
+    border-bottom: 2px solid black;
+}
+
+.json_object_list span.value {
+    font-family: monospace;
+    background-color: rgba(0,0,60,0.1);
+    padding: 3px;
+}

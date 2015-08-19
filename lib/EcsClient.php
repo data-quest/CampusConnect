@@ -164,7 +164,11 @@ class EcsClient
             CampusConnectLog::_(sprintf("curl_exec success: %s\n%s",$result, print_r($response_header,1)), CampusConnectLog::DEBUG);
             switch ($path) {
                 case "/sys/memberships":
-                    CCLog::log("CC-get_memberships", sprintf('curl_exec: %s, %s, %s',$this->getUrl($path), $this->request_method, print_r($header,1)), $result);
+                    CCLog::log(
+                        "CC-get_memberships",
+                        sprintf('curl_exec: %s',$this->getUrl($path)),
+                        studip_utf8decode(json_decode($result, true))
+                    );
             }
         }
         curl_close($c);

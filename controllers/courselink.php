@@ -116,14 +116,18 @@ class CourselinkController extends ApplicationController {
      */
     public function to_action($cid) {
         CampusConnectLog::_(sprintf("ecs-auth: start: %s", print_r($_REQUEST,1), CampusConnectLog::DEBUG));
+        CCLog::log("CC-user_jumps_in", "User comes from another system and jumps in.", array(
+            'request' => $_REQUEST,
+            'user_id' => $GLOBALS['user']->id
+        ));
         $course_url = URLHelper::getURL("details.php", array('sem_id' => $cid));
-        $ecs_uid_hash = Request::get("ecs_uid")
-            ? studip_utf8decode(Request::get("ecs_uid"))
-            : studip_utf8decode(Request::get("ecs_uid_hash"));
         $ecs_hash = Request::get("ecs_hash")
             ? studip_utf8decode(Request::get("ecs_hash"))
             : studip_utf8decode(Request::get("ecs_hash_url"));
-        if ($GLOBALS['user']->id == 'nobody'
+        $ecs_uid_hash = Request::get("ecs_uid")
+            ? studip_utf8decode(Request::get("ecs_uid"))
+            : studip_utf8decode(Request::get("ecs_uid_hash"));
+        if ($GLOBALS['user']->id === 'nobody'
                 && $ecs_hash
                 && Request::get("ecs_login")
                 && ($ecs_uid_hash || Request::get("ecs_person_id_type"))
@@ -290,6 +294,31 @@ class CourselinkController extends ApplicationController {
             } else {
                 CampusConnectLog::_(sprintf("ecs-auth: token is not accepted: %s", $ecs_hash), CampusConnectLog::DEBUG);
             }
+        } else {
+            $error = "";
+            if ($GLOBALS['user']->id !== 'nobody') {
+                $error .= "User already loggin in. ";
+            }
+            if (!$ecs_hash) {
+                $error .= "Parameter ecs_hash_url or ecs_hash are missing. ";
+            }
+            if (!Request::get("ecs_login")) {
+                $error .= "Parameter ecs_login is missing. ";
+            }
+            if (!$ecs_uid_hash && !Request::get("ecs_person_id_type")) {
+                if (!$ecs_uid_hash) {
+                    $error .= "Parameter ecs_uid_hash or ecs_uid are missing. ";
+                } else {
+                    $error .= "Parameter ecs_person_id_type is missing. ";
+                }
+            }
+            if (!Request::get("ecs_email")) {
+                $error .= "Parameter ecs_email is missing. ";
+            }
+            CCLog::log("CC-user_jumps_in", "User comes from another system and won't get logged in: ".$error, array(
+                'request' => $_REQUEST,
+                'user_id' => $GLOBALS['user']->id
+            ));
         }
         //Redirect:
         if ($user) {
