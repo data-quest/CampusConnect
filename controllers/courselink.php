@@ -140,7 +140,7 @@ class CourselinkController extends ApplicationController {
             $ecs_hash = substr($ecs_hash, strripos($ecs_hash, "/") + 1);
             foreach (CampusConnectConfig::findByType("server") as $ecs) {
                 $ecs_url = parse_url($ecs['data']['server']);
-                $token_url = parse_url(Request::get("ecs_hash_url"));
+                $token_url = parse_url($ecs_hash);
                 if (($token_url['host'] === $ecs_url['host'])
                         && $ecs['active']
                         ) {
@@ -181,6 +181,14 @@ class CourselinkController extends ApplicationController {
                             )
                         );
                     }
+                    CCLog::log("CC-user_jumps_in_with_auth_token", "User comes from another system with his/her ecs-auth-token.", array(
+                        'token_type' => get_class($token),
+                        'ecs' => $ecs['data']['server'],
+                        'token_url' => $ecs['data']['server'],
+                        'debugging' => $token->debugging,
+                        'request' => $_REQUEST,
+                        'user_id' => $GLOBALS['user']->id
+                    ));
                     $active_ecs = $ecs;
                     break;
                 }

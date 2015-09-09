@@ -16,6 +16,8 @@ class ECSAuthToken {
     public $token_data = null;
     protected $parameter = array();
 
+    public $debugging = array();
+
     public function __construct($ecs_id) {
         $this->ecs_id = $ecs_id;
     }
@@ -40,11 +42,13 @@ class ECSAuthToken {
         );
 
         CampusConnectLog::_(sprintf("ecs-auth: checking realm: %s\n%s",$realm, print_r($this->ecs,1)), CampusConnectLog::DEBUG);
+        $this->debugging[] = sprintf("checking realm: %s", $realm);
         $result = $ecs_client->checkAuths($ecs_hash);
         $this->token_data = $result->getResult();
         CampusConnectLog::_(sprintf("ecs-auth: got result: %s", print_r($this->token_data, 1)), CampusConnectLog::DEBUG);
         if ($realm !== $this->token_data['realm']) {
             CampusConnectLog::_(sprintf("ecs-auth: realm does not match: %s", $realm), CampusConnectLog::DEBUG);
+            $this->debugging[] = sprintf("realm does not match: %s", $realm);
         }
 
         if ($realm === $this->token_data['realm']
@@ -60,7 +64,7 @@ class ECSAuthToken {
         $ecs_server = new CampusConnectConfig($this->ecs_id);
         $ecs_client = new EcsClient($ecs_server['data']);
 
-        $realm = self::getRealm(
+        $realm = $this->getRealm(
             $url,
             $parameter
         );
@@ -71,20 +75,23 @@ class ECSAuthToken {
         return $ecs_auth;
     }
 
-    static public function getRealm($url, $parameter) {
-        return sha1(self::getRealmBeforeHashing(
+    public function getRealm($url, $parameter) {
+        return sha1($this->getRealmBeforeHashing(
             $url,
             $parameter
         ));
     }
 
-    static public function getRealmBeforeHashing($url, $parameter) {
+    public function getRealmBeforeHashing($url, $parameter) {
         $output = $url;
         foreach ($parameter as $param_name => $param) {
             $output .= $param;
         }
         $output = studip_utf8encode($output);
         CampusConnectLog::_(sprintf("ecs-auth: constructed realm before hashing: %s", $output), CampusConnectLog::DEBUG);
+        if ($this) {
+            $this->debugging[] = sprintf("constructed realm before hashing: %s", $output);
+        }
         return $output;
     }
 
