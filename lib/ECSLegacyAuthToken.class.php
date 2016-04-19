@@ -13,6 +13,8 @@ class ECSLegacyAuthToken {
 
     public $token_data = null;
     protected $url = null;
+    public $protocol = array();
+    public $debugging = array();
 
     public function __construct($ecs_id) {
         $this->ecs_id = $ecs_id;

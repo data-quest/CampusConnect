@@ -186,6 +186,7 @@ class CourselinkController extends ApplicationController {
                     $ecs_hash,
                     $parameter
                 );
+                $logdata['protocol'] += $token->debugging;
                 /*CCLog::log("CC-user_jumps_in_with_auth_token", "User comes from another system with his/her ecs-auth-token.", array(
                     'token_type' => get_class($token),
                     'ecs' => $ecs['data']['server'],
