@@ -92,7 +92,7 @@ class CourselinkController extends ApplicationController {
                     $auth_token_parameter
                 );
                 if ($participant['data']['import_settings']['auth'] === "ecs_token") {
-                    $url_parameter = array('ecs_hash' => $ecs_auth);
+                    $url_parameter = array('ecs_hash' => $token->getURL());
                 } else {
                     $url_parameter = array('ecs_hash_url' => $token->getURL());
                 }
