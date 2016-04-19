@@ -1,3 +1,8 @@
+<input type="hidden" id="type" value="<?= htmlReady(Request::get("type")) ?>">
+<input type="hidden" id="text" value="<?= htmlReady(Request::get("text")) ?>">
+<input type="hidden" id="search" value="<?= htmlReady(Request::get("search")) ?>">
+<input type="hidden" id="mkdate" value="<?= htmlReady(Request::get("mkdate")) ?>">
+
 <h1><?= _("Log-Einträge") ?></h1>
 <table class="default">
     <thead>
@@ -11,26 +16,7 @@
     <tbody>
         <? if (count($entries)) : ?>
             <? foreach ($entries as $logentry) : ?>
-            <tr>
-                <td>
-                    <a href="<?= PluginEngine::getLink($this->plugin, array('type' => $logentry['log_type']), "log/view") ?>">
-                        <?= htmlReady($logentry['log_type']) ?>
-                    </a>
-                </td>
-                <td>
-                    <a href="<?= PluginEngine::getLink($this->plugin, array('text' => $logentry['log_text']), "log/view") ?>">
-                        <?= htmlReady($logentry['log_text']) ?>
-                    </a>
-                </td>
-                <td>
-                    <a href="<?= PluginEngine::getLink($this->plugin, array('mkdate' => $logentry['mkdate']), "log/view") ?>">
-                        <?= date("d.m.Y G:i", $logentry['mkdate']) ?>
-                    </a>
-                </td>
-                <td>
-                    <a href="<?= PluginEngine::getLink($this->plugin, array(), "log/details/".$logentry['log_id']) ?>" data-dialog><?= Assets::img("icons/16/blue/info-circle") ?></a>
-                </td>
-            </tr>
+                <?= $this->render_partial("log/_logrow.php", array('logentry' => $logentry)) ?>
             <? endforeach ?>
         <? else : ?>
             <tr>
@@ -38,6 +24,13 @@
             </tr>
         <? endif ?>
     </tbody>
+    <tfoot>
+        <? if ($more) : ?>
+            <tr id="more">
+                <td colspan="4" style="text-align: center;"><?= Assets::img("ajax_indicator_small.gif") ?></td>
+            </tr>
+        <? endif ?>
+    </tfoot>
 </table>
 
 
@@ -45,6 +38,6 @@
 
 if (class_exists("Sidebar")) {
     $search = new SearchWidget(PluginEngine::getURL($this->plugin, array(), "log/view"));
-    $search->addNeedle(_("ID, Eigenschaft, Zeitstempel"), "search", true);
+    $search->addNeedle(_("ID, Eigenschaft, Name"), "search", true);
     Sidebar::Get()->addWidget($search);
 }

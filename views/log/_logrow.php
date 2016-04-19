@@ -1,0 +1,20 @@
+<tr>
+    <td>
+        <a href="<?= PluginEngine::getLink($this->plugin, array('type' => $logentry['log_type']), "log/view") ?>">
+            <?= htmlReady($logentry['log_type']) ?>
+        </a>
+    </td>
+    <td>
+        <a href="<?= PluginEngine::getLink($this->plugin, array('text' => $logentry['log_text']), "log/view") ?>">
+            <?= htmlReady($logentry['log_text']) ?>
+        </a>
+    </td>
+    <td>
+        <a href="<?= PluginEngine::getLink($this->plugin, array('mkdate' => $logentry['mkdate']), "log/view") ?>">
+            <?= date("d.m.Y G:i", $logentry['mkdate']) ?>
+        </a>
+    </td>
+    <td>
+        <a href="<?= PluginEngine::getLink($this->plugin, array(), "log/details/".$logentry['log_id']) ?>" data-dialog><?= Assets::img("icons/16/blue/info-circle") ?></a>
+    </td>
+</tr>

@@ -18,10 +18,21 @@ class ECSLegacyAuthToken {
         $this->ecs_id = $ecs_id;
     }
 
-    public function validate($ecs_hash, $parameter) {
+    public function fetchTokenData($ecs_hash) {
+        if (strripos($ecs_hash, "/") !== false) {
+            $ecs_hash = substr($ecs_hash, strripos($ecs_hash, "/") + 1);
+        }
         $ecs_server = new CampusConnectConfig($this->ecs_id);
         $ecs_client = new EcsClient($ecs_server['data']);
 
+        $this->debugging[] = sprintf("checking ecs-token-hash %s on ecs '%s'", $ecs_hash, $this->data['name']);
+        $result = $ecs_client->checkAuths($ecs_hash);
+        $this->token_data = $result->getResult();
+        CampusConnectLog::_(sprintf("ecs-auth: got result: %s", print_r($this->token_data, 1)), CampusConnectLog::DEBUG);
+        return $result->isError() ? false : $this->token_data;
+    }
+
+    public function validate($parameter) {
         $url  = $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
         $url .= '://'.$_SERVER['SERVER_NAME'];
         if ($_SERVER['HTTPS'] == 'on' && $_SERVER['SERVER_PORT'] != 443 ||
@@ -36,18 +47,18 @@ class ECSLegacyAuthToken {
             $url,
             $parameter
         );
-        CampusConnectLog::_(sprintf("ecs-auth: checking realm: %s\n%s",$realm, print_r($this->ecs,1)), CampusConnectLog::DEBUG);
-        $this->debugging[] = sprintf("checking realm: %s", $realm);
-        $result = $ecs_client->checkAuths($ecs_hash);
-        $this->token_data = $result->getResult();
-        CampusConnectLog::_(sprintf("ecs-auth: got result: %s", print_r($this->token_data, 1)), CampusConnectLog::DEBUG);
-        if ($realm !== $this->token_data['realm']) {
+        if ($realm != $this->token_data['realm']) {
             CampusConnectLog::_(sprintf("ecs-auth: realm does not match: %s", $realm), CampusConnectLog::DEBUG);
-            $this->debugging[] = sprintf("realm does not match: %s", $realm);
+            $this->debugging[] = sprintf("Constructed realm %s does not match token realm %s", $realm, $this->token_data['realm']);
         }
 
         return $realm === $this->token_data['realm']
             || (!$this->token_data['realm'] && $this->token_data['url']);
+    }
+
+    public function validateAndMap($ecs_hash, $parameter) {
+        $this->fetchTokenData($ecs_hash);
+        return $this->validate($parameter);
     }
 
     public function getHash($mid, $url, $parameter) {

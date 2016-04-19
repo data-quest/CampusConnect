@@ -14,7 +14,7 @@
         </tr>
         <tr>
             <td><?= _("Zeitpunkt") ?></td>
-            <td><?= date("d.n.Y G:i", $entry['mkdate']) ?></td>
+            <td><?= date("d.m.Y G:i", $entry['mkdate']) ?></td>
         </tr>
     </tbody>
 </table>

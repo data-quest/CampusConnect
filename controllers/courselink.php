@@ -18,7 +18,6 @@ class CourselinkController extends ApplicationController {
         $this->course = new Course($_SESSION['SessionSeminar']);
         $sem_type = $GLOBALS['SEM_TYPE'][$this->course['status']];
         $this->coursedata = new CampusConnectEntity(array($_SESSION['SessionSeminar'], "course"));
-
         PageLayout::setTitle($sem_type['name'].": ".$this->course['name']);
     }
 
@@ -92,7 +91,11 @@ class CourselinkController extends ApplicationController {
                     $url,
                     $auth_token_parameter
                 );
-                $url_parameter = array('ecs_hash_url' => $token->getURL());
+                if ($participant['data']['import_settings']['auth'] === "ecs_token") {
+                    $url_parameter = array('ecs_hash' => $ecs_auth);
+                } else {
+                    $url_parameter = array('ecs_hash_url' => $token->getURL());
+                }
                 foreach ($auth_token_parameter as $index => $value) {
                     $url_parameter[$index] = $value;
                 }
@@ -116,10 +119,11 @@ class CourselinkController extends ApplicationController {
      */
     public function to_action($cid) {
         CampusConnectLog::_(sprintf("ecs-auth: start: %s", print_r($_REQUEST,1), CampusConnectLog::DEBUG));
-        CCLog::log("CC-user_jumps_in", "User comes from another system and jumps in.", array(
+        $logdata = array(
             'request' => $_REQUEST,
-            'user_id' => $GLOBALS['user']->id
-        ));
+            'user_id' => $GLOBALS['user']->id,
+            'protocol' => array()
+        );
         $course_url = URLHelper::getURL("details.php", array('sem_id' => $cid));
         $ecs_hash = Request::get("ecs_hash")
             ? studip_utf8decode(Request::get("ecs_hash"))
@@ -136,66 +140,70 @@ class CourselinkController extends ApplicationController {
             //Schauen, ob ECS und Auth über ECS lokal aktiviert ist.
             $accept = false;
             CampusConnectLog::_(sprintf("ecs-auth: checking hash: %s", $ecs_hash), CampusConnectLog::DEBUG);
-            $ecs_found = false;
-            $ecs_hash = substr($ecs_hash, strripos($ecs_hash, "/") + 1);
+            $logdata['protocol'][] = sprintf("ecs-auth: checking hash: %s", $ecs_hash);
+            //$token_url = parse_url($ecs_hash);
+            $is_token_legacy = !Request::get("ecs_person_id_type");
+            $token = null;
+
+            //Alle aktiven ECSs durchlaufen und nach dem Token fragen:
             foreach (CampusConnectConfig::findByType("server") as $ecs) {
-                $ecs_url = parse_url($ecs['data']['server']);
-                $token_url = parse_url($ecs_hash);
-                if (($token_url['host'] === $ecs_url['host'])
-                        && $ecs['active']
-                        ) {
-                    $ecs_found = true;
-                    CampusConnectLog::_(sprintf("ecs-auth: found-ecs to auth-token: %s", $ecs['data']['server']), CampusConnectLog::DEBUG);
-
-                    $user_mapping = CampusConnectEntity::findByForeignID(
-                        'user',
-                        $ecs_uid_hash,
-                        $ecs['id']
-                    );
-                    $user = new User($user_mapping['item_id']);
-
-                    if (Request::get("ecs_person_id_type")) {
-                        $token = new ECSAuthToken($ecs->getId());
-                        $parameter = array();
-                        foreach ($_GET as $index => $value) {
-                            if ($index !== "ecs_hash_url") {
-                                $parameter[$index] = studip_utf8decode($value);
-                            }
-                        }
-                        $accept = $token->validateAndMap(
-                            $ecs_hash,
-                            $parameter,
-                            $user
-                        );
-                    } else {
-                        $token = new ECSLegacyAuthToken($ecs->getId());
-                        $accept = $token->validate(
-                            $ecs_hash,
-                            array(
-                                'ecs_login' => studip_utf8decode(Request::get("ecs_login")),
-                                'ecs_firstname' => studip_utf8decode(Request::get("ecs_firstname")),
-                                'ecs_lastname' => studip_utf8decode(Request::get("ecs_lastname")),
-                                'ecs_email' => studip_utf8decode(Request::get("ecs_email")),
-                                'ecs_institution' => studip_utf8decode(Request::get("ecs_institution")),
-                                'ecs_uid' => $ecs_uid_hash
-                            )
-                        );
+                if ($ecs['active']) {
+                    $token = $is_token_legacy
+                        ? new ECSLegacyAuthToken($ecs->getId())
+                        : new ECSAuthToken($ecs->getId());
+                    $token_data = $token->fetchTokenData($ecs_hash);
+                    if ($token_data) {
+                        break;
                     }
-                    CCLog::log("CC-user_jumps_in_with_auth_token", "User comes from another system with his/her ecs-auth-token.", array(
-                        'token_type' => get_class($token),
-                        'ecs' => $ecs['data']['server'],
-                        'token_url' => $ecs['data']['server'],
-                        'debugging' => $token->debugging,
-                        'request' => $_REQUEST,
-                        'user_id' => $GLOBALS['user']->id
-                    ));
-                    $active_ecs = $ecs;
-                    break;
                 }
             }
-            $participant_id = $active_ecs['id'];
+            if ($token_data) {
+                $user_mapping = CampusConnectEntity::findByForeignID(
+                    'user',
+                    $ecs_uid_hash,
+                    $ecs['id']
+                );
+
+                if (Request::get("ecs_person_id_type")) {
+                    $parameter = array();
+                    foreach ($_GET as $index => $value) {
+                        if ($index !== "ecs_hash_url") {
+                            $parameter[$index] = studip_utf8decode($value);
+                        }
+                    }
+                } else {
+                    $parameter = array(
+                        'ecs_login' => studip_utf8decode(Request::get("ecs_login")),
+                        'ecs_firstname' => studip_utf8decode(Request::get("ecs_firstname")),
+                        'ecs_lastname' => studip_utf8decode(Request::get("ecs_lastname")),
+                        'ecs_email' => studip_utf8decode(Request::get("ecs_email")),
+                        'ecs_institution' => studip_utf8decode(Request::get("ecs_institution")),
+                        'ecs_uid' => $ecs_uid_hash
+                    );
+                }
+                $accept = $token->validate(
+                    $ecs_hash,
+                    $parameter
+                );
+                CCLog::log("CC-user_jumps_in_with_auth_token", "User comes from another system with his/her ecs-auth-token.", array(
+                    'token_type' => get_class($token),
+                    'ecs' => $ecs['data']['server'],
+                    'token_url' => $ecs['data']['server'],
+                    'debugging' => $token->debugging,
+                    'token_data' => $token->token_data,
+                    'request' => $_REQUEST,
+                    'legacy_token' => (bool) !Request::get("ecs_person_id_type"),
+                    'user_id' => $GLOBALS['user']->id
+                ));
+            } else {
+                $logdata['protocol'][] = "ECS is not found or not active";
+                CCLog::log("CC-user_jumps_in_and its ECS is not recognized", "User comes from another system with ECS-auth-token, but there is no fitting and active ECS.", array(
+                    'request' => $_REQUEST
+                ));
+            }
 
             if ($accept) {
+                $user = new User($user_mapping['item_id']);
                 //Gegebenenfalls neuen Nutzeraccount und Mapping anlegen.
                 if (!$user_mapping || $user->isNew()) {
                     if ($user_mapping) {
@@ -239,10 +247,11 @@ class CourselinkController extends ApplicationController {
                     $user_mapping['item_id'] = $user->getId();
                     $user_mapping['type'] = "user";
                     $user_mapping['foreign_id'] = $ecs_uid_hash;
-                    $user_mapping['participant_id'] = $participant_id;
+                    $user_mapping['participant_id'] = $ecs['id'];
                     $user_mapping['data'] = array();
                     $user_mapping->store();
                     CampusConnectLog::_(sprintf("ecs-auth: created new user with user_id %s and foreign_id %s ", $user_mapping['item_id'], $user_mapping['foreign_id']), CampusConnectLog::DEBUG);
+                    $logdata['protocol'][] = sprintf("ecs-auth: created new user with user_id %s and foreign_id %s ", $user_mapping['item_id'], $user_mapping['foreign_id']);
                 } else {
                     $user = new User($user_mapping['item_id']);
                     $user['Vorname'] = studip_utf8decode(Request::get("ecs_firstname"));
@@ -252,9 +261,9 @@ class CourselinkController extends ApplicationController {
                     $user->store();
                 }
 
-                //Datenabgleich:
+                //Datenübernahme:
                 if (Request::get("ecs_person_id_type")) {
-                    $ecs = new CCParticipant($participant_id);
+                    //$ecs = new CCParticipant($participant_id);
                     $participant = null;
                     foreach (CCParticipant::findAll() as $p) {
                         if ($p['data']['pid'] === $token->token_data['pid']) {
@@ -284,28 +293,27 @@ class CourselinkController extends ApplicationController {
                     }
                 }
 
-
                 //register user-session
                 if (!$user->isNew()) {
-                    global $sess,$auth;
-                    $sess->regenerate_session_id(array('auth'));
-                    $auth->unauth();
-                    $auth->auth["jscript"] = true;
-                    $auth->auth["perm"]  = $user["perms"];
-                    $auth->auth["uname"] = $user["username"];
-                    $auth->auth["auth_plugin"]  = $user["auth_plugin"];
-                    $auth->auth_set_user_settings($user->user_id);
-                    $auth->auth["uid"] = $user["user_id"];
-                    $auth->auth["exp"] = time() + (60 * $auth->lifetime);
-                    $auth->auth["refresh"] = time() + (60 * $auth->refresh);
+                    $GLOBALS['sess']->regenerate_session_id(array('auth'));
+                    $GLOBALS['auth']->unauth();
+                    $GLOBALS['auth']->auth["jscript"] = true;
+                    $GLOBALS['auth']->auth["perm"]  = $user["perms"];
+                    $GLOBALS['auth']->auth["uname"] = $user["username"];
+                    $GLOBALS['auth']->auth["auth_plugin"]  = $user["auth_plugin"];
+                    $GLOBALS['auth']->auth_set_user_settings($user->user_id);
+                    $GLOBALS['auth']->auth["uid"] = $user["user_id"];
+                    $GLOBALS['auth']->auth["exp"] = time() + (60 * $GLOBALS['auth']->lifetime);
+                    $GLOBALS['auth']->auth["refresh"] = time() + (60 * $GLOBALS['auth']->refresh);
                 }
             } else {
                 CampusConnectLog::_(sprintf("ecs-auth: token is not accepted: %s", $ecs_hash), CampusConnectLog::DEBUG);
+                $logdata['protocol'][] = sprintf("ecs-auth: token is not accepted: %s", $ecs_hash);
             }
         } else {
             $error = "";
             if ($GLOBALS['user']->id !== 'nobody') {
-                $error .= "User already loggin in. ";
+                $error .= "User already logged in. ";
             }
             if (!$ecs_hash) {
                 $error .= "Parameter ecs_hash_url or ecs_hash are missing. ";
@@ -327,6 +335,7 @@ class CourselinkController extends ApplicationController {
                 'request' => $_REQUEST,
                 'user_id' => $GLOBALS['user']->id
             ));
+            $logdata['protocol'][] = "User comes from another system and won't get logged in: ".$error;
         }
         //Redirect:
         if ($user) {
@@ -344,6 +353,7 @@ class CourselinkController extends ApplicationController {
                 $course_url = URLHelper::getURL($course_url, array('cid' => $cid));
             }
         }
+        CCLog::log("CC-user_jumps_in", "User comes from another system and jumps in.", $logdata);
         header("Location: ".$course_url);
         $this->render_nothing();
     }
