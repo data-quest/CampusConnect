@@ -122,7 +122,7 @@ hr.grey {
 }
 .json_object_list table > tbody > tr > td {
     text-align: left;
-    padding: 3px;
+    padding: 2px;
 }
 .json_object_list tr:hover .key, .json_object_list tr:hover > td.value, .json_object_list tr:hover > td.match {
     background-color: rgba(0,0,0,0.1);
@@ -168,8 +168,11 @@ hr.grey {
     float: left;
     border-bottom: 2px solid grey;
     width: 20px;
-    margin-top: 27px;
+    margin-top: 12px;
     margin-left: -10px;
+}
+.json_object_list ol > * {
+    min-height: 30px;
 }
 .json_object_list ol > *:hover:before {
     border-bottom: 2px solid black;
