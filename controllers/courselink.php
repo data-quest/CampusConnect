@@ -26,8 +26,15 @@ class CourselinkController extends ApplicationController {
         if (!$GLOBALS['perm']->have_studip_perm("autor", $_SESSION['SessionSeminar'])) {
             throw new AccessDeniesException("Kein Zugriff");
         }
+
+        $logdata = array(
+            'user_id' => $GLOBALS['user']->id,
+            'name' => get_fullname(),
+            'protocol' => array("Start")
+        );
         
         if (Request::get("url")) {
+            $logdata['protocol'][] = "User wants to URL (given by GET-parameter 'url'): ".Request::get("url");
             $get_participant_id = DBManager::get()->prepare(
                 "SELECT participant_id " .
                 "FROM campus_connect_course_url " .
@@ -41,12 +48,15 @@ class CourselinkController extends ApplicationController {
             $participant_id = $get_participant_id->fetch(PDO::FETCH_COLUMN, 0);
             if ($participant_id) {
                 $participant = new CCParticipant($participant_id);
+                $logdata['protocol'][] = "URL is associated with participant-system: ".$participant['data']['name'];
                 $url = Request::get("url");
             }
         } else {
             $coursedata = new CampusConnectEntity(array($_SESSION['SessionSeminar'], "course"));
             $participant = new CCParticipant($coursedata['participant_id']);
             $url = $coursedata['data']['url'];
+            $logdata['protocol'][] = "User wants to URL (fetched from SessionSeminar): ".$url;
+            $logdata['protocol'][] = "URL is associated with participant-system: ".$participant['data']['name'];
         }
         if ($url) {
             if (in_array($participant['data']['import_settings']['auth'], array("ecs_token", "legacy_ecs_token"))) {
@@ -100,8 +110,11 @@ class CourselinkController extends ApplicationController {
                     $url_parameter[$index] = $value;
                 }
                 $url = URLHelper::getURL($url, $url_parameter, true);
+                $logdata['protocol'][] = "Constructed URL to redirect user to: ".$url;
             }
             CampusConnectLog::_(sprintf("ecs-auth: refering user now to %s", $url), CampusConnectLog::DEBUG);
+            $logdata['protocol'][] = "We have ignition!";
+            CCLog::log("User jumps out", "User wants to jump into another .", $logdata);
             header("Location: ".$url);
             exit;
         }
@@ -168,11 +181,12 @@ class CourselinkController extends ApplicationController {
                 if (Request::get("ecs_person_id_type")) {
                     $parameter = array();
                     foreach ($_GET as $index => $value) {
-                        if ($index !== "ecs_hash_url") {
+                        if (!in_array($index, array("ecs_hash_url", "ecs_hash"))) {
                             $parameter[$index] = studip_utf8decode($value);
                         }
                     }
                 } else {
+                    //legacy token:
                     $parameter = array(
                         'ecs_login' => studip_utf8decode(Request::get("ecs_login")),
                         'ecs_firstname' => studip_utf8decode(Request::get("ecs_firstname")),
@@ -353,7 +367,7 @@ class CourselinkController extends ApplicationController {
                 $course_url = URLHelper::getURL($course_url, array('cid' => $cid));
             }
         }
-        CCLog::log("CC-user_jumps_in", "User comes from another system and jumps in.", $logdata);
+        CCLog::log("User jumps in", "User comes from another participant-system and jumps in.", $logdata);
         header("Location: ".$course_url);
         $this->render_nothing();
     }
@@ -416,49 +430,5 @@ class CourselinkController extends ApplicationController {
         }
     }
 
-    public function test_to_action() {
-        $output = array();
-        $output['already_logged_in'] = $GLOBALS['user']->id !== 'nobody' ? 1 : 0;
-        $url = Request::get("ecs_hash_url");
-        $login = Request::get("ecs_login");
-        $firstname = Request::get("ecs_firstname");
-        $lastname = Request::get("ecs_lastname");
-        $email = Request::get("ecs_email");
-        $institution = Request::get("ecs_institution");
-        $uid = Request::get("ecs_uid_hash") ? Request::get("ecs_uid_hash") : Request::get("ecs_uid");
-        $output['realm'] = ECSAuthToken::getRealm(
-            $url, $login, $firstname, $lastname, $email, $institution, $uid
-        );
-        $output['realm_without_sha1'] = ECSAuthToken::getRealmBeforeHashing(
-            $url, $login, $firstname, $lastname, $email, $institution, $uid
-        );
-
-        $ecs_found = false;
-        $ecs_hash = substr(Request::get("ecs_hash_url"), strripos(Request::get("ecs_hash_url"), "/") + 1);
-        $output['token'] = $ecs_hash;
-        foreach (CampusConnectConfig::findByType("server") as $ecs) {
-            if ((stripos(Request::get("ecs_hash_url"), $ecs['data']['server']) === 0)
-                    && $ecs['active']
-                    ) {
-                $ecs_found = true;
-                $output['ecs_server_found'] = $ecs['data']['server'];
-                $token = new ECSAuthToken($ecs->getId());
-                $accept = $token->validate(
-                    $ecs_hash,
-                    Request::get("ecs_login"),
-                    Request::get("ecs_firstname"),
-                    Request::get("ecs_lastname"),
-                    Request::get("ecs_email"),
-                    Request::get("ecs_institution"),
-                    Request::get("ecs_uid_hash") ? Request::get("ecs_uid_hash") : Request::get("ecs_uid")
-                );
-                $active_ecs = $ecs;
-                break;
-            }
-        }
-        $output['token_accepted'] = $accept ? 1 : 0;
-
-        $this->render_json(CampusConnectHelper::rec_utf8_encode($output));
-    }
 }
 
