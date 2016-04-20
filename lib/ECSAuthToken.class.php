@@ -48,6 +48,9 @@ class ECSAuthToken {
         $url .= stripos($_SERVER['REQUEST_URI'], "?") === false
             ? $_SERVER['REQUEST_URI']
             : substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], "?"));
+        var_dump($parameter);
+        die();
+
         $realm = self::getRealm(
             $url,
             $parameter

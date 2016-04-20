@@ -182,8 +182,6 @@ class CourselinkController extends ApplicationController {
                         'ecs_uid' => $ecs_uid_hash
                     );
                 }
-                var_dump($parameter);
-                die();
                 $accept = $token->validate(
                     $ecs_hash,
                     $parameter
