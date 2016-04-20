@@ -117,7 +117,7 @@ class CourselinkController extends ApplicationController {
             }
             CampusConnectLog::_(sprintf("ecs-auth: refering user now to %s", $url), CampusConnectLog::DEBUG);
             $logdata['protocol'][] = "We have ignition!";
-            CCLog::log("User jumps out", "User wants to jump into another participant-system.", $logdata);
+            CCLog::log("User jumps out", sprintf("User '%s' wants to jump into another participant-system.", get_fullname()), $logdata);
             header("Location: ".$url);
             exit;
         }
@@ -352,7 +352,7 @@ class CourselinkController extends ApplicationController {
             if (!Request::get("ecs_email")) {
                 $error .= "Parameter ecs_email is missing. ";
             }
-            $logdata['protocol'][] = "User comes from another system and won't get logged in: ".$error;
+            $logdata['protocol'][] = "User '%s' comes from another system and won't get logged in: ".$error;
         }
         //Redirect:
         if ($user) {
@@ -370,7 +370,7 @@ class CourselinkController extends ApplicationController {
                 $course_url = URLHelper::getURL($course_url, array('cid' => $cid));
             }
         }
-        CCLog::log("User jumps in", "User comes from another participant-system and jumps in.", $logdata);
+        CCLog::log("User jumps in", sprintf("User '%s' comes from another participant-system and jumps in.", get_fullname()), $logdata);
         header("Location: ".$course_url);
         $this->render_nothing();
     }
