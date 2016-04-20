@@ -370,7 +370,7 @@ class CourselinkController extends ApplicationController {
                 $course_url = URLHelper::getURL($course_url, array('cid' => $cid));
             }
         }
-        CCLog::log("User jumps in", sprintf("User '%s' comes from another participant-system and jumps in.", get_fullname()), $logdata);
+        CCLog::log("User jumps in", sprintf("User '%s' comes from another participant-system and jumps in.", $user ? $user->getFullName() : "unknown"), $logdata);
         header("Location: ".$course_url);
         $this->render_nothing();
     }
