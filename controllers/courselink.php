@@ -101,6 +101,9 @@ class CourselinkController extends ApplicationController {
                     $url,
                     $auth_token_parameter
                 );
+                foreach ($token->debugging as $message) {
+                    $logdata['protocol'][] = $message;
+                }
                 if ($participant['data']['import_settings']['auth'] === "ecs_token") {
                     $url_parameter = array('ecs_hash' => $token->getURL());
                 } else {
@@ -114,7 +117,7 @@ class CourselinkController extends ApplicationController {
             }
             CampusConnectLog::_(sprintf("ecs-auth: refering user now to %s", $url), CampusConnectLog::DEBUG);
             $logdata['protocol'][] = "We have ignition!";
-            CCLog::log("User jumps out", "User wants to jump into another .", $logdata);
+            CCLog::log("User jumps out", "User wants to jump into another participant-system.", $logdata);
             header("Location: ".$url);
             exit;
         }
