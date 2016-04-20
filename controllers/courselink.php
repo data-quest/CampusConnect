@@ -183,7 +183,7 @@ class CourselinkController extends ApplicationController {
                     );
                 }
                 $accept = $token->validate(
-                    $ecs_hash,
+                    //$ecs_hash,
                     $parameter
                 );
                 foreach ($token->debugging as $message) {

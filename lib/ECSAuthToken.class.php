@@ -52,7 +52,7 @@ class ECSAuthToken {
         die();
 
         $realm = self::getRealm(
-            //$url,
+            $url,
             $parameter
         );
 
