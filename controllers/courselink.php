@@ -186,6 +186,8 @@ class CourselinkController extends ApplicationController {
                     $ecs_hash,
                     $parameter
                 );
+                var_dump($token);
+                die();
                 foreach ($token->debugging as $message) {
                     $logdata['protocol'][] = $message;
                 }
@@ -312,7 +314,7 @@ class CourselinkController extends ApplicationController {
                 }
             } else {
                 CampusConnectLog::_(sprintf("ecs-auth: token is not accepted: %s", $ecs_hash), CampusConnectLog::DEBUG);
-                $logdata['protocol'][] = sprintf("ecs-auth: token is not accepted: %s", $ecs_hash);
+                $logdata['protocol'][] = sprintf("Token is not accepted: %s", $ecs_hash);
             }
         } else {
             $error = "";
