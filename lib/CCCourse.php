@@ -9,12 +9,6 @@
  *  the License, or (at your option) any later version.
  */
 
-require_once 'lib/models/Course.class.php';
-require_once 'lib/models/StudipStudyArea.class.php';
-require_once dirname(__file__)."/CampusConnectEntity.php";
-require_once dirname(__file__)."/CCParticipant.php";
-require_once dirname(__file__)."/CCStatusgruppe.class.php";
-
 class CCCourse extends Course
 {
     static protected $dozent = "CampusConnectDummyDozent";
@@ -231,7 +225,7 @@ class CCCourse extends Course
         //$course[] = $message['recommendedReading'];
         //$course[] = $message['linkToCurriculum'];
         //$course[] = $message['comment1']; .. comment3
-        //Datenfelder hierfür verwenden?
+        //Datenfelder hierfï¿½r verwenden?
         $course['vorrausetzungen'] = $message['prerequisites'];
         $course['leistungsnachweis'] = $message['courseAssessmentMethod'];
         $course['Beschreibung'] = $message['courseTopics'];
@@ -302,7 +296,7 @@ class CCCourse extends Course
 
             $neue_gruppen_ids[] = $statusgruppe->getId();
         }
-        //alle Statusgruppen finden und die ungebrauchten löschen:
+        //alle Statusgruppen finden und die ungebrauchten lï¿½schen:
         $gruppen_ids = $db->query(
                 "SELECT statusgruppen.statusgruppe_id " .
                 "FROM statusgruppen " .
@@ -373,8 +367,8 @@ class CCCourse extends Course
         "");
         foreach ($datesAndVenues as $date) {
             //Problem metadates!! Die seminar_cycle_dates sind leider nicht
-            //mächtig genug, um alle eingehenden regelmäßigen Termine zu umfassen.
-            //In Stud.IP gehen cycle_dates immer über die gesamte Laufzeit der
+            //mï¿½chtig genug, um alle eingehenden regelmï¿½ï¿½igen Termine zu umfassen.
+            //In Stud.IP gehen cycle_dates immer ï¿½ber die gesamte Laufzeit der
             //Veranstaltung.
             //Deswegen wird einfach alles als Einzeltermin gespeichert.
             $first = array(
@@ -387,15 +381,15 @@ class CCCourse extends Course
             );
             if (is_numeric($date['cycle']) && $date['cycle'] > 1) {
                 switch ($date['cycle']) {
-                    case "2": //täglich
+                    case "2": //tï¿½glich
                         $factor = 86400;
                         break;
-                    case "3": //wöchentlich
+                    case "3": //wï¿½chentlich
                         $factor = 86400 * 7;
                         break;
                     default:
                         if ($date['cycle'] >= 4) {
-                            //mehrwöchentlich
+                            //mehrwï¿½chentlich
                             $factor = 86400 * 7 * ($date['cycle'] - 2);
                         }
                         break;
@@ -605,7 +599,7 @@ class CCCourse extends Course
                     "");
                 }
             }
-            //Notfall-sem_tree-Eintrag hinzufügen, falls nötig?
+            //Notfall-sem_tree-Eintrag hinzufï¿½gen, falls nï¿½tig?
             if (count($new_matchings) === 0 && $participant_info['data']['import_settings']['sem_tree']) {
                 $db->exec(
                     "INSERT IGNORE INTO seminar_sem_tree " .
@@ -660,7 +654,7 @@ class CCCourse extends Course
                     }
                 }
                 if ($export) {
-                    //TODO: nicht die erste mid zurückgeben, sondern konfigurierbar
+                    //TODO: nicht die erste mid zurï¿½ckgeben, sondern konfigurierbar
                     //anhand der Datenfelder/Filterkriterien machen.
                     foreach ((array) $participant['data']['mid'] as $cid => $mid) {
                         $receivers[] = $mid;
@@ -966,7 +960,7 @@ class CCCourse extends Course
         "")->fetchAll(PDO::FETCH_ASSOC);
 
         //Als erstes alle Seminare der course_group (Parallelgruppen inklusive) finden
-        //und für jedes entscheiden, ob der Nutzer eingetragen sein sollte oder nicht.
+        //und fï¿½r jedes entscheiden, ob der Nutzer eingetragen sein sollte oder nicht.
         foreach ($seminar_data as $seminar) {
             $course = new CCCourse($seminar['Seminar_id']);
             $course_mapping = new CampusConnectEntity(array($course->getId(), "course"));
@@ -1015,7 +1009,7 @@ class CCCourse extends Course
                 }
 
                 if ($user) {
-                    //erst einmal herausfinden, ob es dieses Seminar überhaupt sein soll.
+                    //erst einmal herausfinden, ob es dieses Seminar ï¿½berhaupt sein soll.
                     $insert_into_group = false;
                     if ($participant['data']['import_settings']['cms']['parallelgroups'] === "allinone") {
                         $insert_into_group = true;
@@ -1064,7 +1058,7 @@ class CCCourse extends Course
                 }
             }
 
-            //Lösche nicht gematchte Coursemembers wieder.
+            //LÃ¶sche nicht gematchte Coursemembers wieder.
             foreach ($old_synced_coursemembers as $member1) {
                 foreach ($course['members'] as $key => $member2) {
                     if (($member1['Seminar_id'] === $member2['Seminar_id']) && ($member1['user_id'] === $member2['user_id'])) {

@@ -9,7 +9,6 @@
  * the License, or (at your option) any later version.
  */
 
-require_once dirname(__file__)."/../lib/CampusConnectHelper.php";
 
 class CampusConnectHelperTestCase extends UnitTestCase {
 
@@ -27,9 +26,9 @@ class CampusConnectHelperTestCase extends UnitTestCase {
 
     function test_utf8_array_encode_decode()
     {
-        $problem_string1 = "überhaupt kein Problem";
-        $problem_string2 = "äÜÖ€%6hg#'";
-        $data = array('test' => $problem_string1, 'tjä' => array($problem_string2));
+        $problem_string1 = "ï¿½berhaupt kein Problem";
+        $problem_string2 = "ï¿½ï¿½Ö€%6hg#'";
+        $data = array('test' => $problem_string1, 'tjï¿½' => array($problem_string2));
 
         //zuerst testen, ob diese Datei den richtigen Zeichensatz != utf8 hat
         //$wrong_encoded = (array) json_decode(json_encode($data));
@@ -37,23 +36,22 @@ class CampusConnectHelperTestCase extends UnitTestCase {
         //geht nicht, wirft drei Exceptions
 
         $still_wrong_encoded = (array) json_decode(json_encode(
-            CampusConnectHelper::rec_utf8_encode($data))
-        );
+            $data
+        ));
         //hier sollte $still_wrong_encoded noch in utf8 codiert sein
         $this->assertNotEqual($still_wrong_encoded['test'], $problem_string1);
         //aber trotzdem nicht null, also ein String
         $this->assertIsA($still_wrong_encoded['test'], "string");
 
-        //und nun wird es korrekt zurück codiert und sollte ein hübsches Array
+        //und nun wird es korrekt zurï¿½ck codiert und sollte ein hï¿½bsches Array
         //in windows-1252 sein
-        $correctly_encoded = CampusConnectHelper::rec_utf8_decode(
-            (array) json_decode(json_encode(
-                CampusConnectHelper::rec_utf8_encode($data))
-            )
+        $correctly_encoded =
+        (array) json_decode(json_encode(
+            $data)
         );
         $this->assertEqual($correctly_encoded['test'], $problem_string1);
         //und auch die Indizes sind codiert worden
-        $this->assertEqual($correctly_encoded['tjä'][0], $problem_string2);
+        $this->assertEqual($correctly_encoded['tjï¿½'][0], $problem_string2);
 
     }
 

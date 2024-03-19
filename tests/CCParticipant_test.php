@@ -22,7 +22,7 @@ class CCParticipantTestCase extends UnitTestCase {
                 `type` varchar(20) NOT NULL,
                 `active` tinyint(4) NOT NULL DEFAULT '0',
                 `data` text NOT NULL,
-            PRIMARY KEY (`id`)) ENGINE=MyISAM");
+            PRIMARY KEY (`id`))");
     }
 
 

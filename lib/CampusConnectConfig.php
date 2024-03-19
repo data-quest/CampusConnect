@@ -4,20 +4,21 @@ class CampusConnectConfig extends SimpleORMap
 {
     protected static $types = array();
 
+    static protected function configure($config = array())
+    {
+        $config['db_table'] = 'campus_connect_config';
+        $config['registered_callbacks']['before_store'][] = "cbSerializeData";
+        $config['registered_callbacks']['after_store'][] = "cbUnserializeData";
+        $config['registered_callbacks']['after_initialize'][] = "cbUnserializeData";
+        parent::configure($config);
+    }
+
     static public function findByType($type)
     {
         if (!self::$types[$type]) {
             self::$types[$type] = self::findBySQL('type = ?', array($type));
         }
         return self::$types[$type];
-    }
-
-    function __construct($id = null)
-    {
-        $this->db_table = 'campus_connect_config';
-        $this->registerCallback('before_store', 'cbSerializeData');
-        $this->registerCallback('after_store after_initialize', 'cbUnserializeData');
-        parent::__construct($id);
     }
 
     function cbSerializeData()

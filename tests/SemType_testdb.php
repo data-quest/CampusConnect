@@ -24,7 +24,7 @@ class SemTypeTestCase extends UnitTestCase {
                 `mkdate` bigint(20) NOT NULL,
                 `chdate` bigint(20) NOT NULL,
                 PRIMARY KEY (`id`)
-            ) ENGINE=MyISAM " .
+            ) " .
         "");
         $db->exec("TRUNCATE TABLE seminare ");
     }

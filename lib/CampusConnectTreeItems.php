@@ -7,18 +7,19 @@ class CampusConnectTreeItems extends SimpleORMap
 
     public $children = array();
 
+    static protected function configure($config = array())
+    {
+        $config['db_table'] = 'campus_connect_tree_items';
+        $config['registered_callbacks']['before_store'][] = "cbSerializeData";
+        $config['registered_callbacks']['after_store'][] = "cbUnserializeData";
+        $config['registered_callbacks']['after_initialize'][] = "cbUnserializeData";
+        parent::configure($config);
+    }
+
     static public function findBySemTreeId($sem_tree_id)
     {
         $result = self::findBySQL("mapped_sem_tree_id = ?", array($sem_tree_id));
         return $result[0];
-    }
-
-    function __construct($id = null)
-    {
-        $this->db_table = 'campus_connect_tree_items';
-        $this->registerCallback('before_store', 'cbSerializeData');
-        $this->registerCallback('after_store after_initialize', 'cbUnserializeData');
-        parent::__construct($id);
     }
 
     function cbSerializeData()
@@ -127,7 +128,7 @@ class CampusConnectTreeItems extends SimpleORMap
             foreach ($this->getChildren() as $childnode) {
                 $childnode->attach_softly($sem_tree->getId());
             }
-            
+
             //Kurse eintragen
             $this->match_courses();
         }
@@ -188,8 +189,8 @@ class CampusConnectTreeItems extends SimpleORMap
             }
         }
     }
-    
-    public function getChildren() 
+
+    public function getChildren()
     {
         return CampusConnectTreeItems::findBySQL("parent_id = ? AND participant_id = ?", array($this['item_id'], $this['participant_id']));
     }

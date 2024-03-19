@@ -14,7 +14,7 @@ class CampusConnectTreesMigration extends Migration
                 `chdate` bigint(20) NOT NULL,
                 `mkdate` bigint(20) NOT NULL,
                 PRIMARY KEY (`tree_id`)
-            ) ENGINE=MyISAM
+            )
         ");
 
         DBManager::get()->exec(
@@ -30,7 +30,7 @@ class CampusConnectTreesMigration extends Migration
                 `chdate` bigint(20) NOT NULL,
                 `mkdate` bigint(20) NOT NULL,
                 PRIMARY KEY (`item_id`,`participant_id`)
-            ) ENGINE=MyISAM
+            )
         ");
 	}
 }

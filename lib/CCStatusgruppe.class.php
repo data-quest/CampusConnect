@@ -2,14 +2,21 @@
 
 /*
  *  Copyright (c) 2012  Rasmus Fuhse <fuhse@data-quest.de>
- * 
+ *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
  *  published by the Free Software Foundation; either version 2 of
  *  the License, or (at your option) any later version.
  */
 
-class CCStatusgruppe extends SimpleORMap {
+class CCStatusgruppe extends SimpleORMap
+{
+
+    static protected function configure($config = array())
+    {
+        $config['db_table'] = 'statusgruppen';
+        parent::configure($config);
+    }
 
     public function __construct($id = null) {
         $this->db_table = 'statusgruppen';

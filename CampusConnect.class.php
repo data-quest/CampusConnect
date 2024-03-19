@@ -1,26 +1,13 @@
 <?php
 /*
  *  Copyright (c) 2012  Rasmus Fuhse <fuhse@data-quest.de>
- * 
+ *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
  *  published by the Free Software Foundation; either version 2 of
  *  the License, or (at your option) any later version.
  */
 
-require_once __DIR__.'/lib/CCParticipant.php';
-require_once __DIR__.'/lib/CampusConnectLog.php';
-require_once __DIR__.'/lib/CCLog.php';
-require_once __DIR__.'/lib/CampusConnectHelper.php';
-require_once __DIR__.'/lib/EcsClient.php';
-require_once __DIR__.'/lib/EcsResult.php';
-require_once __DIR__.'/lib/CampusConnectClient.php';
-require_once __DIR__.'/lib/CampusConnectTriggerStack.php';
-require_once __DIR__.'/lib/CampusConnectEntity.php';
-require_once __DIR__.'/lib/CampusConnectSentItem.php';
-require_once __DIR__.'/lib/CCCourse.php';
-require_once __DIR__.'/lib/CCRessources.php';
-require_once __DIR__.'/lib/CampusConnector.php';
 
 class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
 {
@@ -28,16 +15,17 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
     public function __construct()
     {
         parent::__construct();
+        StudipAutoloader::addAutoloadPath(__DIR__ . '/lib');
         if ($GLOBALS['perm']->have_perm("root")) {
             /*******************************************************************
              *                       Einstellungsseiten                        *
              *******************************************************************/
             $navigation = new Navigation($this->getDisplayName(), PluginEngine::getURL($this, array(), "config/index"));
             Navigation::addItem('/admin/campusconnect', $navigation);
-            
-            $navigation = new AutoNavigation("Übersicht", PluginEngine::getURL($this, array(), "config/index"));
+
+            $navigation = new AutoNavigation("Ãœbersicht", PluginEngine::getURL($this, array(), "config/index"));
             Navigation::addItem('/admin/campusconnect/index', $navigation);
-            
+
             $navigation = new AutoNavigation("Teilnehmer/LMS", PluginEngine::getURL($this, array(), "config/participants"));
             Navigation::addItem('/admin/campusconnect/participants', $navigation);
 
@@ -52,7 +40,7 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
         }
 
         /*******************************************************************
-         *               Notifications für sendenswerte Daten              *
+         *               Notifications fÃ¼r sendenswerte Daten              *
          *******************************************************************/
         NotificationCenter::addObserver($this, "synchronizeStudipItems", "CourseDidCreatOrUpdate");
         NotificationCenter::addObserver($this, "synchronizeStudipItems", "CourseDidGetMember");
@@ -67,7 +55,7 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
 
 
         /*******************************************************************
-         *               Navigation für Kurse mit Kurs-URLs                *
+         *               Navigation fÃ¼r Kurse mit Kurs-URLs                *
          *******************************************************************/
         if (Navigation::hasItem("/course") && $_SESSION['SessionSeminar']) {
             $course = new CCCourse($_SESSION['SessionSeminar']);

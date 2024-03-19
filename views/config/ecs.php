@@ -1,5 +1,4 @@
 <div id="messages"></div>
-<h2><?= _("E-Learning Community Servers") ?></h2>
 
 <style>
     #ecs_table tr.active .inactive {
@@ -10,7 +9,8 @@
     }
 </style>
 
-<table id="ecs_table" class="select">
+<table id="ecs_table" class="default">
+    <caption><?= _("E-Learning Community Servers") ?></caption>
     <thead>
         <tr>
             <th><?= _("Name") ?></th>
@@ -37,7 +37,7 @@
         <? endforeach ?>
         <? else : ?>
         <tr>
-            <td colspan="2" style="text-align: center;"><?= _("Noch kein ECS registriert. Fügen Sie mit Klick in der Infobox rechts einen hinzu.") ?></td>
+            <td colspan="2" style="text-align: center;"><?= _("Noch kein ECS registriert. FÃ¼gen Sie mit Klick in der Infobox rechts einen hinzu.") ?></td>
         </tr>
         <? endif ?>
     </tbody>
@@ -89,11 +89,11 @@
                             <td><input type="text" id="ecs_data_client_cert_path" name="data[client_cert_path]" style="width: 99%"></td>
                         </tr>
                         <tr>
-                            <td><label for="ecs_data_key_path"><?= _("Zertifikatsschlüssel") ?></label></td>
+                            <td><label for="ecs_data_key_path"><?= _("ZertifikatsschlÃ¼ssel") ?></label></td>
                             <td><input type="text" id="ecs_data_key_path" name="data[key_path]" style="width: 99%"></td>
                         </tr>
                         <tr>
-                            <td><label for="ecs_data_key_password"><?= _("Schlüsselpasswort") ?></label></td>
+                            <td><label for="ecs_data_key_password"><?= _("SchlÃ¼sselpasswort") ?></label></td>
                             <td><input type="password" id="ecs_data_key_password" name="data[key_password]" style="width: 99%"></td>
                         </tr>
                         </tbody>
@@ -110,7 +110,7 @@
                 <td>
                     <a href="#" onClick="STUDIP.CC.ECS.save_ecs_data(); return false;"><?= Studip\Button::create(_("speichern")) ?></a>
                     <a href="#" onClick="STUDIP.CC.ECS.connectivity(); return false;"><?= Studip\Button::create(_("Verbindung testen")) ?></a>
-                    <a href="#" id="ecs_delete" onClick="STUDIP.CC.ECS.del(); return false;"><?= Studip\Button::create(_("löschen")) ?></a>
+                    <a href="#" id="ecs_delete" onClick="STUDIP.CC.ECS.del(); return false;"><?= Studip\Button::create(_("lÃ¶schen")) ?></a>
                 </td>
             </tr>
         </tbody>
@@ -120,35 +120,10 @@
 <div id="ecs_edit_window_title_new" style="display: none;"><?= _("Neuen ECS registrieren") ?></div>
 
 <?
-if (class_exists("Sidebar")) {
-    $actions = new ActionsWidget();
-    $actions->addLink(_("Stellen Sie eine Verbindung zu einem neuen ECS her."), "#", "icons/16/black/add", array('onclick' => "STUDIP.CC.ECS.new(); return false;"));
-    Sidebar::Get()->addWidget($actions);
-} else {
-    $infobox = array(
-        array(
-            'kategorie' => _("Information"),
-            'eintrag'   => array(
-                array(
-                    'icon' => "icons/16/black/info",
-                    'text' => _("Hier sehen Sie alle ECS (elearning community server), können sie konfigurieren oder inaktiv schalten.")
-                )
-            )
-        ),
-        array(
-            'kategorie' => _("Aktionen"),
-            'eintrag'   => array(
-                array(
-                    'icon' => "icons/16/black/add",
-                    'text' => '<a href="#" onClick="STUDIP.CC.ECS.new(); return false;">'.
-                        _("Stellen Sie eine Verbindung zu einem neuen ECS her.").
-                    '</a>'
-                )
-            )
-        )
-    );
-    $infobox = array(
-        'picture' => $assets_url . "/images/network.png",
-        'content' => $infobox
-    );
-}
+$actions = new ActionsWidget();
+$actions->addLink(_("Stellen Sie eine Verbindung zu einem neuen ECS her."),
+    "#",
+    Icon::create("add"),
+    array('onclick' => "STUDIP.CC.ECS.new(); return false;")
+);
+Sidebar::Get()->addWidget($actions);

@@ -23,7 +23,7 @@ class CCCourseTestCase extends UnitTestCase {
                 `participant_id` int(11) NOT NULL,
                 `data` text NOT NULL,
                 PRIMARY KEY (`item_id`,`type`)
-            ) ENGINE=MyISAM");
+            ) ");
         DBManager::get()->exec("CREATE TABLE IF NOT EXISTS `campus_connect_config` (
                 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                 `type` varchar(20) NOT NULL,
@@ -35,7 +35,7 @@ class CCCourseTestCase extends UnitTestCase {
                 `cg_id` VARCHAR( 32 ) NOT NULL ,
                 `Seminar_id` VARCHAR( 32 ) NOT NULL ,
                 `parallelgroup_id` VARCHAR( 64 ) NULL
-            ) ENGINE = MYISAM
+            )
         ");
         DBManager::get()->exec(
             "CREATE TABLE IF NOT EXISTS `campus_connect_trees` (
@@ -49,7 +49,7 @@ class CCCourseTestCase extends UnitTestCase {
                 `chdate` bigint(20) NOT NULL,
                 `mkdate` bigint(20) NOT NULL,
                 PRIMARY KEY (`tree_id`)
-            ) ENGINE=MyISAM
+            )
         ");
 
         DBManager::get()->exec(
@@ -65,7 +65,7 @@ class CCCourseTestCase extends UnitTestCase {
                 `chdate` bigint(20) NOT NULL,
                 `mkdate` bigint(20) NOT NULL,
                 PRIMARY KEY (`item_id`,`participant_id`)
-            ) ENGINE=MyISAM
+            )
         ");
         DBManager::get()->exec("TRUNCATE TABLE `auth_user_md5`");
         DBManager::get()->exec("TRUNCATE TABLE `user_info`");
@@ -628,7 +628,7 @@ class CCCourseTestCase extends UnitTestCase {
         $seminar_user = $db->query("SELECT COUNT(*) FROM seminar_user WHERE Seminar_id = ".$db->quote($seminar['item_id']))->fetch(PDO::FETCH_COLUMN, 0);
         $this->assertEqual($seminar_user, 3); //test_dozent und test_autor
 
-        //und wieder Rückgängig:
+        //und wieder RÃ¼ckgÃ¤ngig:
         $coursemember_message = array(
             'lectureID' => "23",
             'members' => array(

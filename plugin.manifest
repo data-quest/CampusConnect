@@ -3,5 +3,5 @@ pluginclassname=CampusConnect
 pluginclassname=CampusConnectLink
 origin=data-quest
 version=0.9.10
-studipMinVersion=2.4
-studipMaxVersion=3.99
+studipMinVersion=5.0
+studipMaxVersion=6.2

@@ -1,15 +1,8 @@
 <?php
 require __DIR__.'/application.php';
-if (file_exists('lib/classes/Institute.class.php')) {
-    require_once 'lib/classes/Institute.class.php';
-} //otherwise we have autoloader
-require_once __DIR__.'/../lib/CampusConnectTreeItems.php';
-require_once __DIR__.'/../lib/CampusConnectTree.php';
-require_once __DIR__.'/../lib/SemTreeSearch.class.php';
-require_once __DIR__.'/../lib/StudyAreaSelector.class.php';
 
-
-class ConfigController extends ApplicationController {
+class ConfigController extends PluginController
+{
 
     function before_filter(&$action, &$args)
     {
@@ -28,10 +21,10 @@ class ConfigController extends ApplicationController {
     function index_action()
     {
         if (!function_exists("curl_init")) {
-            PageLayout::postMessage(MessageBox::error(_("Das PHP-cURL Modul ist nicht aktiv. Ohne das wird dieser Konnektor nicht arbeiten können.")));
+            PageLayout::postMessage(MessageBox::error(_("Das PHP-cURL Modul ist nicht aktiv. Ohne das wird dieser Konnektor nicht arbeiten kÃ¶nnen.")));
         }
         if (!$this->isNobodyAllowed()) {
-            PageLayout::postMessage(MessageBox::error(_("Das CampusConnect-Plugin ist nicht für nobody zugelassen. Damit werden Kurslinks nicht korrekt funktionieren.")));
+            PageLayout::postMessage(MessageBox::error(_("Das CampusConnect-Plugin ist nicht fÃ¼r nobody zugelassen. Damit werden Kurslinks nicht korrekt funktionieren.")));
         }
         $this->imported_courses = count(CampusConnectEntity::findByType("course"));
         $this->imported_users = count(CampusConnectEntity::findByType("user"));
@@ -56,7 +49,6 @@ class ConfigController extends ApplicationController {
             return;
         }
         $data_array = Request::getArray("data");
-        $data_array = CampusConnectHelper::rec_utf8_decode($data_array);
         $server['type'] = "server";
         $server['active'] = Request::int("active");
         $server['data'] = CampusConnectHelper::rec_array_merge($server['data'], $data_array);
@@ -139,7 +131,6 @@ class ConfigController extends ApplicationController {
 
         $data_array = Request::getArray("data");
         $data_array['import_settings']['sem_tree'] = Request::option("data__import_settings____sem_tree__");
-        $data_array = CampusConnectHelper::rec_utf8_decode($data_array);
         $server['data'] = CampusConnectHelper::rec_array_merge($server['data'], $data_array);
         if ($server['active'] && $server['data']['import_setting']['course_entity_type'] === "cms") {
             if ($this->anotherCMS($server->getId(), true)) {
@@ -171,7 +162,7 @@ class ConfigController extends ApplicationController {
         }
         $node = new CampusConnectTreeItems(array(Request::get("node_id"), $participant->getId()));
         $node->map(Request::get("sem_tree_id"));
-        
+
         $tree = new CampusConnectTree(Request::get("tree_id"));
         if (!$node['parent_id'] && !Request::get("sem_tree_id")) {
             $tree['mapping'] = "pending";
@@ -181,7 +172,7 @@ class ConfigController extends ApplicationController {
             $tree['mapping'] = "manual";
         }
         $tree->store();
-        
+
         $this->render_nothing();
     }
 

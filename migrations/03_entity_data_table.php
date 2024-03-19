@@ -1,7 +1,8 @@
 <?php
 class EntityDataTable extends Migration
 {
-	function up() {
+	function up()
+    {
 	    DBManager::get()->exec(
             "CREATE TABLE IF NOT EXISTS `campus_connect_entities` (
                 `item_id` VARCHAR(128) NOT NULL,
@@ -9,6 +10,6 @@ class EntityDataTable extends Migration
                 `foreign_id` VARCHAR(64) NULL,
                 `participant_id` INT NOT NULL,
                 `data` text NOT NULL,
-            PRIMARY KEY (`item_id`,`type`)) ENGINE=MyISAM");
+            PRIMARY KEY (`item_id`,`type`))");
 	}
 }

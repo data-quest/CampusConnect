@@ -2,7 +2,7 @@
 
 /*
  *  Copyright (c) 2012  Rasmus Fuhse <fuhse@data-quest.de>
- * 
+ *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
  *  published by the Free Software Foundation; either version 2 of
@@ -14,11 +14,13 @@ require_once 'lib/models/Institute.class.php';
 class CCRessources extends SimpleORMap
 {
 
-    public function __construct($id = null) {
-        $this->db_table = "campus_connect_ressources";
-        $this->registerCallback('before_store', 'cbSerializeData');
-        $this->registerCallback('after_store after_initialize', 'cbUnserializeData');
-        parent::__construct($id);
+    static protected function configure($config = array())
+    {
+        $config['db_table'] = 'campus_connect_ressources';
+        $config['registered_callbacks']['before_store'][] = "cbSerializeData";
+        $config['registered_callbacks']['after_store'][] = "cbUnserializeData";
+        $config['registered_callbacks']['after_initialize'][] = "cbUnserializeData";
+        parent::configure($config);
     }
 
     function cbSerializeData()

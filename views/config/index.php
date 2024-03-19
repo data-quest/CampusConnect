@@ -23,14 +23,14 @@
 <div class="overview">
     <div class="overview_header">
         <a href="#" onClick="STUDIP.CC.ECS.export_stack(); return false;">
-            <?= _("Synchronisierung durchführen") ?>
+            <?= _("Synchronisierung durchfÃ¼hren") ?>
         </a>
         <span style="display: none;" id="sync_loader">
             <?= Assets::img("ajax_indicator_small.gif") ?>
         </span>
     </div>
     <div>
-        <strong><?= _("Objekte, die synchronisiert werden müssen") ?></strong>:
+        <strong><?= _("Objekte, die synchronisiert werden mÃ¼ssen") ?></strong>:
         <span id="items_to_be_synced">
             <?= (int) count(CampusConnectTriggerStack::findAll()) ?>
         </span>
@@ -49,7 +49,7 @@
 <div class="overview">
     <div class="overview_header">
         <a href="#" onClick="STUDIP.CC.checks.test(); return false;">
-            <?= _("Unit-Tests durchführen") ?>
+            <?= _("Unit-Tests durchfÃ¼hren") ?>
         </a>
     </div>
     <div id="progressbar">
@@ -68,24 +68,3 @@
         <?= Assets::img("ajax_indicator_small.gif") ?>
     </span>
 </div>
-
-<?
-if (class_exists("Sidebar")) {
-    
-} else {
-    $infobox = array(
-        array(
-            'kategorie' => _("Information"),
-            'eintrag' => array(
-                array(
-                    'icon' => "icons/16/black/info",
-                    'text' => _("Diese Seite soll Ihnen einen schnellen Überblick darüber geben, ob alles reibungslos läuft. Die Konfigurationen der ECS und der Teilnehmer findet auf den anderen Reitern statt.")
-                )
-            )
-        )
-    );
-    $infobox = array(
-        'picture' => $assets_url . "/images/network.png",
-        'content' => $infobox
-    );
-}

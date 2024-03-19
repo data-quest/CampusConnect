@@ -2,16 +2,12 @@
 
 /*
  *  Copyright (c) 2012  Rasmus Fuhse <fuhse@data-quest.de>
- * 
+ *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
  *  published by the Free Software Foundation; either version 2 of
  *  the License, or (at your option) any later version.
  */
-
-require_once 'lib/models/Institute.class.php';
-require_once __DIR__."/CampusConnectTreeItems.php";
-require_once __DIR__."/CampusConnectTree.php";
 
 class CCStudyArea extends StudipStudyArea
 {
@@ -38,11 +34,11 @@ class CCStudyArea extends StudipStudyArea
             $virtual_tree_item['root_id'] = $message['rootID'];
             $virtual_tree_item['data'] = $node;
             $virtual_tree_item->store();
-            //Knoten eventuell schon mappen, wenn genügen Informationen da sind
+            //Knoten eventuell schon mappen, wenn genÃ¼gen Informationen da sind
             $tree->map($virtual_tree_item);
             $node_ids[] = $node['id'];
         }
-        //alle nicht mehr im Baum befindlichen Knoten finden und löschen
+        //alle nicht mehr im Baum befindlichen Knoten finden und lÃ¶schen
         $old_nodes = CampusConnectTreeItems::findBySQL(
             "participant_id = ? " .
             "AND root_id = ? " .
@@ -74,7 +70,7 @@ class CCStudyArea extends StudipStudyArea
             $node->delete();
         }
 
-        //löschen
+        //lÃ¶schen
         $virtual_tree_item = new CampusConnectTreeItems(array($message['id'], $participant_id));
         $virtual_tree_item->delete();
     }

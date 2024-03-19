@@ -39,14 +39,14 @@ $sem_tree_search = new SemTreeSearch();
                     <tbody>
                         <tr>
                             <td><span class="tree_mapping_directory"></span></td>
-                            <td><?= Assets::img("icons/16/yellow/arr_2right", array('class' => "text-bottom", 'title' => _("Wird angehängt unter den Studienbereich"))) ?></td>
+                            <td><?= Assets::img("icons/16/yellow/arr_2right", array('class' => "text-bottom", 'title' => _("Wird angehÃ¤ngt unter den Studienbereich"))) ?></td>
                             <td>
                                 <?= QuickSearch::get("sem_tree_id", $sem_tree_search)->render() ?>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <a href="" class="send_tree_matching"><?= \Studip\Button::create("Mapping durchführen") ?></a>
+                <a href="" class="send_tree_matching"><?= \Studip\Button::create("Mapping durchfÃ¼hren") ?></a>
             </div>
         </div>
         </div>
@@ -57,5 +57,5 @@ $sem_tree_search = new SemTreeSearch();
     fillSpace: true
 });</script>
 <? else : ?>
-<?= MessageBox::info(_("Keine importierten Verzeichnisbäume vorhanden.")) ?>
+<?= MessageBox::info(_("Keine importierten VerzeichnisbÃ¤ume vorhanden.")) ?>
 <? endif ?>

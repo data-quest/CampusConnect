@@ -3,7 +3,17 @@
 class CampusConnectTree extends SimpleORMap
 {
 
+
     protected $tree_items = null;
+
+    static protected function configure($config = array())
+    {
+        $config['db_table'] = 'campus_connect_trees';
+        $config['registered_callbacks']['before_store'][] = "cbSerializeData";
+        $config['registered_callbacks']['after_store'][] = "cbUnserializeData";
+        $config['registered_callbacks']['after_initialize'][] = "cbUnserializeData";
+        parent::configure($config);
+    }
 
     static public function findByForeignID($root_id, $participant_id) {
         $tree = self::findBySQL("root_id = ? AND participant_id = ?", array($root_id, $participant_id));
@@ -15,14 +25,6 @@ class CampusConnectTree extends SimpleORMap
              $tree['participant_id'] = $participant_id;
              return $tree;
         }
-    }
-
-    function __construct($id = null)
-    {
-        $this->db_table = 'campus_connect_trees';
-        $this->registerCallback('before_store', 'cbSerializeData');
-        $this->registerCallback('after_store after_initialize', 'cbUnserializeData');
-        parent::__construct($id);
     }
 
     function cbSerializeData()
@@ -99,7 +101,7 @@ class CampusConnectTree extends SimpleORMap
                 $study_area['name'] = $tree_item['title'];
                 $study_area['type'] = 0;
                 $study_area->store();
-                
+
                 $tree_item->map_softly();
             }
         } elseif ($tree_item['parent_id']

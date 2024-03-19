@@ -117,7 +117,7 @@ $infobox = array(
             array(
                 'icon' => "icons/16/black/info",
                 'text' => sprintf(
-                            _("Diese Veranstaltung wird von einem angekoppeltem Fremdsystem angeboten. Wenn Sie hier daran angemeldet sind, werden Ihnen die Termine (sofern bekannt) in den Kalender eingetragen und Sie können über den %s direkt dorthin springen (das geht auch von der Seminarübersicht aus)."),
+                            _("Diese Veranstaltung wird von einem angekoppeltem Fremdsystem angeboten. Wenn Sie hier daran angemeldet sind, werden Ihnen die Termine (sofern bekannt) in den Kalender eingetragen und Sie kÃ¶nnen Ã¼ber den %s direkt dorthin springen (das geht auch von der SeminarÃ¼bersicht aus)."),
                             '<a href="'.URLHelper::getLink("plugins.php/campusconnect/courselink/link").'">'.Assets::img("icons/16/blue/learnmodule.png", array('class' => "text-bottom"))." "._("Direktlink").'</a>'
                         )
             )

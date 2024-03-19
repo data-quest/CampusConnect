@@ -10,8 +10,8 @@ class CampusConnector {
             if ($ecs_server['active']) {
                 $ecs_client = new ECSClient($ecs_server['data']);
                 foreach ($changes as $change) {
-                    //Für jeden Kurs müssen wir pro ECS generell zwei Nachrichten absetzen:
-                    //Die erste für Courselinks und die zweite für Courses.
+                    //FÃ¼r jeden Kurs mÃ¼ssen wir pro ECS generell zwei Nachrichten absetzen:
+                    //Die erste fÃ¼r Courselinks und die zweite fÃ¼r Courses.
                     switch ($change['object_type']) {
                         case "course":
                             $course = new CCCourse($change['object_id']);
@@ -85,7 +85,7 @@ class CampusConnector {
         foreach ($ecs as $ecs_server) {
             if ($ecs_server['active']) {
                 $ecs_client = new ECSClient($ecs_server['data']);
-                $result_object = $ecs_client->getAndRemoveEventsFifo(10); //gibt nur einen zurück
+                $result_object = $ecs_client->getAndRemoveEventsFifo(10); //gibt nur einen zurÃ¼ck
                 $i = 0;
                 while (count((array) $result_object->getResult()) > 0) {
                     //get participant_id
@@ -102,7 +102,7 @@ class CampusConnector {
                         }
                         $message = $response->getResult();
                         $allowed = false;
-                        //schaue für alle Teilnehmer, ob der Kurslink erlaubt ist - eine Erlaubnis reicht aus
+                        //schaue fÃ¼r alle Teilnehmer, ob der Kurslink erlaubt ist - eine Erlaubnis reicht aus
                         foreach ($sender as $sender_key => $s) {
                             foreach ($participants as $participant) {
                                 if (in_array($s, $participant['data']['mid'])) {
@@ -133,7 +133,7 @@ class CampusConnector {
                                             $active_participant->getId()
                                         );
                                         if ($seminar_ids) {
-                                            //Course-URLS zurück schicken:
+                                            //Course-URLS zurÃ¼ck schicken:
                                             $seminar_urls = array_map(function ($id) {
                                                 $url = $GLOBALS['ABSOLUTE_URI_STUDIP']."plugins.php/campusconnect/courselink/to/".$id;
                                                 return array(
@@ -198,7 +198,7 @@ class CampusConnector {
                                     break;
                             }
                         } elseif($ressource['status'] === "destroyed") {
-                            //Ressource holen, Item initialisieren und löschen.
+                            //Ressource holen, Item initialisieren und lÃ¶schen.
                             switch ($type) {
                                 case "courselinks":
                                     foreach ($message as $courselink) {
@@ -266,8 +266,8 @@ class CampusConnector {
             if ($ecs_server['active']) {
                 $ecs_client = new ECSClient($ecs_server['data']);
                 foreach ($changes as $change) {
-                    //Für jeden Kurs müssen wir pro ECS generell zwei Nachrichten absetzen:
-                    //Die erste für Courselinks und die zweite für Courses.
+                    //FÃ¼r jeden Kurs mÃ¼ssen wir pro ECS generell zwei Nachrichten absetzen:
+                    //Die erste fÃ¼r Courselinks und die zweite fÃ¼r Courses.
                     switch ($change['object_type']) {
                         case "course":
                             $course = new CCCourse($change['item_id']);

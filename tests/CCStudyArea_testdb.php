@@ -24,7 +24,7 @@ class CCStudyAreaCase extends UnitTestCase {
                 `participant_id` int(11) NOT NULL,
                 `data` text NOT NULL,
                 PRIMARY KEY (`item_id`,`type`)
-            ) ENGINE=MyISAM");
+            )");
         DBManager::get()->exec(
             "CREATE TABLE IF NOT EXISTS `campus_connect_config` (
                 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -32,7 +32,7 @@ class CCStudyAreaCase extends UnitTestCase {
                 `active` tinyint(4) NOT NULL DEFAULT '0',
                 `data` text NOT NULL,
                 PRIMARY KEY (`id`)
-            ) ENGINE=MyISAM");
+            )");
         DBManager::get()->exec(
             "CREATE TABLE IF NOT EXISTS `campus_connect_trees` (
                 `tree_id` varchar(32) NOT NULL,
@@ -45,7 +45,7 @@ class CCStudyAreaCase extends UnitTestCase {
                 `chdate` bigint(20) NOT NULL,
                 `mkdate` bigint(20) NOT NULL,
                 PRIMARY KEY (`tree_id`)
-            ) ENGINE=MyISAM
+            )
         ");
 
         DBManager::get()->exec(
@@ -61,7 +61,7 @@ class CCStudyAreaCase extends UnitTestCase {
                 `chdate` bigint(20) NOT NULL,
                 `mkdate` bigint(20) NOT NULL,
                 PRIMARY KEY (`item_id`,`participant_id`)
-            ) ENGINE=MyISAM
+            )
         ");
     }
 

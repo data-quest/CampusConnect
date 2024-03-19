@@ -8,7 +8,7 @@ class CampusConnectCourseGroupMigration extends Migration
                 `Seminar_id` VARCHAR( 32 ) NOT NULL ,
                 `parallelgroup_id` VARCHAR( 64 ) NULL,
                 PRIMARY KEY (`cg_id`,`Seminar_id`)
-            ) ENGINE = MYISAM
+            )
         ");
 	}
 }

@@ -8,7 +8,7 @@ class CreateTriggerStack extends Migration
                 `object_id` varchar(32) NOT NULL,
                 `object_type` VARCHAR(32) NOT NULL,
                 `mkdate` BIGINT NOT NULL,
-            PRIMARY KEY (`id`)) ENGINE=MyISAM"
+            PRIMARY KEY (`id`))"
         );
 	}
 

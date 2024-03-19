@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__."/CampusConnectLog.php";
-
 class EcsClient
 {
 
@@ -268,7 +266,7 @@ class EcsClient
         $this->setRequestMethod('GET');
         $result = $this->execute($id ? $path . '/' . $id : $path);
         if ($result->getContentType() === "text/uri-list") {
-            //wir müssen beim Proxy die Ressource abholen.
+            //wir mÃ¼ssen beim Proxy die Ressource abholen.
             //Auth-Token - Kontext angeben?
             $token = $this->getAuths($result->getSender(), "")->getResult();
 

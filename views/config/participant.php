@@ -19,7 +19,7 @@
                 <strong><?= _("Name") ?></strong>:
                 <?= htmlReady($server['data']['name']) ?>
                 <br>
-                <strong><?= _("Dom‰nenname") ?></strong>:
+                <strong><?= _("Dom√§nenname") ?></strong>:
                 <?= htmlReady($server['data']['dns']) ?>
                 <br>
                 <strong><?= _("Institution") ?></strong>:
@@ -28,7 +28,7 @@
                 <strong><?= _("E-Mail des Ansprechpartners vor Ort") ?></strong>:
                 <?= htmlReady($server['data']['email']) ?>
                 <br>
-                <strong><?= _("K¸rzel") ?></strong>:
+                <strong><?= _("K√ºrzel") ?></strong>:
                 <?= htmlReady($server['data']['org']['abbr']) ?>
                 <br>
                 <strong><?= _("Identifikation") ?></strong>:
@@ -113,7 +113,7 @@
     <?= $this->render_partial("config/_export_settings.php") ?>
 </div>
 
-<div id="import_directory_trees_settings_window_title" style="display: none;"><?= _("Verzeichnisb‰ume mappen") ?></div>
+<div id="import_directory_trees_settings_window_title" style="display: none;"><?= _("Verzeichnisb√§ume mappen") ?></div>
 <div id="import_directory_trees_settings_window" style="display: none;"></div>
 
 <script>
@@ -130,7 +130,7 @@ if (class_exists("Sidebar")) {
             'eintrag'   => array(
                 array(
                     'icon' => "icons/16/black/info",
-                    'text' => _("Hier sehen Sie die Informationen des Teilnehmers und kˆnnen sie konfigurieren.")
+                    'text' => _("Hier sehen Sie die Informationen des Teilnehmers und k√∂nnen sie konfigurieren.")
                 )
             )
         )

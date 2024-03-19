@@ -110,7 +110,7 @@ $server; //server-data of participant
             <td>
                 <?= QuickSearch::get(
                     "data__import_settings____sem_tree__",
-                    new SQLSearch("SELECT sem_tree_id, name FROM sem_tree WHERE name LIKE :input", _("Studienbereich wählen"))
+                    new SQLSearch("SELECT sem_tree_id, name FROM sem_tree WHERE name LIKE :input", _("Studienbereich wÃ¤hlen"))
                     )->defaultValue($server['data']['import_settings']['sem_tree'], $server['data']['import_settings']['sem_tree'] ? \StudipStudyArea::find($server['data']['import_settings']['sem_tree'])->name : "")
                     ->render() ?>
             </td>
@@ -120,7 +120,7 @@ $server; //server-data of participant
             <td><input type="checkbox" name="data[import_settings][dynamically_add_semtree]" id="dynamically_add_studyareas" value="1"<?= $server['data']['import_settings']['dynamically_add_semtree'] ? " checked" : "" ?>></td>
         </tr>
         <tr class="cms_only">
-            <td><label for="import_settings__directory_tree__override_title"><?= _("Name der Studienbereiche immer überschreiben") ?></label></td>
+            <td><label for="import_settings__directory_tree__override_title"><?= _("Name der Studienbereiche immer Ã¼berschreiben") ?></label></td>
             <td>
                 <input type="checkbox" name="data[import_settings][directory_tree][override_title]" id="import_settings__directory_tree__override_title" value="1"<?= $server['data']['import_settings']['directory_tree']['override_title'] ? " checked" : "" ?>>
             </td>
@@ -135,7 +135,7 @@ $server; //server-data of participant
             <td colspan="2">
                 <a href="#" onClick="STUDIP.CC.participants.showTreeMapping(); return false;">
                     <?= Assets::img("icons/16/blue/admin") ?>
-                    <?= _("Zum Mapping der importierten Bäume") ?>
+                    <?= _("Zum Mapping der importierten BÃ¤ume") ?>
                 </a>
             </td>
         </tr>
@@ -149,7 +149,7 @@ $server; //server-data of participant
                 <select id="import_settings__auth" name="data[import_settings][auth]" onChange="if (this.value=== 'ecs_token') { jQuery('#import_settings__auth_token').removeClass('hidden'); } else { jQuery('#import_settings__auth_token').addClass('hidden'); }">
                     <option value="ecs_token"<?= $server['data']['import_settings']['auth'] === "ecs_token" ? " selected" : "" ?>><?= _("ECS-Auth-Token") ?></option>
                     <option value="legacy_ecs_token"<?= $server['data']['import_settings']['auth'] === "legacy_ecs_token" ? " selected" : "" ?>><?= _("Legacy ECS-Auth-Token (veraltet)") ?></option>
-                    <option value="no"<?= $server['data']['import_settings']['auth'] === "no" ? " selected" : "" ?>><?= _("Kein SSO über CampusConect") ?></option>
+                    <option value="no"<?= $server['data']['import_settings']['auth'] === "no" ? " selected" : "" ?>><?= _("Kein SSO Ã¼ber CampusConect") ?></option>
                 </select>
             </td>
         </tr>
@@ -201,7 +201,7 @@ $server; //server-data of participant
                                     <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                 <? endforeach ?>
                             </select>
-                            <a href="#" onClick="if (window.confirm('<?= _("Wirklich löschen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
+                            <a href="#" onClick="if (window.confirm('<?= _("Wirklich lÃ¶schen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
                                 <?= Assets::img("icons/16/blue/trash", array('class' => "text-bottom")) ?>
                             </a>
                         </td>
@@ -220,7 +220,7 @@ $server; //server-data of participant
                                         <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['auth_token']['id'] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                     <? endforeach ?>
                                 </select>
-                                <a href="#" onClick="if (window.confirm('<?= _("Wirklich löschen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
+                                <a href="#" onClick="if (window.confirm('<?= _("Wirklich lÃ¶schen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
                                     <?= Assets::img("icons/16/blue/trash", array('class' => "text-bottom")) ?>
                                 </a>
                             </td>
@@ -244,7 +244,7 @@ $server; //server-data of participant
         </tr>
         <tr class="cms_only">
             <td>
-                <?= _("Personen werden folgendermaßen identifiziert") ?>
+                <?= _("Personen werden folgendermaÃŸen identifiziert") ?>
             </td>
             <td>
                 <table>

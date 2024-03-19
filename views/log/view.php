@@ -3,7 +3,7 @@
 <input type="hidden" id="search" value="<?= htmlReady(Request::get("search")) ?>">
 <input type="hidden" id="mkdate" value="<?= htmlReady(Request::get("mkdate")) ?>">
 
-<h1><?= _("Log-Einträge") ?></h1>
+<h1><?= _("Log-EintrÃ¤ge") ?></h1>
 <table class="default">
     <thead>
         <tr>
@@ -20,7 +20,7 @@
             <? endforeach ?>
         <? else : ?>
             <tr>
-                <td colspan="4" style="text-align: center;"><?= _("Keine Einträge gefunden") ?></td>
+                <td colspan="4" style="text-align: center;"><?= _("Keine EintrÃ¤ge gefunden") ?></td>
             </tr>
         <? endif ?>
     </tbody>

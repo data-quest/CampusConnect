@@ -10,7 +10,7 @@ var_Dump($course->members[0]['nachname']);
 /*$st = new StudyArea();
 $course->study_areas[] = $st;
 $st->parent_id = '439618ae57d8c10dcaabcf7e21bcc1d9';
-$st->name = 'Testbereich drölfzehn';
+$st->name = 'Testbereich drÃ¶lfzehn';
 $st->info = '';
 $st->type = 0;
 unset($course->study_areas[0]);

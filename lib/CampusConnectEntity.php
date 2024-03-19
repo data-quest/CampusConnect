@@ -3,6 +3,15 @@
 class CampusConnectEntity extends SimpleORMap
 {
 
+    static protected function configure($config = array())
+    {
+        $config['db_table'] = 'campus_connect_entities';
+        $config['registered_callbacks']['before_store'][] = "cbSerializeData";
+        $config['registered_callbacks']['after_store'][] = "cbUnserializeData";
+        $config['registered_callbacks']['after_initialize'][] = "cbUnserializeData";
+        parent::configure($config);
+    }
+
     static function findByType($type = "course") {
         return self::findBySQL('type = ?', array($type));
     }
@@ -14,14 +23,6 @@ class CampusConnectEntity extends SimpleORMap
         } else {
             return false;
         }
-    }
-
-    function __construct($id = null)
-    {
-        $this->db_table = 'campus_connect_entities';
-        $this->registerCallback('before_store', 'cbSerializeData');
-        $this->registerCallback('after_store after_initialize', 'cbUnserializeData');
-        parent::__construct($id);
     }
 
     function cbSerializeData()

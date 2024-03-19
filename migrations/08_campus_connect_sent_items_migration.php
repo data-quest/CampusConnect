@@ -12,7 +12,7 @@ class CampusConnectSentItemsMigration extends Migration
                 `mkdate` int(11) NOT NULL,
                 PRIMARY KEY (`item_id`,`object_type`),
                 KEY `resource_id` (`resource_id`)
-            ) ENGINE=MyISAM
+            )
         ");
 	}
 }

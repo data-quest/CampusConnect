@@ -11,8 +11,6 @@
  * @category    CampusConnect
 */
 
-require_once 'lib/classes/StudipSemSearchHelper.class.php';
-
 class SemTreeSearch extends SQLSearch
 {
     /**
@@ -29,7 +27,7 @@ class SemTreeSearch extends SQLSearch
 
     public function __construct($title = "")
     {
-        $sql = 
+        $sql =
             "SELECT sem_tree_id, name " .
             "FROM sem_tree " .
             "WHERE name LIKE :input " .

@@ -23,13 +23,13 @@ class CCInstitutesTestCase extends UnitTestCase {
                 `participant_id` int(11) NOT NULL,
                 `data` text NOT NULL,
                 PRIMARY KEY (`item_id`,`type`)
-            ) ENGINE=MyISAM");
+            ) ");
         DBManager::get()->exec("CREATE TABLE IF NOT EXISTS `campus_connect_config` (
                 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                 `type` varchar(20) NOT NULL,
                 `active` tinyint(4) NOT NULL DEFAULT '0',
                 `data` text NOT NULL,
-            PRIMARY KEY (`id`)) ENGINE=MyISAM");
+            PRIMARY KEY (`id`)) ");
         DBManager::get()->exec("TRUNCATE TABLE `Institute`");
     }
 
@@ -62,7 +62,7 @@ class CCInstitutesTestCase extends UnitTestCase {
         $anzahl = $db->query("SELECT COUNT(*) FROM Institute")->fetch(PDO::FETCH_COLUMN, 0);
         $this->assertEqual($anzahl, 1);
 
-        $message['title'] = "Biologische Fakultät";
+        $message['title'] = "Biologische FakultÃ¤t";
         CCInstitutes::createFromOrganisationalUnitsMessage($message, $participant->getId());
         $anzahl = $db->query("SELECT COUNT(*) FROM Institute")->fetch(PDO::FETCH_COLUMN, 0);
         $this->assertEqual($anzahl, 1);

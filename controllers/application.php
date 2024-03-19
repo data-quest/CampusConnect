@@ -1,15 +1,9 @@
 <?
 
-require_once 'app/controllers/studip_controller.php';
+class ApplicationController extends PluginController
+{
 
-class ApplicationController extends StudipController {
-
-    function __construct($dispatcher) {
-        parent::__construct($dispatcher);
-        $this->plugin = $this->dispatcher->current_plugin;
-    }
-
-    function before_filter($action, $args) {
+    function before_filter(&$action, &$args) {
         $this->current_action = $action;
         $this->flash = Trails_Flash::instance();
         $this->standard_templates = $GLOBALS['STUDIP_BASE_PATH'] . '/templates/';
@@ -20,9 +14,9 @@ class ApplicationController extends StudipController {
         $this->assets_url = $this->plugin->getPluginUrl(). '/assets/';
         PageLayout::addScript('jquery.tablesorter.min.js');
         PageLayout::addHeadElement("script",
-            array("src" => $this->assets_url.'javascripts/application.js'), 
+            array("src" => $this->assets_url.'javascripts/application.js'),
             "");
-        PageLayout::addHeadElement("link", 
+        PageLayout::addHeadElement("link",
             array("href" => $this->assets_url.'stylesheets/application.css',
                   "rel" => "stylesheet"),
             "");
@@ -66,7 +60,6 @@ class ApplicationController extends StudipController {
 
     function render_json($data) {
         $this->set_content_type('application/json;charset=utf-8');
-        $data = CampusConnectHelper::rec_utf8_encode($data);
         return $this->render_text(json_encode($data));
     }
 

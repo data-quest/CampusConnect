@@ -15,7 +15,7 @@ class SendChangesJob extends CronJob
      */
     public static function getDescription()
     {
-        return _('Führt die Synchronisation mit dem ECS aus und sendet alle relevanten Änderungen von Stud.IP zum ECS.');
+        return _('FÃ¼hrt die Synchronisation mit dem ECS aus und sendet alle relevanten Ã„nderungen von Stud.IP zum ECS.');
     }
 
     public function setUp() {

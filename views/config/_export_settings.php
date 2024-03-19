@@ -77,7 +77,7 @@
                                                 <option value="<?= $datafield->getId() ?>"<?= $mapping === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                             <? endforeach ?>
                                         </select>
-                                        <a href="#" onClick="if (window.confirm('<?= _("Wirklich löschen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
+                                        <a href="#" onClick="if (window.confirm('<?= _("Wirklich lÃ¶schen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
                                             <?= Assets::img("icons/16/blue/trash", array('class' => "text-bottom")) ?>
                                         </a>
                                     </td>
@@ -98,7 +98,7 @@
                                         <option value="<?= $datafield->getId() ?>"><?= htmlReady($datafield['name']) ?></option>
                                     <? endforeach ?>
                                 </select>
-                                <a href="#" onClick="if (window.confirm('<?= _("Wirklich löschen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
+                                <a href="#" onClick="if (window.confirm('<?= _("Wirklich lÃ¶schen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
                                     <?= Assets::img("icons/16/blue/trash", array('class' => "text-bottom")) ?>
                                 </a>
                             </td>
@@ -121,7 +121,7 @@
         <tr>
             <td width="30%">
                 <?= _("Exportfilter aktivieren") ?>
-                <p style="font-size: 0.8em;"><?= _("Es werden niemals Veranstaltungen exportiert, die über CampusConnect importiert wurden. Alle hier definierten Filter sind zusätzlich dazu.") ?></p>
+                <p style="font-size: 0.8em;"><?= _("Es werden niemals Veranstaltungen exportiert, die Ã¼ber CampusConnect importiert wurden. Alle hier definierten Filter sind zusÃ¤tzlich dazu.") ?></p>
             </td>
             <td width="70%">
                 <label>
@@ -140,7 +140,7 @@
         </tr>
         <tr id="filter_sem_tree"<?= !$server['data']['export_settings']['filter_sem_tree_activate'] ? ' style="display: none; "' : "" ?>>
             <td>
-                <?= _("Filter nach Studiengängen") ?>
+                <?= _("Filter nach StudiengÃ¤ngen") ?>
             </td>
             <td>
                 <?= _("Nur Veranstaltungen exportieren, die den folgenden Studienbereichen zugeordnet sind.") ?>

@@ -9,7 +9,7 @@ class CampusConnectRessourcesMigration extends Migration
                 `json` TEXT NOT NULL ,
                 `mkdate` BIGINT NOT NULL ,
                 PRIMARY KEY ( `ressource_id` )
-            ) ENGINE = MYISAM
+            )
         ");
 	}
 }

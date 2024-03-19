@@ -9,10 +9,15 @@
  *  the License, or (at your option) any later version.
  */
 
-require_once __DIR__."/CampusConnectConfig.php";
-require_once __DIR__."/EcsClient.php";
+class CCParticipant extends CampusConnectConfig
+{
 
-class CCParticipant extends CampusConnectConfig {
+    static protected function configure($config = array())
+    {
+        $config['default_values']['type'] = 'participants';
+        $config['default_values']['active'] = 0;
+        parent::configure($config);
+    }
 
     static function findAll() {
         return self::findBySQL("type = 'participants' ORDER BY id ASC");
@@ -122,11 +127,6 @@ class CCParticipant extends CampusConnectConfig {
         return true;
     }
 
-    public function __construct($id = null) {
-        parent::__construct($id);
-        $this->default_values['type'] = 'participants';
-        $this->default_values['active'] = 0;
-    }
 
     public function getPid() {
         return $this['data']['pid'];
