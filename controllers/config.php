@@ -1,21 +1,21 @@
 <?php
-require __DIR__.'/application.php';
 
 class ConfigController extends PluginController
 {
 
     function before_filter(&$action, &$args)
     {
-        if(!$GLOBALS['perm']->have_perm('root')) throw new AccessDeniedException('Keine Berechtigung');
-        parent::before_filter($action, $args);
-    }
-
-    function after_filter($action, $args)
-    {
-        if (Request::isXHR() && $this->response->body) {
-            $this->response->body = studip_utf8encode($this->response->body);
+        if(!$GLOBALS['perm']->have_perm('root')) {
+            throw new AccessDeniedException('Keine Berechtigung');
         }
-        parent::after_filter($action, $args);
+        PageLayout::addHeadElement("script",
+            array("src" => $this->plugin->getPluginURL().'/assets/javascripts/application.js'),
+            "");
+        PageLayout::addHeadElement("link",
+            array("href" => $this->plugin->getPluginURL().'/assets/stylesheets/application.css',
+                "rel" => "stylesheet"),
+            "");
+        parent::before_filter($action, $args);
     }
 
     function index_action()
@@ -42,48 +42,51 @@ class ConfigController extends PluginController
         $this->servers = CampusConnectConfig::findBySQL("type = 'server' ORDER BY id ASC");
     }
 
-    function ecs_save_action()
+    function ecs_edit_action($config_id = null)
     {
-        $server = new CampusConnectConfig(Request::get("id") ? Request::get("id") : null);
-        if ((!$server->isNew() && $server['type'] !== "server") || (!count($_POST))) {
-            return;
+        $this->server = new CampusConnectConfig($config_id);
+        PageLayout::setTitle(
+            $this->server->isNew() ? _('Neuen ECS eintragen') : _('ECS-Server bearbeiten')
+        );
+    }
+
+    function ecs_save_action($config_id = null)
+    {
+        if (Request::isPost()) {
+            if (Request::submitted('save')) {
+                $server = new CampusConnectConfig($config_id);
+                if (!$server->isNew() && $server['type'] !== "server") {
+                    return;
+                }
+                $data_array = Request::getArray("data");
+                $server['type'] = "server";
+                $server['active'] = Request::int("active", 0);
+                $server['data'] = CampusConnectHelper::rec_array_merge($server['data'], $data_array);
+                $server->store();
+            }
+            if (Request::submitted('delete')) {
+                $server = new CampusConnectConfig($config_id);
+                $server->delete();
+            }
         }
-        $data_array = Request::getArray("data");
-        $server['type'] = "server";
-        $server['active'] = Request::int("active");
-        $server['data'] = CampusConnectHelper::rec_array_merge($server['data'], $data_array);
-        $server->store();
+
+        PageLayout::postSuccess(_('Daten wurden gespeichert.'));
+        $this->redirect(PluginEngine::getURL($this->plugin, [], 'config/ecs'));
+    }
+
+    function ecs_connectivity_action()
+    {
+        $data = Request::getArray("data");
+        $client = new EcsClient($data);
+        $result = $client->getMemberships();
+        $result_header = $result->getResponseHeader();
         $this->render_json(array(
-            'message' => studip_utf8encode(Request::get("id")
-                ? MessageBox::success(_("Serverdaten gespeichert"))
-                : MessageBox::success(_("Neuen Server erstellt"))),
-            'id' => $server->getId()
+            'is_error' => $result->isError(),
+            'status'   => $result_header['Status'],
+            'error'    => $client->last_cert_error ?: $client->last_error
         ));
     }
 
-    function ecs_get_data_action()
-    {
-        $server = new CampusConnectConfig(Request::get("id"));
-        $data = array(
-            'id' => $server['id'],
-            'type' => $server['type'],
-            'active' => $server['active'],
-            'data' => (array) $server['data']
-        );
-        $this->render_json($data);
-    }
-
-    function ecs_delete_action()
-    {
-        if (count($_POST) && Request::get("id")) {
-            $server = new CampusConnectConfig(Request::get("id"));
-            $server->delete();
-            echo "1";
-        } else {
-            echo "0";
-        }
-        $this->render_nothing();
-    }
 
 
     function participants_action()
@@ -110,7 +113,6 @@ class ConfigController extends PluginController
         Navigation::activateItem("/admin/campusconnect/participants");
 		$this->server = new CampusConnectConfig(Request::get("id"));
         $this->institute = Institute::getInstitutes();
-        $this->import_cms_allowed = !$this->anotherCMS(Request::get("id"), true);
 	}
 
     function participant_save_action()
@@ -132,14 +134,9 @@ class ConfigController extends PluginController
         $data_array = Request::getArray("data");
         $data_array['import_settings']['sem_tree'] = Request::option("data__import_settings____sem_tree__");
         $server['data'] = CampusConnectHelper::rec_array_merge($server['data'], $data_array);
-        if ($server['active'] && $server['data']['import_setting']['course_entity_type'] === "cms") {
-            if ($this->anotherCMS($server->getId(), true)) {
-                $server['active'] = 0;
-            }
-        }
         $server->store();
         $this->render_json(array(
-            'message' => studip_utf8encode((string) MessageBox::success(_("Teilnehmerdaten gespeichert"))),
+            'message' => (string) MessageBox::success(_("Teilnehmerdaten gespeichert")),
             'id' => $server->getId()
         ));
     }
@@ -174,29 +171,6 @@ class ConfigController extends PluginController
         $tree->store();
 
         $this->render_nothing();
-    }
-
-    function ecs_connectivity_action()
-    {
-        $client = new EcsClient(Request::getArray("data"));
-        $result = $client->getMemberships();
-        $result_header = $result->getResponseHeader();
-        $this->render_json(array(
-            'is_error' => $result->isError(),
-            'status'   => $result_header['Status'],
-            'error'    => $client->last_cert_error ?: $client->last_error
-        ));
-    }
-
-    protected function anotherCMS($participant_id, $import = true)
-    {
-        foreach (CampusConnectConfig::findByType("participant") as $participant) {
-            if ($participant->getId() != $participant_id
-                    && $participant['data'][($import ? "import" : "export").'_setting']['entity_type'] === "cms") {
-                return true;
-            }
-        }
-        return false;
     }
 
     private function isNobodyAllowed()

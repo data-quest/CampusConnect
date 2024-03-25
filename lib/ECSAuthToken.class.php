@@ -2,7 +2,7 @@
 
 /*
  *  Copyright (c) 2013  Rasmus Fuhse <fuhse@data-quest.de>
- * 
+ *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
  *  published by the Free Software Foundation; either version 2 of
@@ -100,7 +100,6 @@ class ECSAuthToken {
         foreach ($parameter as $param_name => $param) {
             $output .= $param;
         }
-        $output = studip_utf8encode($output);
         CampusConnectLog::_(sprintf("ecs-auth: constructed realm before hashing: %s", $output), CampusConnectLog::DEBUG);
         if ($this) {
             $this->debugging[] = sprintf("ECSAuthToken: Constructed realm before hashing: %s", $output);

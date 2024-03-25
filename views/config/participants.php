@@ -1,15 +1,7 @@
-<h2><?= _("Teilnehmer") ?></h2>
-
-<style>
-    #participant_table tr.active .inactive {
-        display: none;
-    }
-    #participant_table tr.inactive .active {
-        display: none;
-    }
-</style>
-
-<table id="participant_table" class="select">
+<table id="participant_table" class="default">
+    <caption>
+        <?= _("Teilnehmer") ?>
+    </caption>
     <thead>
         <tr>
             <th><?= _("Name") ?></th>
@@ -19,23 +11,29 @@
     </thead>
     <? if (count($communities)) : ?>
     <? foreach ($communities as $community) : ?>
-    <tbody style="border: 2px solid #bbbbbb;">
+    <tbody>
         <tr class="header">
             <td colspan="3">
                 <strong>
-                    <?= Assets::img("icons/16/grey/community")." ".htmlReady($community['data']['name']) ?>
+                    <?= Icon::create("community", Icon::ROLE_INFO)->asImg(20, ['class' => 'text-bottom']) ?>
+                    <?= htmlReady($community['data']['name']) ?>
                 </strong>
                 <? if ($community['data']['description']) : ?>
-                <br>
-                <?= htmlReady($community['data']['description']) ?>
+                    <div>
+                        <?= htmlReady($community['data']['description']) ?>
+                    </div>
                 <? endif ?>
             </td>
         </tr>
         <? $vorhanden = false ?>
         <? foreach ($servers as $server_config) : ?>
         <? if (in_array($community['data']['cid'], $server_config['data']['communities'])) : ?>
-        <tr id="participant_<?= $server_config->getId() ?>" class="selectable <?= $server_config['active'] ? "active" : "inactive" ?>">
-            <td><?= htmlReady($server_config['data']['name']) ?></td>
+        <tr id="participant_<?= $server_config->getId() ?>" class="<?= $server_config['active'] ? "active" : "inactive" ?>">
+            <td>
+                <a href="<?= PluginEngine::getLink($plugin, ['id' => $server_config->id], 'config/participant') ?>">
+                    <?= htmlReady($server_config['data']['name']) ?>
+                </a>
+            </td>
             <td>
             <? foreach((array) $server_config['data']['ecs'] as $number => $ecs) : ?>
                 <?= $number > 0 ? "|" : "" ?>
@@ -70,4 +68,3 @@
     </tbody>
     <? endif ?>
 </table>
-´

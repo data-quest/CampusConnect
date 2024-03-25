@@ -91,8 +91,6 @@ class EcsResult
                 CampusConnectLog::_('json_decode() failed: ' . json_last_error(), CampusConnectLog::WARNING);
             }
 
-            $parsed_result = studip_utf8decode($parsed_result);
-
             $this->parsed_result = $parsed_result;
         }
     }

@@ -1,7 +1,7 @@
 <?php
-require __DIR__.'/application.php';
 
-class LogController extends ApplicationController {
+class LogController extends PluginController
+{
 
     function before_filter(&$action, &$args)
     {
@@ -13,14 +13,21 @@ class LogController extends ApplicationController {
         if (Request::isAjax()) {
             $this->set_layout(null);
         }
+        PageLayout::addHeadElement("script",
+            array("src" => $this->plugin->getPluginURL().'/assets/javascripts/application.js'),
+            "");
+        PageLayout::addHeadElement("link",
+            array("href" => $this->plugin->getPluginURL().'/assets/stylesheets/application.css',
+                "rel" => "stylesheet"),
+            "");
         PageLayout::setTitle(_("CampusConnect Log"));
     }
 
 
     public function view_action()
     {
-        if (get_config("CAMPUSCONNECT_LOGFILE")) {
-            CampusConnectLog::get()->setHandler($GLOBALS['TMP_PATH']."/".get_config("CAMPUSCONNECT_LOGFILE"));
+        if (Config::get()->CAMPUSCONNECT_LOGFILE) {
+            CampusConnectLog::get()->setHandler($GLOBALS['TMP_PATH']."/".Config::get()->CAMPUSCONNECT_LOGFILE);
         }
         if (Request::get("type")) {
             $this->entries = CCLog::read("log_type = ?", array(Request::get("type")));
@@ -44,7 +51,7 @@ class LogController extends ApplicationController {
     function view2_action()
     {
         if (get_config("CAMPUSCONNECT_LOGFILE")) {
-            CampusConnectLog::get()->setHandler($GLOBALS['TMP_PATH']."/".get_config("CAMPUSCONNECT_LOGFILE"));
+            CampusConnectLog::get()->setHandler($GLOBALS['TMP_PATH']."/".Config::get()->CAMPUSCONNECT_LOGFILE);
         }
         $this->logfile = $this->logfile ? $this->logfile : (CampusConnectLog::get()->getHandler() ?: $GLOBALS['TMP_PATH']."/studip.log");
     }

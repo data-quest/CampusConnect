@@ -11,8 +11,8 @@ class CCLog {
         $success = $db->exec("
             INSERT INTO cclogs (log_type, log_text, log_json, user_id, mkdate)
             VALUES (".$db->quote($type).",
-                ".$db->quote(studip_utf8encode($text)).",
-                ".$db->quote($array ? json_encode(studip_utf8encode($array)) : null).",
+                ".$db->quote($text).",
+                ".$db->quote($array ? json_encode($array) : null).",
                 ".$db->quote($GLOBALS['user']->id).",
                 ".$db->quote(time()).")
         ");

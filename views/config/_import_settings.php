@@ -2,7 +2,7 @@
 
 /*
  *  Copyright (c) 2012  Rasmus Fuhse <fuhse@data-quest.de>
- * 
+ *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
  *  published by the Free Software Foundation; either version 2 of
@@ -38,7 +38,7 @@ $server; //server-data of participant
             <td>
                 <div style="display: none;" class="template">
                     <input type="text" placeholder="<?= _("Kurstyp des Fremdsystems") ?>" onChange="if (this.value) { jQuery(this).nextAll('select').attr('name', 'data[import_settings][sem_type_matching][' + encodeURI(this.value) + ']'); } else { jQuery(this).closest('div').remove(); }">
-                    <?= Assets::img("icons/16/grey/arr_2right.png", array('class' => "middle", 'title' => _("wird gematched auf"))) ?>
+                    <?= Icon::create("arr_2right", Icon::ROLE_INACTIVE)->asImg(20, array('class' => "middle", 'title' => _("wird gematched auf"))) ?>
                     <select id="sem_type">
                         <? foreach ($GLOBALS['SEM_CLASS'] as $sem_class) : ?>
                         <? foreach ($GLOBALS['SEM_TYPE'] as $index => $sem_type) : ?>
@@ -53,7 +53,7 @@ $server; //server-data of participant
                         <? endforeach ?>
                     </select>
                     <a href="" onClick="jQuery(this).closest('div').remove(); return false;">
-                        <?= Assets::img("icons/16/blue/trash", array('class' => "middle")) ?>
+                        <?= Icon::create("trash")->asImg(20, array('class' => "middle")) ?>
                     </a>
                 </div>
 
@@ -61,8 +61,8 @@ $server; //server-data of participant
                 <? foreach ((array) $server['data']['import_settings']['sem_type_matching'] as $key => $type) : ?>
                 <div>
                     <input type="text" placeholder="<?= _("Kurstyp des Fremdsystems") ?>" onChange="if (jQuery(this).val()) { jQuery(this).nextAll('select').attr('name', 'data[import_settings][sem_type_matching][' + encodeURI(this.value) + ']'); } else { jQuery(this).closest('div').remove(); }" value="<?= htmlReady($key) ?>">
-                    <?= Assets::img("icons/16/grey/arr_2right.png", array('class' => "middle", 'title' => _("wird gematched auf"))) ?>
-                    <select id="sem_type" name="data[import_settings][sem_type_matching][<?= urlencode(studip_utf8encode($key)) ?>]">
+                    <?= Icon::create("arr_2right", Icon::ROLE_INACTIVE)->asImg(20, array('class' => "middle", 'title' => _("wird gematched auf"))) ?>
+                    <select id="sem_type" name="data[import_settings][sem_type_matching][<?= urlencode($key) ?>]">
                         <? foreach ($GLOBALS['SEM_CLASS'] as $sem_class) : ?>
                         <? foreach ($GLOBALS['SEM_TYPE'] as $index => $sem_type) : ?>
                         <? if ($sem_type['class'] == $sem_class['id']) : ?>
@@ -76,7 +76,7 @@ $server; //server-data of participant
                         <? endforeach ?>
                     </select>
                     <a href="" onClick="jQuery(this).closest('div').remove(); return false;">
-                        <?= Assets::img("icons/16/blue/trash", array('class' => "middle")) ?>
+                        <?= Icon::create("trash")->asImg(20, array('class' => "middle")) ?>
                     </a>
                 </div>
                 <? endforeach ?>
@@ -84,7 +84,7 @@ $server; //server-data of participant
 
                 <div>
                     <a href="" onClick="jQuery(this).closest('td').find('.sem_types').append(jQuery(this).closest('td').children('.template').clone().show()); return false;">
-                        <?= Assets::img("icons/16/blue/plus") ?>
+                        <?= Icon::create("add") ?>
                     </a>
                 </div>
             </td>
@@ -118,26 +118,6 @@ $server; //server-data of participant
         <tr class="kurslink_only">
             <td><label for="dynamically_add_studyareas"><?= _("Studienbereiche dynamisch erzeugen, falls vorhanden") ?></label></td>
             <td><input type="checkbox" name="data[import_settings][dynamically_add_semtree]" id="dynamically_add_studyareas" value="1"<?= $server['data']['import_settings']['dynamically_add_semtree'] ? " checked" : "" ?>></td>
-        </tr>
-        <tr class="cms_only">
-            <td><label for="import_settings__directory_tree__override_title"><?= _("Name der Studienbereiche immer überschreiben") ?></label></td>
-            <td>
-                <input type="checkbox" name="data[import_settings][directory_tree][override_title]" id="import_settings__directory_tree__override_title" value="1"<?= $server['data']['import_settings']['directory_tree']['override_title'] ? " checked" : "" ?>>
-            </td>
-        </tr>
-        <tr class="cms_only">
-            <td><label for="import_settings__directory_tree__import_nonempty"><?= _("Nur Kategorien importieren, die Kurse enthalten") ?></label></td>
-            <td>
-                <input type="checkbox" name="data[import_settings][directory_tree][import_nonempty]" id="import_settings__directory_tree__import_nonempty" value="1"<?= $server['data']['import_settings']['directory_tree']['import_nonempty'] ? " checked" : "" ?>>
-            </td>
-        </tr>
-        <tr class="cms_only">
-            <td colspan="2">
-                <a href="#" onClick="STUDIP.CC.participants.showTreeMapping(); return false;">
-                    <?= Assets::img("icons/16/blue/admin") ?>
-                    <?= _("Zum Mapping der importierten Bäume") ?>
-                </a>
-            </td>
         </tr>
 
         <tr class="kurslink_only">
@@ -202,7 +182,7 @@ $server; //server-data of participant
                                 <? endforeach ?>
                             </select>
                             <a href="#" onClick="if (window.confirm('<?= _("Wirklich löschen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
-                                <?= Assets::img("icons/16/blue/trash", array('class' => "text-bottom")) ?>
+                                <?= Icon::create("trash")->asImg(20, array('class' => "text-bottom")) ?>
                             </a>
                         </td>
                     </tr>
@@ -221,7 +201,7 @@ $server; //server-data of participant
                                     <? endforeach ?>
                                 </select>
                                 <a href="#" onClick="if (window.confirm('<?= _("Wirklich löschen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
-                                    <?= Assets::img("icons/16/blue/trash", array('class' => "text-bottom")) ?>
+                                    <?= Icon::create("trash")->asImg(20, array('class' => "text-bottom")) ?>
                                 </a>
                             </td>
                         </tr>
@@ -230,7 +210,7 @@ $server; //server-data of participant
                         <tr>
                             <td colspan="2">
                                 <a href="#" onClick="jQuery('#data__import_settings__auth_token__attributes_template').clone().removeAttr('id').appendTo('#data__import_settings__auth_token__attributes').fadeIn(); return false;">
-                                    <?= Assets::img("icons/16/blue/add") ?>
+                                    <?= Icon::create("add")->asImg() ?>
                                 </a>
                             </td>
                         </tr>
@@ -239,60 +219,7 @@ $server; //server-data of participant
 
             </td>
         </tr>
-        <tr class="cms_only">
-            <td colspan="2"><hr class="grey"></td>
-        </tr>
-        <tr class="cms_only">
-            <td>
-                <?= _("Personen werden folgendermaßen identifiziert") ?>
-            </td>
-            <td>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td><label><?= _("Standard") ?></label></td>
-                            <td><select id="import_settings__cms__user_identifier" name="data[import_settings][cms][user_identifier]">
-                                    <option value="username"<?= $server['data']['import_settings']['cms']['user_identifier'] === "username" ? " selected" : "" ?>>username</option>
-                                    <option value="email"<?= $server['data']['import_settings']['cms']['user_identifier'] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
-                                    <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
-                                        <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['cms']['user_identifier'] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
-                                    <? endforeach ?>
-                                </select>
-                            </td>
-                        </tr>
-                        <? foreach (array("ecs_PersonalUniqueCode", "ecs_ePPN", "ecs_login", "ecs_loginUID", "ecs_uid", "ecs_email") as $param) : ?>
-                            <tr>
-                                <td><label for="import_settings__cms__user_identifiers_<?= $param ?>"><?= htmlReady($param) ?></label></td>
-                                <td>
-                                    <select id="import_settings__cms__user_identifiers_<?= $param ?>" name="data[import_settings][cms][user_identifiers][<?= $param ?>]">
-                                        <option value=""> - </option>
-                                        <option value="username"<?= $server['data']['import_settings']['cms']['user_identifiers'][$param] === "username" ? " selected" : "" ?>>username</option>
-                                        <option value="email"<?= $server['data']['import_settings']['cms']['user_identifiers'][$param] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
-                                        <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
-                                            <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['cms']['user_identifiers'][$param] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
-                                        <? endforeach ?>
-                                    </select>
-                                </td>
-                            </tr>
-                        <? endforeach ?>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
 
-        <tr class="cms_only">
-            <td colspan="2"><hr class="grey"></td>
-        </tr>
-        <tr class="cms_only">
-            <td><label for="import_settings__cms__parallelgroup"><?= _("Parallelgruppen als") ?></label></td>
-            <td>
-                <select id="import_settings__cms__parallelgroup" name="data[import_settings][cms][parallelgroups]">
-                    <option value="allinone"<?= $server['data']['import_settings']['cms']['parallelgroups'] === "allinone" ? " selected" : "" ?>><?= _("Eine Veranstaltung") ?></option>
-                    <option value="many"<?= $server['data']['import_settings']['cms']['parallelgroups'] === "many" ? " selected" : "" ?>><?= _("Eine Veranstaltung pro Parallelgruppe") ?></option>
-                    <option value="dozent"<?= $server['data']['import_settings']['cms']['parallelgroups'] === "dozent" ? " selected" : "" ?>><?= _("Eine Veranstaltung pro Dozent") ?></option>
-                </select>
-            </td>
-        </tr>
 
         <tr>
             <td colspan="2"><hr class="grey"></td>

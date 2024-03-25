@@ -2,7 +2,7 @@
 
 /*
  *  Copyright (c) 2012  Rasmus Fuhse <fuhse@data-quest.de>
- * 
+ *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
  *  published by the Free Software Foundation; either version 2 of
@@ -118,7 +118,7 @@ $infobox = array(
                 'icon' => "icons/16/black/info",
                 'text' => sprintf(
                             _("Diese Veranstaltung wird von einem angekoppeltem Fremdsystem angeboten. Wenn Sie hier daran angemeldet sind, werden Ihnen die Termine (sofern bekannt) in den Kalender eingetragen und Sie können über den %s direkt dorthin springen (das geht auch von der Seminarübersicht aus)."),
-                            '<a href="'.URLHelper::getLink("plugins.php/campusconnect/courselink/link").'">'.Assets::img("icons/16/blue/learnmodule.png", array('class' => "text-bottom"))." "._("Direktlink").'</a>'
+                            '<a href="'.URLHelper::getLink("plugins.php/campusconnect/courselink/link").'">'.Icon::create("learnmodule")->asImg(20, array('class' => "text-bottom"))." "._("Direktlink").'</a>'
                         )
             )
         )

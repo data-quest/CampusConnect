@@ -156,22 +156,6 @@ class CampusConnector {
                                         }
                                     }
                                     break;
-                                case "organisation_units":
-                                    foreach ($message as $organisation) {
-                                        CCInstitutes::createFromOrganisationalUnitsMessage(
-                                            $organisation,
-                                            $active_participant->getId()
-                                        );
-                                    }
-                                    break;
-                                case "terms":
-                                    foreach ($message as $term) {
-                                        CCTerms::createFromTermsMessage(
-                                            $term,
-                                            $active_participant->getId()
-                                        );
-                                    }
-                                    break;
                                 case "course_members":
                                     foreach ($message as $course_members) {
                                         CCCourse::createCourseMembers(
@@ -212,22 +196,6 @@ class CampusConnector {
                                     foreach ($message as $course) {
                                         CCCourse::deleteFromCoursesMessage(
                                             $course,
-                                            $active_participant->getId()
-                                        );
-                                    }
-                                    break;
-                                case "organisation_units":
-                                    foreach ($message as $organisation) {
-                                        CCInstitutes::deleteFromOrganisationalUnitsMessage(
-                                            $organisation,
-                                            $active_participant->getId()
-                                        );
-                                    }
-                                    break;
-                                case "terms":
-                                    foreach ($message as $term) {
-                                        CCTerms::deleteFromTermsMessage(
-                                            $term,
                                             $active_participant->getId()
                                         );
                                     }

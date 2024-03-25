@@ -11,14 +11,14 @@
 ?>
 <div id="messages"></div>
 
-<table class="attribute_table" style="margin: 10px; width: 95%">
+<table class="attribute_table default" style="margin: 10px; width: 95%">
+    <caption>
+        <?= htmlReady($server['data']['name']) ?>
+    </caption>
     <tbody>
         <tr>
             <td><?= _("Informationen") ?></td>
             <td>
-                <strong><?= _("Name") ?></strong>:
-                <?= htmlReady($server['data']['name']) ?>
-                <br>
                 <strong><?= _("Domänenname") ?></strong>:
                 <?= htmlReady($server['data']['dns']) ?>
                 <br>
@@ -71,9 +71,6 @@
                     <select name="data[import_settings][course_entity_type]" style="width: 250px;" id="import_course_type" onChange="STUDIP.CC.participants.showImportFields();">
                         <option value="kurslink"<?= $server['data']['import_settings']['course_entity_type'] === "kurslink" ? " selected" : "" ?>><?= _("Kurslinks") ?></option>
                         <option value="kurs"<?= $server['data']['import_settings']['course_entity_type'] === "kurs" ? " selected" : "" ?>><?= _("Kurse") ?></option>
-                        <? if ($import_cms_allowed) : ?>
-                        <option value="cms"<?= $server['data']['import_settings']['course_entity_type'] === "cms" ? " selected" : "" ?>><?= _("Campus-Management-System") ?></option>
-                        <? endif ?>
                     </select>
 
                     <a href="#" onClick="STUDIP.CC.participants.setup_import(); return false;"><?= _("Konfiguration") ?></a>
@@ -120,23 +117,3 @@
 jQuery(STUDIP.CC.participants.showImportFields);
 </script>
 
-<?
-if (class_exists("Sidebar")) {
-
-} else {
-    $infobox = array(
-        array(
-            'kategorie' => _("Information"),
-            'eintrag'   => array(
-                array(
-                    'icon' => "icons/16/black/info",
-                    'text' => _("Hier sehen Sie die Informationen des Teilnehmers und können sie konfigurieren.")
-                )
-            )
-        )
-    );
-    $infobox = array(
-        'picture' => $assets_url . "/images/network.png",
-        'content' => $infobox
-    );
-}

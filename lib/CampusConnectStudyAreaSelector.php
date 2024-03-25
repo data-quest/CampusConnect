@@ -1,8 +1,6 @@
 <?php
 
-namespace CampusConnect;
-
-class StudyAreaSelector {
+class CampusConnectStudyAreaSelector {
 
     protected $id;
     protected $name;
@@ -12,7 +10,7 @@ class StudyAreaSelector {
 
     static public function create($name, $type = "single")
     {
-        $selector = new \CampusConnect\StudyAreaSelector($name, $type);
+        $selector = new CampusConnectStudyAreaSelector($name, $type);
         return $selector;
     }
 

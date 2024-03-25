@@ -25,15 +25,15 @@ class CCRessources extends SimpleORMap
 
     function cbSerializeData()
     {
-        $this->content['data'] = json_encode(studip_utf8encode($this->content['data']));
-        $this->content_db['data'] = json_encode(studip_utf8encode($this->content_db['data']));
+        $this->content['data'] = json_encode($this->content['data']);
+        $this->content_db['data'] = json_encode($this->content_db['data']);
         return true;
     }
 
     function cbUnserializeData()
     {
-        $this->content['data'] = studip_utf8decode((array) json_decode($this->content['data']));
-        $this->content_db['data'] = studip_utf8decode((array) json_decode($this->content_db['data']));
+        $this->content['data'] = (array) json_decode($this->content['data']);
+        $this->content_db['data'] = (array) json_decode($this->content_db['data']);
         return true;
     }
 }

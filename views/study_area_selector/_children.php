@@ -6,7 +6,7 @@
             <div style="float: right;">
                 <? if ($entry['studip_object_id']) : ?>
                     <a href="<?= URLHelper::getLink("dispatch.php/institute/overview", array('auswahl' => $entry['studip_object_id'])) ?>">
-                        <?= Assets::img("icons/16/blue/institute", array('class' => "text-bottom")) ?>
+                        <?= Icon::create("institute")->asImg(20, array('class' => "text-bottom")) ?>
                     </a>
                 <? endif ?>
                 <input type="<?= $type === "single" ? "radio" : "checkbox" ?>"

@@ -24,14 +24,12 @@ class CampusConnectLink extends StudIPPlugin implements StandardPlugin, SystemPl
 
     public function getTabNavigation($course_id)
     {
-        $navigation = new AutoNavigation($this->getDisplayName(), PluginEngine::getURL($this, array(), "courselink/link"));
-        $navigation->setImage(Assets::image_path("icons/16/white/learnmodule"), array('title' => _("Direkt zur Veranstaltung")));
+        $navigation = new Navigation($this->getDisplayName(), PluginEngine::getURL($this, array(), "courselink/link"));
         return array('link' => $navigation);
     }
 
     public function getIconNavigation($course_id, $last_visit, $user_id) {
-        $navigation = new AutoNavigation($this->getDisplayName(), PluginEngine::getURL($this, array(), "courselink/link"));
-        $navigation->setImage(Assets::image_path("icons/16/grey/learnmodule"), array('title' => _("Direkt zur Veranstaltung")));
+        $navigation = new Navigation($this->getDisplayName(), PluginEngine::getURL($this, array(), "courselink/link"));
         return $navigation;
     }
 

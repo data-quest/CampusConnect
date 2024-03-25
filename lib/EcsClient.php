@@ -60,9 +60,7 @@ class EcsClient
     {
         $c = curl_init();
         if (is_array($data)) {
-            $data = json_encode(studip_utf8encode($data));
-        } else {
-            $data = studip_utf8encode($data);
+            $data = json_encode($data);
         }
         $this->setHeader('Accept', 'application/json');
         curl_setopt($c, CURLOPT_URL, $this->getUrl($path));
@@ -70,7 +68,7 @@ class EcsClient
         curl_setopt($c, CURLOPT_VERBOSE, 0);
         curl_setopt($c, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         if ($GLOBALS['user']->id === "cli") {
-            curl_setopt($c, CURLOPT_TIMEOUT, get_config("CRONJOBS_ESCALATION ") - 1);
+            curl_setopt($c, CURLOPT_TIMEOUT, 60);
         }
         switch($this->config['auth_type'])
         {
@@ -165,7 +163,7 @@ class EcsClient
                     CCLog::log(
                         "CC-get_memberships",
                         sprintf('curl_exec: %s',$this->getUrl($path)),
-                        studip_utf8decode(json_decode($result, true))
+                        json_decode($result, true)
                     );
             }
         }

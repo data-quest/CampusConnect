@@ -57,12 +57,11 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
         /*******************************************************************
          *               Navigation für Kurse mit Kurs-URLs                *
          *******************************************************************/
-        if (Navigation::hasItem("/course") && $_SESSION['SessionSeminar']) {
-            $course = new CCCourse($_SESSION['SessionSeminar']);
+        if (Navigation::hasItem("/course") && Context::getId()) {
+            $course = new CCCourse(Context::getId());
             $course_urls = $course->getCourseUrls();
             if (count($course_urls) > 0) {
                 $tab = new AutoNavigation(_("Lernplattformen"), PluginEngine::getUrl($this, array(), 'courselink/extern'));
-                $tab->setImage(Assets::image_path("icons/16/white/link-extern"));
                 Navigation::addItem("/course/campusconnect_extern", $tab);
             }
         }
@@ -109,7 +108,6 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
     public function getTabNavigation($course_id)
     {
         $navigation = new Navigation(_("Informationen"), PluginEngine::getURL($this, array(), "courselink/overview"));
-        $navigation->setImage(Assets::image_path("icons/16/white/infopage"), array('title' => _("Direkt zur Veranstaltung")));
         $navigation->addSubNavigation('overview', new AutoNavigation(_("Informationen"), PluginEngine::getURL($this, array(), "courselink/overview")));
         $navigation->addSubNavigation('details', new Navigation(_("Details"), URLHelper::getURL("details.php")));
         return array('main' => $navigation);

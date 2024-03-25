@@ -1,7 +1,7 @@
 <?php
-require __DIR__.'/application.php';
 
-class RessourcesController extends ApplicationController {
+class RessourcesController extends PluginController
+{
 
 	function temporary_ressource_action($id)
     {

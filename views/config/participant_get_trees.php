@@ -2,7 +2,7 @@
 
 /*
  *  Copyright (c) 2012  Rasmus Fuhse <fuhse@data-quest.de>
- * 
+ *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
  *  published by the Free Software Foundation; either version 2 of
@@ -39,7 +39,7 @@ $sem_tree_search = new SemTreeSearch();
                     <tbody>
                         <tr>
                             <td><span class="tree_mapping_directory"></span></td>
-                            <td><?= Assets::img("icons/16/yellow/arr_2right", array('class' => "text-bottom", 'title' => _("Wird angehängt unter den Studienbereich"))) ?></td>
+                            <td><?= Icon::create("arr_2right", Icon::ROLE_STATUS_YELLOW)->asImg(20, array('class' => "text-bottom", 'title' => _("Wird angehängt unter den Studienbereich"))) ?></td>
                             <td>
                                 <?= QuickSearch::get("sem_tree_id", $sem_tree_search)->render() ?>
                             </td>

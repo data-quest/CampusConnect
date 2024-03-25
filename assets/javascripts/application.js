@@ -51,7 +51,7 @@ STUDIP.CC.form = {
                 } else if (jQuery(this).is("[type=radio]")) {
                     jQuery(this).attr("checked", false);
                 } else {
-                    
+
                     jQuery(this).val("");
                 }
                 return;
@@ -178,41 +178,20 @@ STUDIP.CC.ECS = {
             'width': "80%"
         });
     },
-    'click': function () {
-        var id = jQuery(this).attr("id");
-        id = id.substr(id.lastIndexOf("_") + 1);
-        jQuery.ajax({
-            'url': STUDIP.ABSOLUTE_URI_STUDIP + "plugins.php/campusconnect/config/ecs_get_data",
-            'data': {
-                'id': id
-            },
-            'dataType': "json",
-            'success': function (ret) {
-                STUDIP.CC.form.fill_dataforms_in_div("#ecs_edit_window", ret);
-                jQuery("#ecs_delete").show();
-                STUDIP.CC.ECS.open_edit_window(jQuery("#ecs_edit_window_title").text());
-            }
-        });
-    },
-    'del': function () {
-        if (jQuery("#ecs_id").val() && window.confirm('Wirklich löschen?')) {
-            jQuery.ajax({
-                'url': STUDIP.ABSOLUTE_URI_STUDIP + "plugins.php/campusconnect/config/ecs_delete",
-                'type': "post",
-                'data': {
-                    'id': jQuery("#ecs_id").val()
-                },
-                'success': function (success) {
-                    if (success === "1") {
-                        jQuery("#ecs_" + jQuery("#ecs_id").val()).remove();
-                        jQuery("#ecs_edit_window").dialog("close");
-                    }
-                }
-            });
-        }
-    },
     'connectivity': function () {
-    	var data = STUDIP.CC.form.get_data_from_div("#ecs_edit_window");
+        let data = {
+            data: {
+                server: $('#ecs_data_server').val(),
+                auth_type: $('#ecs_data_auth_type_1').is(":checked") ? 1 : 2,
+                auth_user: $('#ecs_data_auth_user').val(),
+                auth_pass: $('#ecs_data_auth_password').val(),
+                ca_cert_path: $('#ecs_data_ca_cert_path').val(),
+                client_cert_path: $('#ecs_data_client_cert_path').val(),
+                key_path: $('#ecs_data_key_path').val(),
+                key_password: $('#ecs_data_key_password').val()
+            }
+        };
+
         jQuery.ajax({
             'url': STUDIP.ABSOLUTE_URI_STUDIP + "plugins.php/campusconnect/config/ecs_connectivity",
             'data': data,
@@ -257,11 +236,6 @@ STUDIP.CC.ECS = {
     }
 };
 STUDIP.CC.participants = {
-    'click': function () {
-        var id = jQuery(this).attr("id");
-        id = id.substr(id.lastIndexOf("_") + 1);
-        location.href = STUDIP.ABSOLUTE_URI_STUDIP + "plugins.php/campusconnect/config/participant?id=" + id;
-    },
     'save_data': function () {
         var data = STUDIP.CC.form.get_data_from_div(".attribute_table, #import_settings_window, #export_settings_window");
         jQuery.ajax({
@@ -300,19 +274,12 @@ STUDIP.CC.participants = {
     'showImportFields': function () {
         var import_type = jQuery("#import_course_type").val();
         switch (import_type) {
-            case "cms":
-                jQuery(".kurslink_only").hide();
-                jQuery(".kurs_only").hide();
-                jQuery(".cms_only").show();
-                break;
             case "kurslink":
-                jQuery(".cms_only").hide();
                 jQuery(".kurs_only").hide();
                 jQuery(".kurslink_only").show();
                 break;
             case "kurs":
                 jQuery(".kurslink_only").hide();
-                jQuery(".cms_only").hide();
                 jQuery(".kurs_only").show();
                 break;
         }
@@ -385,8 +352,3 @@ STUDIP.CC.participants = {
         return false;
     }
 };
-
-jQuery(function () {
-    jQuery("#ecs_table > tbody > tr").bind("click", STUDIP.CC.ECS.click);
-    jQuery("#participant_table > tbody > tr.selectable").bind("click", STUDIP.CC.participants.click);
-});

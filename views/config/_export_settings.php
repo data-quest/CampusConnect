@@ -2,7 +2,7 @@
 
 /*
  *  Copyright (c) 2012  Rasmus Fuhse <fuhse@data-quest.de>
- * 
+ *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
  *  published by the Free Software Foundation; either version 2 of
@@ -78,7 +78,7 @@
                                             <? endforeach ?>
                                         </select>
                                         <a href="#" onClick="if (window.confirm('<?= _("Wirklich löschen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
-                                            <?= Assets::img("icons/16/blue/trash", array('class' => "text-bottom")) ?>
+                                            <?= Icon::create("trash")->asImg(20, array('class' => "text-bottom")) ?>
                                         </a>
                                     </td>
                                 </tr>
@@ -99,14 +99,14 @@
                                     <? endforeach ?>
                                 </select>
                                 <a href="#" onClick="if (window.confirm('<?= _("Wirklich löschen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
-                                    <?= Assets::img("icons/16/blue/trash", array('class' => "text-bottom")) ?>
+                                    <?= Icon::create("trash")->asImg(20, array('class' => "text-bottom")) ?>
                                 </a>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2">
                                 <a href="#" onClick="jQuery('#data__export_settings__auth_token__attributes_template').clone().removeAttr('id').appendTo('#data__export_settings__auth_token__attributes').fadeIn(); return false;">
-                                    <?= Assets::img("icons/16/blue/add") ?>
+                                    <?= Icon::create("add")->asImg() ?>
                                 </a>
                             </td>
                         </tr>
@@ -144,7 +144,7 @@
             </td>
             <td>
                 <?= _("Nur Veranstaltungen exportieren, die den folgenden Studienbereichen zugeordnet sind.") ?>
-                <?= \CampusConnect\StudyAreaSelector::create("data[export_settings][filter_sem_tree]", "multiple")
+                <?= CampusConnectStudyAreaSelector::create("data[export_settings][filter_sem_tree]", "multiple")
                         ->setDefault(array_keys(array_filter((array) $server['data']['export_settings']['filter_sem_tree'])))
                         ->render() ?>
             </td>

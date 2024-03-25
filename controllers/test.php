@@ -1,14 +1,22 @@
 <?php
-require __DIR__.'/application.php';
-
-class TestController extends ApplicationController {
+class TestController extends PluginController
+{
 
     function before_filter(&$action, &$args)
     {
-        if(!$GLOBALS['perm']->have_perm('root')) throw new Studip_AccessDeniedException('Keine Berechtigung');
+        if(!$GLOBALS['perm']->have_perm('root')) {
+            throw new Studip_AccessDeniedException('Keine Berechtigung');
+        }
+        PageLayout::addHeadElement("script",
+            array("src" => $this->plugin->getPluginURL().'/assets/javascripts/application.js'),
+            "");
+        PageLayout::addHeadElement("link",
+            array("href" => $this->plugin->getPluginURL().'/assets/stylesheets/application.css',
+                "rel" => "stylesheet"),
+            "");
         parent::before_filter($action, $args);
     }
-	
+
     function index_action()
     {
         Navigation::activateItem("/admin/campusconnect/index");

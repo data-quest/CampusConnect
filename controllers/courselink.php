@@ -1,29 +1,21 @@
 <?php
 
-require __DIR__.'/application.php';
-require_once __DIR__."/../lib/CCCourse.php";
-require_once __DIR__."/../lib/ECSAuthToken.class.php";
-require_once __DIR__."/../lib/ECSLegacyAuthToken.class.php";
-
-class CourselinkController extends ApplicationController {
+class CourselinkController extends PluginController {
 
     function overview_action()
     {
-        if (!$GLOBALS['perm']->have_studip_perm("user", $_SESSION['SessionSeminar'])) {
+        if (!$GLOBALS['perm']->have_studip_perm("user", Context::getId())) {
             throw new AccessDeniesException("Kein Zugriff");
         }
-        if (Navigation::hasItem("/course/main")) {
-            Navigation::getItem("/course/main")->setImage(Assets::image_path("icons/16/black/infopage"));
-        }
-        $this->course = new Course($_SESSION['SessionSeminar']);
+        $this->course = new Course(Context::getId());
         $sem_type = $GLOBALS['SEM_TYPE'][$this->course['status']];
-        $this->coursedata = new CampusConnectEntity(array($_SESSION['SessionSeminar'], "course"));
+        $this->coursedata = new CampusConnectEntity(array(Context::getId(), "course"));
         PageLayout::setTitle($sem_type['name'].": ".$this->course['name']);
     }
 
     function link_action()
     {
-        if (!$GLOBALS['perm']->have_studip_perm("autor", $_SESSION['SessionSeminar'])) {
+        if (!$GLOBALS['perm']->have_studip_perm("autor", Context::getId())) {
             throw new AccessDeniesException("Kein Zugriff");
         }
 
@@ -32,7 +24,7 @@ class CourselinkController extends ApplicationController {
             'name' => get_fullname(),
             'protocol' => array("Start")
         );
-        
+
         if (Request::get("url")) {
             $logdata['protocol'][] = "User wants to URL (given by GET-parameter 'url'): ".Request::get("url");
             $get_participant_id = DBManager::get()->prepare(
@@ -43,7 +35,7 @@ class CourselinkController extends ApplicationController {
             "");
             $get_participant_id->execute(array(
                 'url' => Request::get("url"),
-                'seminar_id' => $_SESSION['SessionSeminar']
+                'seminar_id' => Context::getId()
             ));
             $participant_id = $get_participant_id->fetch(PDO::FETCH_COLUMN, 0);
             if ($participant_id) {
@@ -52,10 +44,10 @@ class CourselinkController extends ApplicationController {
                 $url = Request::get("url");
             }
         } else {
-            $coursedata = new CampusConnectEntity(array($_SESSION['SessionSeminar'], "course"));
+            $coursedata = new CampusConnectEntity(array(Context::getId(), "course"));
             $participant = new CCParticipant($coursedata['participant_id']);
             $url = $coursedata['data']['url'];
-            $logdata['protocol'][] = "User wants to URL (fetched from SessionSeminar): ".$url;
+            $logdata['protocol'][] = "User wants to URL (fetched from cid): ".$url;
             $logdata['protocol'][] = "URL is associated with participant-system: ".$participant['data']['name'];
         }
         if ($url) {
@@ -121,11 +113,11 @@ class CourselinkController extends ApplicationController {
             header("Location: ".$url);
             exit;
         }
-        $this->sem = new Seminar($_SESSION['SessionSeminar']);
+        $this->sem = new Seminar(Context::getId());
+        $this->course = new Course(Context::getId());
         $sem_type = $GLOBALS['SEM_TYPE'][$this->sem->status];
 
-        PageLayout::setTitle($sem_type['name'].": ".$this->sem->getName());
-        Navigation::getItem("/course/link")->setImage(Assets::image_path("icons/16/black/learnmodule"));
+        PageLayout::setTitle($sem_type['name'].": ".$this->course->getFullname());
     }
 
     /**
@@ -142,18 +134,18 @@ class CourselinkController extends ApplicationController {
         );
         $course_url = URLHelper::getURL("details.php", array('sem_id' => $cid));
         $ecs_hash = Request::get("ecs_hash")
-            ? studip_utf8decode(Request::get("ecs_hash"))
-            : studip_utf8decode(Request::get("ecs_hash_url"));
+            ? Request::get("ecs_hash")
+            : Request::get("ecs_hash_url");
         $ecs_uid_hash = Request::get("ecs_uid")
-            ? studip_utf8decode(Request::get("ecs_uid"))
-            : studip_utf8decode(Request::get("ecs_uid_hash"));
+            ? Request::get("ecs_uid")
+            : Request::get("ecs_uid_hash");
         if ($GLOBALS['user']->id === 'nobody'
                 && $ecs_hash
                 && Request::get("ecs_login")
                 && ($ecs_uid_hash || Request::get("ecs_person_id_type"))
                 && Request::get("ecs_email")) {
             //ECS anhand der URL ausfindig machen.
-            //Schauen, ob ECS und Auth über ECS lokal aktiviert ist.
+            //Schauen, ob ECS und Auth Ã¼ber ECS lokal aktiviert ist.
             $accept = false;
             CampusConnectLog::_(sprintf("ecs-auth: checking hash: %s", $ecs_hash), CampusConnectLog::DEBUG);
             $logdata['protocol'][] = sprintf("User was not logged in. Now checking token: %s", $ecs_hash);
@@ -185,17 +177,17 @@ class CourselinkController extends ApplicationController {
                     $parameter = array();
                     foreach ($_GET as $index => $value) {
                         if (!in_array($index, array("ecs_hash_url", "ecs_hash"))) {
-                            $parameter[$index] = studip_utf8decode($value);
+                            $parameter[$index] = $value;
                         }
                     }
                 } else {
                     //legacy token:
                     $parameter = array(
-                        'ecs_login' => studip_utf8decode(Request::get("ecs_login")),
-                        'ecs_firstname' => studip_utf8decode(Request::get("ecs_firstname")),
-                        'ecs_lastname' => studip_utf8decode(Request::get("ecs_lastname")),
-                        'ecs_email' => studip_utf8decode(Request::get("ecs_email")),
-                        'ecs_institution' => studip_utf8decode(Request::get("ecs_institution")),
+                        'ecs_login' => Request::get("ecs_login"),
+                        'ecs_firstname' => Request::get("ecs_firstname"),
+                        'ecs_lastname' => Request::get("ecs_lastname"),
+                        'ecs_email' => Request::get("ecs_email"),
+                        'ecs_institution' => Request::get("ecs_institution"),
                         'ecs_uid' => $ecs_uid_hash
                     );
                 }
@@ -229,14 +221,14 @@ class CourselinkController extends ApplicationController {
                         $user_mapping->delete();
                     }
                     $i = "";
-                    while (get_userid(studip_utf8decode(Request::get("ecs_login")).$i)) {
+                    while (get_userid(Request::get("ecs_login").$i)) {
                         $i++;
                     }
                     $user = new User();
-                    $user['username'] = studip_utf8decode(Request::get("ecs_login")).$i;
-                    $user['Vorname'] = studip_utf8decode(Request::get("ecs_firstname"));
-                    $user['Nachname'] = studip_utf8decode(Request::get("ecs_lastname"));
-                    $user['Email'] = studip_utf8decode(Request::get("ecs_email"));
+                    $user['username'] = Request::get("ecs_login").$i;
+                    $user['Vorname'] = Request::get("ecs_firstname");
+                    $user['Nachname'] = Request::get("ecs_lastname");
+                    $user['Email'] = Request::get("ecs_email");
                     $user['perms'] = "autor";
                     $user['password'] = "";
                     $user['validation_key'] = "";
@@ -273,15 +265,15 @@ class CourselinkController extends ApplicationController {
                     $logdata['protocol'][] = sprintf("Created new user with user_id %s and foreign_id %s ", $user_mapping['item_id'], $user_mapping['foreign_id']);
                 } else {
                     $user = new User($user_mapping['item_id']);
-                    $user['Vorname'] = studip_utf8decode(Request::get("ecs_firstname"));
-                    $user['Nachname'] = studip_utf8decode(Request::get("ecs_lastname"));
-                    $user['Email'] = studip_utf8decode(Request::get("ecs_email"));
+                    $user['Vorname'] = Request::get("ecs_firstname");
+                    $user['Nachname'] = Request::get("ecs_lastname");
+                    $user['Email'] = Request::get("ecs_email");
 
                     $user->store();
                     $logdata['protocol'][] = "User already exists and gets name and email updated if necessary.";
                 }
 
-                //Datenübernahme:
+                //DatenÃ¼bernahme:
                 if (Request::get("ecs_person_id_type")) {
                     //$ecs = new CCParticipant($participant_id);
                     $participant = null;
@@ -293,8 +285,8 @@ class CourselinkController extends ApplicationController {
                     }
                     if ($participant) {
                         foreach ((array) $participant['data']['export_settings']['auth_token']['attributes'] as $name => $map) {
-                            if (Request::get(studip_utf8encode($name))) {
-                                $value = studip_utf8decode(Request::get(studip_utf8encode($name)));
+                            if (Request::get($name)) {
+                                $value = Request::get($name);
                                 if (in_array($name, array("user_id", "username", "email"))) {
                                     $user[$name] = $value;
                                     $user->store();
@@ -376,7 +368,7 @@ class CourselinkController extends ApplicationController {
     }
 
     public function extern_action() {
-        $course = new CCCourse($_SESSION['SessionSeminar']);
+        $course = new CCCourse(Context::getId());
         $this->course_urls = $course->getCourseUrls();
         if (count($this->course_urls) === 1 || Request::get("course_url")) {
             //only one way to go
@@ -417,19 +409,16 @@ class CourselinkController extends ApplicationController {
 
             $url = URLHelper::getURL($course_url['course_url'], array(
                 'ecs_hash_url' => $token->getURL(),
-                'ecs_login' => studip_utf8encode($user['username']),
-                'ecs_firstname' => studip_utf8encode($user['Vorname']),
-                'ecs_lastname' => studip_utf8encode($user['Nachname']),
-                'ecs_email' => studip_utf8encode($user['Email']),
-                'ecs_institution' => studip_utf8encode(""),
+                'ecs_login' => $user['username'],
+                'ecs_firstname' => $user['Vorname'],
+                'ecs_lastname' => $user['Nachname'],
+                'ecs_email' => $user['Email'],
+                'ecs_institution' => "",
                 'ecs_uid' => $user->getId(),
                 'ecs_uid_hash' => $user->getId() //deprecated
             ), true);
             header("Location: ".$url);
             exit;
-        }
-        if (Navigation::hasItem("/course/campusconnect_extern")) {
-            Navigation::getItem("/course/campusconnect_extern")->setImage("icons/16/black/link-extern");
         }
     }
 

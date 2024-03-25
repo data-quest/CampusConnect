@@ -8,23 +8,25 @@
  * the License, or (at your option) any later version.
  */
 
-require __DIR__.'/application.php';
-
-require_once __DIR__."/../lib/CCCourse.php";
-require_once __DIR__."/../lib/CCTerms.php";
-require_once __DIR__."/../lib/CCInstitutes.php";
-require_once __DIR__."/../lib/CCStudyArea.php";
-
 /**
- * Der Controller, der vom ECS angesteuert wird und die über Cronjob Änderungen
- * an den ECS übermittelt.
+ * Der Controller, der vom ECS angesteuert wird und die Ã¼ber Cronjob Ã„nderungen
+ * an den ECS Ã¼bermittelt.
  */
-class ConnectorController extends ApplicationController
+class ConnectorController extends PluginController
 {
 
     function before_filter(&$action, &$args)
     {
-        if(!$GLOBALS['perm']->have_perm('root')) throw new AccessDeniedException('Keine Berechtigung');
+        if(!$GLOBALS['perm']->have_perm('root')) {
+            throw new AccessDeniedException('Keine Berechtigung');
+        }
+        PageLayout::addHeadElement("script",
+            array("src" => $this->plugin->getPluginURL().'/assets/javascripts/application.js'),
+            "");
+        PageLayout::addHeadElement("link",
+            array("href" => $this->plugin->getPluginURL().'/assets/stylesheets/application.css',
+                "rel" => "stylesheet"),
+            "");
         parent::before_filter($action, $args);
     }
 
