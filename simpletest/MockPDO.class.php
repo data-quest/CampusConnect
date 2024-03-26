@@ -11,7 +11,7 @@ class MockPDO extends StudipPDO {
     protected static $table_prefix = "mock_db_";
     protected $lastQuery = "";
 
-    public function query($sql) {
+    public function query($sql, $fetch_mode = NULL, ...$fetch_args) {
         $sql = $this->alterSQL($sql);
         return parent::query($sql);
     }
@@ -20,7 +20,7 @@ class MockPDO extends StudipPDO {
         $sql = $this->alterSQL($sql);
         return parent::exec($sql);
     }
-    
+
     public function prepare($sql, $driver_options = array()) {
         $sql = $this->alterSQL($sql);
         $statement = parent::prepare($sql, $driver_options);
@@ -43,7 +43,7 @@ class MockPDO extends StudipPDO {
                 $table_names[] = $table_name;
             }
         }
-        
+
         $sql_parser = new TextFormat();
         $sql_parser->addMarkup("string_quote1", '"', '"', function ($markup, $matches, $contents) {
             return '"'.$contents.'"';

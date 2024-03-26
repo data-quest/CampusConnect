@@ -15,6 +15,8 @@
         </a>
     </td>
     <td>
-        <a href="<?= PluginEngine::getLink($this->plugin, array(), "log/details/".$logentry['log_id']) ?>" data-dialog><?= Assets::img("icons/16/blue/info-circle") ?></a>
+        <a href="<?= PluginEngine::getLink($this->plugin, array(), "log/details/".$logentry['log_id']) ?>" data-dialog>
+            <?= Icon::create("info-circle")->asImg(20) ?>
+        </a>
     </td>
 </tr>

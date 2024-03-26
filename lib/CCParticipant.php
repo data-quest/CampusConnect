@@ -84,8 +84,9 @@ class CCParticipant extends CampusConnectConfig
                 $new = false;
                 //Kennen wir den Teilnehmer in dieser Community schon?
                 foreach ($participants as $p) {
-                    if ($p['data']['pid'] == $participant_data['pid']
-                            && in_array($ecs_id, $p['data']['ecs']) ) {
+                    $data = $p->data->getArrayCopy();
+                    if ($data['pid'] == $participant_data['pid']
+                            && in_array($ecs_id, $data['ecs']) ) {
                         $participant = $p;
                     }
                 }

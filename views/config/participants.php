@@ -27,23 +27,28 @@
         </tr>
         <? $vorhanden = false ?>
         <? foreach ($servers as $server_config) : ?>
-        <? if (in_array($community['data']['cid'], $server_config['data']['communities'])) : ?>
+        <? $server_data = $server_config->data->getArrayCopy() ?>
+        <? if (in_array($community['data']['cid'], (array) $server_data['communities'])) : ?>
         <tr id="participant_<?= $server_config->getId() ?>" class="<?= $server_config['active'] ? "active" : "inactive" ?>">
             <td>
                 <a href="<?= PluginEngine::getLink($plugin, ['id' => $server_config->id], 'config/participant') ?>">
-                    <?= htmlReady($server_config['data']['name']) ?>
+                    <?= htmlReady($server_data['name']) ?>
                 </a>
             </td>
             <td>
-            <? foreach((array) $server_config['data']['ecs'] as $number => $ecs) : ?>
+            <? foreach((array) $server_data['ecs'] as $number => $ecs) : ?>
                 <?= $number > 0 ? "|" : "" ?>
-                <? $ecs = new CampusConnectConfig($ecs) ?>
+                <? $ecs = new CampusConnectConfig($ecs[0]) ?>
                 <?= htmlReady($ecs['data']['name']) ?>
             <? endforeach ?>
             </td>
             <td>
-                <div class="active"><?= _("aktiv") ?></div>
-                <div class="inactive"><?= _("inaktiv") ?></div>
+                <? if ($server_config['active']) : ?>
+                    <?= Icon::create('accept', Icon::ROLE_STATUS_GREEN)->asImg(20, ['class' => 'text-bottom']) ?>
+                    <?= _("aktiv") ?>
+                <? else : ?>
+                    <div class="inactive"><?= _("inaktiv") ?></div>
+                <? endif ?>
             </td>
         </tr>
         <? $vorhanden = true ?>

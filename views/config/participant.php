@@ -8,6 +8,7 @@
  *  published by the Free Software Foundation; either version 2 of
  *  the License, or (at your option) any later version.
  */
+
 ?>
 <div id="messages"></div>
 
@@ -17,41 +18,81 @@
     </caption>
     <tbody>
         <tr>
-            <td><?= _("Informationen") ?></td>
             <td>
-                <strong><?= _("Domänenname") ?></strong>:
+                <?= _("Domänenname") ?>
+            </td>
+            <td>
                 <?= htmlReady($server['data']['dns']) ?>
-                <br>
-                <strong><?= _("Institution") ?></strong>:
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= _("Institution") ?>
+            </td>
+            <td>
                 <?= htmlReady($server['data']['org']['name']) ?>
-                <br>
-                <strong><?= _("E-Mail des Ansprechpartners vor Ort") ?></strong>:
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= _("E-Mail des Ansprechpartners vor Ort") ?>
+            </td>
+            <td>
                 <?= htmlReady($server['data']['email']) ?>
-                <br>
-                <strong><?= _("Kürzel") ?></strong>:
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= _("Kürzel") ?>
+            </td>
+            <td>
                 <?= htmlReady($server['data']['org']['abbr']) ?>
-                <br>
-                <strong><?= _("Identifikation") ?></strong>:
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= _("Identifikation") ?>
+            </td>
+            <td>
                 <?= htmlReady($server['data']['pid']) ?>
-                <br>
-                <strong><?= _("Communities") ?></strong>:
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= _("Communities") ?>
+            </td>
+            <td>
+                <ul class="clean">
                 <? foreach ($server['data']['mid'] as $cid => $mid) : ?>
-                    <?= htmlReady($cid)." &rArr; ".htmlReady($mid) ?><br>
+                    <li>
+                        <?= htmlReady($communities[$cid]['data']['name'])." &rArr; ID: ".htmlReady($mid) ?>
+                    </li>
                 <? endforeach ?>
-                <strong><?= _("Beschreibung") ?></strong>:
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= _("Beschreibung") ?>
+            </td>
+            <td>
                 <?= htmlReady($server['data']['description']) ?>
-                <br>
-                <strong><?= _("Stud.IP-interne ID") ?></strong>:
-                <?= htmlReady($server['id']) ?>
-                <br>
-
-                <input type="hidden" id="participant_id" name="id" value="<?= htmlReady($server->getId()) ?>">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= _("Stud.IP-interne ID") ?>
+            </td>
+            <td>
+                <input type="hidden" name="id" value="<?= htmlReady($server->id) ?>">
+                <?= htmlReady($server->id) ?>
             </td>
         </tr>
         <tr>
             <td><?= _("ECS") ?></td>
             <td>
-            <? foreach((array) $server['data']['ecs'] as $ecs) : ?>
+            <? $server_data = $server->data->getArrayCopy() ?>
+            <? foreach((array) $server_data['ecs'] as $ecs) : ?>
                 <? $ecs = new CampusConnectConfig($ecs) ?>
                 <?= htmlReady($ecs['data']['name']) ?><br>
             <? endforeach ?>

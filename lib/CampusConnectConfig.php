@@ -7,9 +7,10 @@ class CampusConnectConfig extends SimpleORMap
     static protected function configure($config = array())
     {
         $config['db_table'] = 'campus_connect_config';
-        $config['registered_callbacks']['before_store'][] = "cbSerializeData";
+        /*$config['registered_callbacks']['before_store'][] = "cbSerializeData";
         $config['registered_callbacks']['after_store'][] = "cbUnserializeData";
-        $config['registered_callbacks']['after_initialize'][] = "cbUnserializeData";
+        $config['registered_callbacks']['after_initialize'][] = "cbUnserializeData";*/
+        $config['serialized_fields']['data'] = JSONArrayObject::class;
         parent::configure($config);
     }
 

@@ -113,16 +113,20 @@ class ConfigController extends PluginController
         Navigation::activateItem("/admin/campusconnect/participants");
 		$this->server = new CampusConnectConfig(Request::get("id"));
         $this->institute = Institute::getInstitutes();
+        $this->communities = [];
+        foreach (CampusConnectConfig::findByType("community") as $community) {
+            $this->communities[$community['data']['cid']] = $community;
+        }
 	}
 
     function participant_save_action()
     {
-        $server = new CampusConnectConfig(Request::get("id") ? Request::get("id") : null);
+        $server = new CampusConnectConfig(Request::get("id"));
         if ((!$server->isNew() && $server['type'] !== "participants") || (!Request::isPost())) {
             return;
         }
         $server['type'] = "participants";
-        $server['active'] = Request::int("active");
+        $server['active'] = Request::int("active", 0);
 
         //clear only some arrays:
         $data = $server['data'];

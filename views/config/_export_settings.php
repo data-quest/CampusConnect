@@ -8,6 +8,8 @@
  *  published by the Free Software Foundation; either version 2 of
  *  the License, or (at your option) any later version.
  */
+
+$server_data = $server->data->getArrayCopy();
 ?>
 <table class="cc_settings">
     <tbody>
@@ -63,7 +65,7 @@
                                 </select>
                             </td>
                         </tr>
-                        <? foreach ((array) $server['data']['export_settings']['auth_token']['attributes'] as $name => $mapping) : ?>
+                        <? foreach ((array) $server_data['export_settings']['auth_token']['attributes'] as $name => $mapping) : ?>
                             <? if (!in_array($name, array("ecs_login", "ecs_email", "ecs_institution"))) : ?>
                                 <tr>
                                     <td><input type="text" placeholder="<?= _("Weiteres Attribut") ?>" value="<?= htmlReady($name) ?>" onChange="var select = jQuery(this).closest('tr').find('select'); select.attr('name', select.data('name').replace('__REPLACE__', this.value));"></td>
