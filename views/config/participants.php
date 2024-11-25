@@ -28,7 +28,7 @@
         <? $vorhanden = false ?>
         <? foreach ($servers as $server_config) : ?>
         <? $server_data = $server_config->data->getArrayCopy() ?>
-        <? if (in_array($community['data']['cid'], (array) $server_data['communities'])) : ?>
+        <? if (isset($server_data['communities']) && in_array($community['data']['cid'], (array) $server_data['communities'])) : ?>
         <tr id="participant_<?= $server_config->getId() ?>" class="<?= $server_config['active'] ? "active" : "inactive" ?>">
             <td>
                 <a href="<?= PluginEngine::getLink($plugin, ['id' => $server_config->id], 'config/participant') ?>">
@@ -37,9 +37,11 @@
             </td>
             <td>
             <? foreach((array) $server_data['ecs'] as $number => $ecs) : ?>
-                <?= $number > 0 ? "|" : "" ?>
-                <? $ecs = new CampusConnectConfig($ecs[0]) ?>
-                <?= htmlReady($ecs['data']['name']) ?>
+                <? if (isset($ecs[0])) : ?>
+                    <?= $number > 0 ? "|" : "" ?>
+                    <? $ecs = new CampusConnectConfig($ecs[0]) ?>
+                    <?= htmlReady($ecs['data']['name']) ?>
+                <? endif ?>
             <? endforeach ?>
             </td>
             <td>

@@ -16,7 +16,7 @@ class CampusConnectConfig extends SimpleORMap
 
     static public function findByType($type)
     {
-        if (!self::$types[$type]) {
+        if (empty(self::$types[$type])) {
             self::$types[$type] = self::findBySQL('type = ?', array($type));
         }
         return self::$types[$type];

@@ -28,7 +28,6 @@ class EcsClient
 
     function setHeader($a, $b)
     {
-        $ret = $this->header[$a];
         if ($b === null) {
             unset($this->header[$a]);
         } else {
@@ -134,7 +133,12 @@ class EcsClient
         $headerfunc = function($handle, $headerdata) use (&$response_header)
         {
             foreach (explode("\r\n", $headerdata) as $line) {
-                list($a,$b) = array_map('trim', explode(':', $line, 2));
+                if (strpos($line, '.') === false) {
+                    continue;
+                }
+                list($a, $b) = explode(':', $line, 2);
+                $a = trim($a);
+                $b = trim($b);
                 if ($a) {
                     if (strpos($a, 'HTTP') !== false) {
                         $response_header['Status'] = $a;

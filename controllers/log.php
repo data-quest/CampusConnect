@@ -50,7 +50,7 @@ class LogController extends PluginController
 
     function view2_action()
     {
-        if (get_config("CAMPUSCONNECT_LOGFILE")) {
+        if (Config::get()->CAMPUSCONNECT_LOGFILE) {
             CampusConnectLog::get()->setHandler($GLOBALS['TMP_PATH']."/".Config::get()->CAMPUSCONNECT_LOGFILE);
         }
         $this->logfile = $this->logfile ? $this->logfile : (CampusConnectLog::get()->getHandler() ?: $GLOBALS['TMP_PATH']."/studip.log");

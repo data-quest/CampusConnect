@@ -51,6 +51,7 @@ class CampusConnectLog
     public static function set($name = '', $log_handler = null)
     {
         $name = strlen($name) ? $name : 0;
+        $old = null;
         if (isset(self::$instances[$name])) {
             $old = self::$instances[$name];
         }

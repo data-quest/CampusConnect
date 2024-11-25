@@ -37,7 +37,7 @@ class CCLog {
     static public function getDB() {
         if (!self::$db) {
             if (!self::$log_file) {
-                if ($GLOBALS['CAMPUSCONNECT_LOGDB']) {
+                if (!empty($GLOBALS['CAMPUSCONNECT_LOGDB'])) {
                     self::$log_file = $GLOBALS['CAMPUSCONNECT_LOGDB'];
                 } else {
                     self::$log_file = $GLOBALS['TMP_PATH']."/studip_cc_log.sqlite";

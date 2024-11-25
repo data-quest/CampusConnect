@@ -25,7 +25,7 @@
         <? endif ?>
     </tbody>
     <tfoot>
-        <? if ($more) : ?>
+        <? if (!empty($more)) : ?>
             <tr id="more">
                 <td colspan="4" style="text-align: center;"><?= Assets::img("ajax_indicator_small.gif") ?></td>
             </tr>
