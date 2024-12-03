@@ -526,7 +526,7 @@ class CCCourse extends Course
         $participants = CampusConnectConfig::findByType("participants");
         $receivers = array();
         foreach ($participants as $participant) {
-            if ($participant['active'] && in_array($ecs['id'], $participant['data']['ecs'])) {
+            if ($participant['active'] && in_array($ecs['id'], $participant['data']['ecs']->getArrayCopy())) {
                 $export_settings = $participant['data']['export_settings'];
                 $export = true;
                 if ($export_settings['course_entity_type'] !== $type) {
