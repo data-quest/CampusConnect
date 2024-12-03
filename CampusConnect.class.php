@@ -9,7 +9,7 @@
  */
 
 
-class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
+class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin, AdminCourseWidgetPlugin
 {
 
     public function __construct()
@@ -139,17 +139,99 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
     */
     public function perform($unconsumed_path)
     {
-        if(!$unconsumed_path) {
-            header("Location: " . PluginEngine::getUrl($this), 302);
-            return false;
-        }
         if (Config::Get()->CAMPUSCONNECT_LOGFILE) {
             CampusConnectLog::get()->setHandler($GLOBALS['TMP_PATH']."/".Config::get()->CAMPUSCONNECT_LOGFILE);
         }
         CampusConnectLog::get()->setLogLevel(CampusConnectLog::DEBUG);
-        $trails_root = $this->getPluginPath();
-        $dispatcher = new Trails_Dispatcher($trails_root, '', 'show');
-        $dispatcher->current_plugin = $this;
-        $dispatcher->dispatch($unconsumed_path);
+        return parent::perform($unconsumed_path);
+    }
+
+    /**
+     * Returns a list of widgets for the admin courses page.
+     *
+     * @return AdminCourseOptionsWidget[]
+     */
+    public function getWidgets(): iterable {
+        $widgets = [];
+
+        $widget = new AdminCourseOptionsWidget(
+            _('CampusConnect')
+        );
+        $participants = CCParticipant::findBySQL('`type` = ? AND `active` = 1 ORDER BY `id` ASC ', array('participants'));
+        $options = [
+            '' => ''
+        ];
+        foreach ($participants as $participant) {
+            if (!empty($participant['data']['export'])) {
+                $options['exported_kurslink'] = _('Exportiert als Kurslinks ');
+                break;
+            }
+        }
+        foreach ($participants as $participant) {
+            if (!empty($participant['data']['import'])) {
+                $options['import_' . $participant->id] = _('Importiert von ').$participant['data']['name'];
+            }
+        }
+
+
+        $widget->addSelect(
+            _("CampusConnect-Filter"),
+            'campusconnect',
+            $options,
+            $GLOBALS['user']->cfg->getValue("CAMPUSCONNECT_FILTER_SETTING")
+        );
+        $widgets['campusconnect'] = $widget;
+        return $widgets;
+    }
+
+    /**
+     * Return the filter values this widget provides. Return an associative
+     * array with filter names as indices and filter values as values.
+     *
+     * @return array
+     */
+    public function getFilters(): array {
+        return [
+            'campusconnect' => $GLOBALS['user']->cfg->getValue("CAMPUSCONNECT_FILTER_SETTING")
+        ];
+    }
+
+    /**
+     * Apply the set filters to the AdminCourseFilter query.
+     *
+     * @param AdminCourseFilter $filter
+     */
+    public function applyFilters(AdminCourseFilter $filter): void
+    {
+        if ($GLOBALS['user']->cfg->getValue("CAMPUSCONNECT_FILTER_SETTING")) {
+            if($GLOBALS['user']->cfg->getValue("CAMPUSCONNECT_FILTER_SETTING") === 'exported_kurslink') {
+                $filter->query->join('campus_connect_sent_items', "campus_connect_sent_items.item_id = seminare.Seminar_id AND campus_connect_sent_items.object_type = 'kurslink'", 'INNER JOIN');
+            } else {
+                list($way, $participant_id) = explode('_', $GLOBALS['user']->cfg->getValue("CAMPUSCONNECT_FILTER_SETTING"));
+                if ($way === 'import') {
+                    $filter->query->join('campus_connect_entities', "campus_connect_entities.item_id = seminare.Seminar_id AND campus_connect_entities.type = 'course'", 'INNER JOIN');
+                    $filter->query->where('campus_connect_import_participants', "campus_connect_entities.participant_id = :participant_id", [
+                        'participant_id' => $participant_id
+                    ]);
+                }
+            }
+
+        }
+    }
+
+
+    /**
+     * Set filters from the admin course page. You will be given an associative
+     * array according to getFilters().
+     *
+     * @param array $filters
+     */
+    public function setFilters(array $filters): void
+    {
+        foreach ($filters as $name => $value) {
+            if ($name === 'campusconnect') {
+                $GLOBALS['user']->cfg->store("CAMPUSCONNECT_FILTER_SETTING", $value);
+            }
+        }
     }
 }

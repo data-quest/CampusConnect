@@ -552,7 +552,7 @@ class CCCourse extends Course
                     }
                 }
                 if ($export) {
-                    //TODO: nicht die erste mid zur�ckgeben, sondern konfigurierbar
+                    //TODO: nicht die erste mid zurückgeben, sondern konfigurierbar
                     //anhand der Datenfelder/Filterkriterien machen.
                     foreach ((array) $participant['data']['mid'] as $cid => $mid) {
                         $receivers[] = $mid;
