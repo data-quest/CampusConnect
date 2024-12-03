@@ -129,7 +129,7 @@ class CCCourse extends Course
         $course['Beschreibung'] = $message['courseTopics'];
         $course['teilnehmer'] = $message['targetAudiences'];
 
-        $institute = self::getInstitutes($message['organisationalUnits'], $participant_id);
+        $institute = self::getCCInstitutes($message['organisationalUnits'], $participant_id);
         $course['Institut_id'] = $institute[0];
         $course->start_semester = self::getSemester($message);
         if ($course->isNew()) {
@@ -408,7 +408,7 @@ class CCCourse extends Course
         return $participant_info['data']['import_settings']['institute'];
     }
 
-    static public function getInstitutes($organisationalUnits, $participant_id) {
+    static public function getCCInstitutes($organisationalUnits, $participant_id) {
         $institut_ids = array();
         if (is_array($organisationalUnits)) {
             foreach ($organisationalUnits as $unit) {
@@ -526,7 +526,7 @@ class CCCourse extends Course
         $participants = CampusConnectConfig::findByType("participants");
         $receivers = array();
         foreach ($participants as $participant) {
-            if ($participant['active'] && in_array($ecs['id'], $participant['data']['ecs']->getArrayCopy())) {
+            if ($participant['active'] && !empty($participant['data']['ecs']) && in_array($ecs['id'], $participant['data']['ecs']->getArrayCopy())) {
                 $export_settings = $participant['data']['export_settings'];
                 $export = true;
                 if ($export_settings['course_entity_type'] !== $type) {
@@ -621,6 +621,7 @@ class CCCourse extends Course
             "WHERE termine.range_id = ".$db->quote($this->getId())." " .
                 "AND metadate_id IS NULL " .
         "")->fetchAll(PDO::FETCH_ASSOC);
+        $firstDate = null;
         foreach ($termine as $termin) {
             if (!$firstDate) {
                 $firstDate = date("j.n.Y G:i", $termin['date'])." Uhr";
@@ -645,7 +646,7 @@ class CCCourse extends Course
         $resource = array();
         $resource['title'] = $this['Name'];
         $resource['url'] = $GLOBALS['ABSOLUTE_URI_STUDIP']."plugins.php/campusconnect/courselink/to/".$this->getId();
-        $resource['lang'] = $GLOBALS['DEFAULT_LANGUAGE'];
+        $resource['lang'] = Config::get()->DEFAULT_LANGUAGE ?? 'de_DE';
         $resource['hoursPerWeek'] = 0;
         $resource['id'] = $this->getId();
         $resource['number'] = $this['VeranstaltungsNummer'];
