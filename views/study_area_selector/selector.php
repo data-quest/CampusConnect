@@ -51,14 +51,21 @@ jQuery(".study_area_selector").on("change", "input[type=checkbox].opener", funct
 });
 </script>
 
-
 <div class="study_area_selector"
      style="<?= implode("; ", array_map(function ($i, $v) { return $i.": ".$v; }, array_keys($style), array_values($style))) ?>"
      data-id="<?= htmlReady($id) ?>"
      data-type="<?= htmlReady($type) ?>"
      data-name="<?= htmlReady($name) ?>">
     <input type="checkbox" checked class="opener">
+
     <ol>
-        <?= $this->render_partial("study_area_selector/_children", compact("id", "entry", "name", "entries", "defaults", "neccesary")) ?>
+        <?= $this->render_partial("study_area_selector/_children", [
+            'id' => $id,
+            'entry' => $entry ?? null,
+            'name' => $name,
+            'entries' => $entries,
+            'defaults' => $defaults,
+            'neccesary' => $neccesary ?? []
+        ]) ?>
     </ol>
 </div>

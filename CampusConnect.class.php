@@ -163,7 +163,7 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
         ];
         foreach ($participants as $participant) {
             if (!empty($participant['data']['export'])) {
-                $options['exported_kurslink'] = _('Exportiert als Kurslinks ');
+                $options['export_' . $participant->id] = _('Exportieren nach ').$participant['data']['name'];
                 break;
             }
         }
@@ -204,8 +204,26 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
     public function applyFilters(AdminCourseFilter $filter): void
     {
         if ($GLOBALS['user']->cfg->getValue("CAMPUSCONNECT_FILTER_SETTING")) {
-            if($GLOBALS['user']->cfg->getValue("CAMPUSCONNECT_FILTER_SETTING") === 'exported_kurslink') {
-                $filter->query->join('campus_connect_sent_items', "campus_connect_sent_items.item_id = seminare.Seminar_id AND campus_connect_sent_items.object_type = 'kurslink'", 'INNER JOIN');
+            list($way, $participant_id) = explode('_', $GLOBALS['user']->cfg->getValue("CAMPUSCONNECT_FILTER_SETTING"));
+            if ($way === 'export') {
+                $participant = CampusConnectConfig::find($participant_id);
+                if ($participant && !empty($participant['data']['export_settings']) && $participant['data']['export_settings']['course_entity_type'] === 'kurslink') {
+                    $export_settings = $participant['data']['export_settings'];
+                    if ($export_settings['filter_sem_tree_activate']) {
+                        $sem_tree_ids = array_keys($export_settings['filter_sem_tree']);
+                        $filter->query->join('seminar_sem_tree', "seminar_sem_tree.seminar_id = seminare.Seminar_id", 'INNER JOIN');
+                        $filter->query->where('seminar_sem_tree', "seminar_sem_tree.sem_tree_id IN (:sem_tree_ids) ", [
+                            'sem_tree_ids' => $sem_tree_ids
+                        ]);
+                    }
+                    if ($export_settings['filter_datafields_activate']) {
+                        $datafield_id = $export_settings['filter_datafield'];
+                        $filter->query->join('datafields_entries', "datafields_entries.range_id = seminare.Seminar_id", 'INNER JOIN');
+                        $filter->query->where('datafields_entries', "datafields_entries.datafield_id = :cc_datafield_id AND datafields_entries.content != '' AND datafields_entries.content != '0' AND datafields_entries.content IS NOT NULL", [
+                            'cc_datafield_id' => $datafield_id
+                        ]);
+                    }
+                }
             } else {
                 list($way, $participant_id) = explode('_', $GLOBALS['user']->cfg->getValue("CAMPUSCONNECT_FILTER_SETTING"));
                 if ($way === 'import') {

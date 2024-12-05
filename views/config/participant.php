@@ -110,8 +110,8 @@
                 <input type="checkbox" id="p_import" name="data[import]" <?= $server['data']['import'] ? "checked" : "" ?> value="1" onChange="jQuery(this).next('.sync_setting').toggle('fade');">
                 <span class="sync_setting"<?= !$server['data']['import'] ? ' style="display: none"' : "" ?>>
                     <select name="data[import_settings][course_entity_type]" style="width: 250px;" id="import_course_type" onChange="STUDIP.CC.participants.showImportFields();">
-                        <option value="kurslink"<?= $server['data']['import_settings']['course_entity_type'] === "kurslink" ? " selected" : "" ?>><?= _("Kurslinks") ?></option>
-                        <option value="kurs"<?= $server['data']['import_settings']['course_entity_type'] === "kurs" ? " selected" : "" ?>><?= _("Kurse") ?></option>
+                        <option value="kurslink"<?= !empty($server['data']['import_settings']['course_entity_type']) && $server['data']['import_settings']['course_entity_type'] === "kurslink" ? " selected" : "" ?>><?= _("Kurslinks") ?></option>
+                        <option value="kurs"<?= !empty($server['data']['import_settings']['course_entity_type']) && $server['data']['import_settings']['course_entity_type'] === "kurs" ? " selected" : "" ?>><?= _("Kurse") ?></option>
                     </select>
 
                     <a href="#" onClick="STUDIP.CC.participants.setup_import(); return false;"><?= _("Konfiguration") ?></a>
@@ -125,8 +125,8 @@
                 <input type="checkbox" id="p_export" name="data[export]" <?= $server['data']['export'] ? "checked" : "" ?> value="1" onChange="jQuery(this).next('.sync_setting').toggle('fade');">
                 <span class="sync_setting"<?= !$server['data']['export'] ? ' style="display: none"' : "" ?>>
                     <select name="data[export_settings][course_entity_type]" style="width: 250px;">
-                        <option value="kurslink"<?= $server['data']['export_settings']['course_entity_type'] === "kurslink" ? " selected" : "" ?>><?= _("Kurslinks") ?></option>
-                        <option value="kurs"<?= $server['data']['export_settings']['course_entity_type'] === "kurs" ? " selected" : "" ?>><?= _("Kurse") ?></option>
+                        <option value="kurslink"<?= !empty($server['data']['export_settings']['course_entity_type']) && $server['data']['export_settings']['course_entity_type'] === "kurslink" ? " selected" : "" ?>><?= _("Kurslinks") ?></option>
+                        <option value="kurs"<?= !empty($server['data']['export_settings']['course_entity_type']) && $server['data']['export_settings']['course_entity_type'] === "kurs" ? " selected" : "" ?>><?= _("Kurse") ?></option>
                     </select>
                     <a href="#" onClick="STUDIP.CC.participants.setup_export(); return false;"><?= _("Konfiguration") ?></a>
                 </span>

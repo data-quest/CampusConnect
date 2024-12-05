@@ -22,7 +22,7 @@ $server; //server-data of participant
                     <? foreach ($GLOBALS['SEM_CLASS'] as $sem_class) : ?>
                     <? foreach ($GLOBALS['SEM_TYPE'] as $index => $sem_type) : ?>
                     <? if ($sem_type['class'] == $sem_class['id']) : ?>
-                    <option value="<?= $index ?>"<?= $server['data']['import_settings']['default_sem_type'] == $index ? " selected" : "" ?>>
+                    <option value="<?= $index ?>"<?= !empty($server['data']['import_settings']['default_sem_type']) && $server['data']['import_settings']['default_sem_type'] == $index ? " selected" : "" ?>>
                         <?= $GLOBALS['SEM_CLASS'][$sem_type['class']]['name'] ?>
                         /
                         <?= $sem_type['name'] ?>
@@ -58,28 +58,30 @@ $server; //server-data of participant
                 </div>
 
                 <div class="sem_types">
-                <? foreach ((array) $server['data']['import_settings']['sem_type_matching'] as $key => $type) : ?>
-                <div>
-                    <input type="text" placeholder="<?= _("Kurstyp des Fremdsystems") ?>" onChange="if (jQuery(this).val()) { jQuery(this).nextAll('select').attr('name', 'data[import_settings][sem_type_matching][' + encodeURI(this.value) + ']'); } else { jQuery(this).closest('div').remove(); }" value="<?= htmlReady($key) ?>">
-                    <?= Icon::create("arr_2right", Icon::ROLE_INACTIVE)->asImg(20, array('class' => "middle", 'title' => _("wird gematched auf"))) ?>
-                    <select id="sem_type" name="data[import_settings][sem_type_matching][<?= urlencode($key) ?>]">
-                        <? foreach ($GLOBALS['SEM_CLASS'] as $sem_class) : ?>
-                        <? foreach ($GLOBALS['SEM_TYPE'] as $index => $sem_type) : ?>
-                        <? if ($sem_type['class'] == $sem_class['id']) : ?>
-                        <option value="<?= $index ?>"<?= $server['data']['import_settings']['sem_type_matching'][$key] == $index ? " selected" : "" ?>>
-                            <?= $GLOBALS['SEM_CLASS'][$sem_type['class']]['name'] ?>
-                            /
-                            <?= $sem_type['name'] ?>
-                        </option>
-                        <? endif ?>
-                        <? endforeach ?>
-                        <? endforeach ?>
-                    </select>
-                    <a href="" onClick="jQuery(this).closest('div').remove(); return false;">
-                        <?= Icon::create("trash")->asImg(20, array('class' => "middle")) ?>
-                    </a>
-                </div>
-                <? endforeach ?>
+                <? if (!empty($server['data']['import_settings']['sem_type_matching'])) : ?>
+                    <? foreach ((array) $server['data']['import_settings']['sem_type_matching'] as $key => $type) : ?>
+                    <div>
+                        <input type="text" placeholder="<?= _("Kurstyp des Fremdsystems") ?>" onChange="if (jQuery(this).val()) { jQuery(this).nextAll('select').attr('name', 'data[import_settings][sem_type_matching][' + encodeURI(this.value) + ']'); } else { jQuery(this).closest('div').remove(); }" value="<?= htmlReady($key) ?>">
+                        <?= Icon::create("arr_2right", Icon::ROLE_INACTIVE)->asImg(20, array('class' => "middle", 'title' => _("wird gematched auf"))) ?>
+                        <select id="sem_type" name="data[import_settings][sem_type_matching][<?= urlencode($key) ?>]">
+                            <? foreach ($GLOBALS['SEM_CLASS'] as $sem_class) : ?>
+                            <? foreach ($GLOBALS['SEM_TYPE'] as $index => $sem_type) : ?>
+                            <? if ($sem_type['class'] == $sem_class['id']) : ?>
+                            <option value="<?= $index ?>"<?= $server['data']['import_settings']['sem_type_matching'][$key] == $index ? " selected" : "" ?>>
+                                <?= $GLOBALS['SEM_CLASS'][$sem_type['class']]['name'] ?>
+                                /
+                                <?= $sem_type['name'] ?>
+                            </option>
+                            <? endif ?>
+                            <? endforeach ?>
+                            <? endforeach ?>
+                        </select>
+                        <a href="" onClick="jQuery(this).closest('div').remove(); return false;">
+                            <?= Icon::create("trash")->asImg(20, array('class' => "middle")) ?>
+                        </a>
+                    </div>
+                    <? endforeach ?>
+                <? endif ?>
                 </div>
 
                 <div>
@@ -96,8 +98,11 @@ $server; //server-data of participant
             <td><label for="import_settings__institute"><?= _("Heimateinrichtung der importierten Kurslinks") ?></label></td>
             <td>
                 <select name="data[import_settings][institute]" id="import_settings__institute">
-                    <? foreach ($institute as $institut) : ?>
-                    <option<?= $server['data']['import_settings']['institute'] == $institut['Institut_id'] ? " selected" : "" ?> value="<?= htmlReady($institut['Institut_id']) ?>"><?= (!$institut['is_fak'] ? "&nbsp;&nbsp;&nbsp;" : ""). htmlReady($institut['Name']) ?></option>
+                    <? foreach (Institute::getInstitutes() as $institut) : ?>
+                    <option<?= !empty($server['data']['import_settings']['institute']) && $server['data']['import_settings']['institute'] == $institut['Institut_id'] ? " selected" : "" ?>
+                        value="<?= htmlReady($institut['Institut_id']) ?>">
+                            <?= (!$institut['is_fak'] ? "&nbsp;&nbsp;&nbsp;" : ""). htmlReady($institut['Name']) ?>
+                    </option>
                     <? endforeach ?>
                 </select>
             </td>
@@ -111,13 +116,16 @@ $server; //server-data of participant
                 <?= QuickSearch::get(
                     "data__import_settings____sem_tree__",
                     new SQLSearch("SELECT sem_tree_id, name FROM sem_tree WHERE name LIKE :input", _("Studienbereich wählen"))
-                    )->defaultValue($server['data']['import_settings']['sem_tree'], $server['data']['import_settings']['sem_tree'] ? \StudipStudyArea::find($server['data']['import_settings']['sem_tree'])->name : "")
+                    )->defaultValue(!empty($server['data']['import_settings']['sem_tree']) ? $server['data']['import_settings']['sem_tree'] : '', !empty($server['data']['import_settings']['sem_tree']) ? \StudipStudyArea::find($server['data']['import_settings']['sem_tree'])->name : "")
                     ->render() ?>
             </td>
         </tr>
         <tr class="kurslink_only">
             <td><label for="dynamically_add_studyareas"><?= _("Studienbereiche dynamisch erzeugen, falls vorhanden") ?></label></td>
-            <td><input type="checkbox" name="data[import_settings][dynamically_add_semtree]" id="dynamically_add_studyareas" value="1"<?= $server['data']['import_settings']['dynamically_add_semtree'] ? " checked" : "" ?>></td>
+            <td><input type="checkbox"
+                       name="data[import_settings][dynamically_add_semtree]"
+                       id="dynamically_add_studyareas"
+                       value="1"<?= !empty($server['data']['import_settings']['dynamically_add_semtree']) && $server['data']['import_settings']['dynamically_add_semtree'] ? " checked" : "" ?>></td>
         </tr>
 
         <tr class="kurslink_only">
@@ -127,9 +135,8 @@ $server; //server-data of participant
             <td><label for="import_settings__auth"><?= _("SingleSignOn-Mechanismus des Teilnehmers") ?></label></td>
             <td>
                 <select id="import_settings__auth" name="data[import_settings][auth]" onChange="if (this.value=== 'ecs_token') { jQuery('#import_settings__auth_token').removeClass('hidden'); } else { jQuery('#import_settings__auth_token').addClass('hidden'); }">
-                    <option value="ecs_token"<?= $server['data']['import_settings']['auth'] === "ecs_token" ? " selected" : "" ?>><?= _("ECS-Auth-Token") ?></option>
-                    <option value="legacy_ecs_token"<?= $server['data']['import_settings']['auth'] === "legacy_ecs_token" ? " selected" : "" ?>><?= _("Legacy ECS-Auth-Token (veraltet)") ?></option>
-                    <option value="no"<?= $server['data']['import_settings']['auth'] === "no" ? " selected" : "" ?>><?= _("Kein SSO über CampusConect") ?></option>
+                    <option value="ecs_token"<?= !empty($server['data']['import_settings']['auth']) && $server['data']['import_settings']['auth'] === "ecs_token" ? " selected" : "" ?>><?= _("ECS-Auth-Token") ?></option>
+                    <option value="no"<?= !empty($server['data']['import_settings']['auth']) && $server['data']['import_settings']['auth'] === "no" ? " selected" : "" ?>><?= _("Kein SSO über CampusConect") ?></option>
                 </select>
             </td>
         </tr>
@@ -161,32 +168,34 @@ $server; //server-data of participant
                         <td>
                             <select name="data[import_settings][auth_token][id]">
                                 <option value="user_id">user_id</option>
-                                <option value="username"<?= $server['data']['import_settings']['auth_token']['id'] === "username" ? " selected" : "" ?>>username</option>
-                                <option value="email"<?= $server['data']['import_settings']['auth_token']['id'] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
+                                <option value="username"<?= !empty($server['data']['import_settings']['auth_token']['id']) && $server['data']['import_settings']['auth_token']['id'] === "username" ? " selected" : "" ?>>username</option>
+                                <option value="email"<?= !empty($server['data']['import_settings']['auth_token']['id']) && $server['data']['import_settings']['auth_token']['id'] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
                                 <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
-                                    <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['auth_token']['id'] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
+                                    <option value="<?= $datafield->getId() ?>"<?= !empty($server['data']['import_settings']['auth_token']['id']) && $server['data']['import_settings']['auth_token']['id'] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                 <? endforeach ?>
                             </select>
                         </td>
                     </tr>
-                    <? foreach ((array) $server['data']['import_settings']['auth_token']['attributes'] as $name => $mapping) : ?>
-                    <tr>
-                        <td><input type="text" placeholder="<?= _("Weiteres Attribut") ?>" value="<?= htmlReady($name) ?>" onChange="var select = jQuery(this).closest('tr').find('select'); select.attr('name', select.data('name').replace('__REPLACE__', this.value));"></td>
-                        <td>
-                            <select name="data[import_settings][auth_token][attributes][<?= htmlReady($name) ?>]" data-name="data[import_settings][auth_token][attributes][__REPLACE__]">
-                                <option value="user_id"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === "user_id" ? " selected" : "" ?>>user_id</option>
-                                <option value="username"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === "username" ? " selected" : "" ?>>username</option>
-                                <option value="email"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
-                                <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
-                                    <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
-                                <? endforeach ?>
-                            </select>
-                            <a href="#" onClick="if (window.confirm('<?= _("Wirklich löschen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
-                                <?= Icon::create("trash")->asImg(20, array('class' => "text-bottom")) ?>
-                            </a>
-                        </td>
-                    </tr>
-                    <? endforeach ?>
+                    <? if (!empty($server['data']['import_settings']['auth_token']['attributes'])) : ?>
+                        <? foreach ((array) $server['data']['import_settings']['auth_token']['attributes'] as $name => $mapping) : ?>
+                        <tr>
+                            <td><input type="text" placeholder="<?= _("Weiteres Attribut") ?>" value="<?= htmlReady($name) ?>" onChange="var select = jQuery(this).closest('tr').find('select'); select.attr('name', select.data('name').replace('__REPLACE__', this.value));"></td>
+                            <td>
+                                <select name="data[import_settings][auth_token][attributes][<?= htmlReady($name) ?>]" data-name="data[import_settings][auth_token][attributes][__REPLACE__]">
+                                    <option value="user_id"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === "user_id" ? " selected" : "" ?>>user_id</option>
+                                    <option value="username"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === "username" ? " selected" : "" ?>>username</option>
+                                    <option value="email"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
+                                    <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
+                                        <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
+                                    <? endforeach ?>
+                                </select>
+                                <a href="#" onClick="if (window.confirm('<?= _("Wirklich löschen?") ?>')) { jQuery(this).closest('tr').fadeOut(function() { jQuery(this).remove(); }); }; return false;">
+                                    <?= Icon::create("trash")->asImg(20, array('class' => "text-bottom")) ?>
+                                </a>
+                            </td>
+                        </tr>
+                        <? endforeach ?>
+                    <? endif ?>
                     </tbody>
                     <tobdy>
                         <tr id="data__import_settings__auth_token__attributes_template" style="display: none;">

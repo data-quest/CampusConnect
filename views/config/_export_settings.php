@@ -25,12 +25,12 @@ $server_data = $server->data->getArrayCopy();
                             <td>
                                 <? $name = "ecs_login" ?>
                                 <select name="data[export_settings][auth_token][attributes][<?= htmlReady($name) ?>]" data-name="data[export_settings][auth_token][attributes][__REPLACE__]">
-                                    <option value="user_id"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === "user_id" ? " selected" : "" ?>>user_id</option>
-                                    <option value="username"<?= ($server['data']['export_settings']['auth_token']['attributes'][$name] === "username") || !$server['data']['export_settings']['auth_token']['attributes'][$name] ? " selected" : "" ?>>username</option>
-                                    <option value="email"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
-                                    <option value="institut"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === "institut" ? " selected" : "" ?>><?= _("Heimateinrichtung") ?></option>
+                                    <option value="user_id"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "user_id" ? " selected" : "" ?>>user_id</option>
+                                    <option value="username"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && (($server['data']['export_settings']['auth_token']['attributes'][$name] === "username") || !$server['data']['export_settings']['auth_token']['attributes'][$name]) ? " selected" : "" ?>>username</option>
+                                    <option value="email"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
+                                    <option value="institut"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "institut" ? " selected" : "" ?>><?= _("Heimateinrichtung") ?></option>
                                     <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
-                                        <option value="<?= $datafield->getId() ?>"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
+                                        <option value="<?= $datafield->getId() ?>"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                     <? endforeach ?>
                                 </select>
                             </td>
@@ -39,13 +39,14 @@ $server_data = $server->data->getArrayCopy();
                             <td>ecs_email</td>
                             <td>
                                 <? $name = "ecs_email" ?>
-                                <select name="data[export_settings][auth_token][attributes][<?= htmlReady($name) ?>]" data-name="data[export_settings][auth_token][attributes][__REPLACE__]">
-                                    <option value="user_id"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === "user_id" ? " selected" : "" ?>>user_id</option>
-                                    <option value="username"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === "username" ? " selected" : "" ?>>username</option>
-                                    <option value="email"<?= ($server['data']['export_settings']['auth_token']['attributes'][$name] === "email") || !$server['data']['export_settings']['auth_token']['attributes'][$name] ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
-                                    <option value="institut"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === "institut" ? " selected" : "" ?>><?= _("Heimateinrichtung") ?></option>
+                                <select name="data[export_settings][auth_token][attributes][<?= htmlReady($name) ?>]"
+                                        data-name="data[export_settings][auth_token][attributes][__REPLACE__]">
+                                    <option value="user_id"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "user_id" ? " selected" : "" ?>>user_id</option>
+                                    <option value="username"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "username" ? " selected" : "" ?>>username</option>
+                                    <option value="email"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && (($server['data']['export_settings']['auth_token']['attributes'][$name] === "email") || !$server['data']['export_settings']['auth_token']['attributes'][$name]) ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
+                                    <option value="institut"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "institut" ? " selected" : "" ?>><?= _("Heimateinrichtung") ?></option>
                                     <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
-                                        <option value="<?= $datafield->getId() ?>"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
+                                        <option value="<?= $datafield->getId() ?>"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                     <? endforeach ?>
                                 </select>
                             </td>
@@ -55,16 +56,17 @@ $server_data = $server->data->getArrayCopy();
                             <td>
                                 <? $name = "ecs_institution" ?>
                                 <select name="data[export_settings][auth_token][attributes][<?= htmlReady($name) ?>]" data-name="data[export_settings][auth_token][attributes][__REPLACE__]">
-                                    <option value="user_id"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === "user_id" ? " selected" : "" ?>>user_id</option>
-                                    <option value="username"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === "username" ? " selected" : "" ?>>username</option>
-                                    <option value="email"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
-                                    <option value="institut"<?= ($server['data']['export_settings']['auth_token']['attributes'][$name] === "institut") || !$server['data']['export_settings']['auth_token']['attributes'][$name] ? " selected" : "" ?>><?= _("Heimateinrichtung") ?></option>
+                                    <option value="user_id"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "user_id" ? " selected" : "" ?>>user_id</option>
+                                    <option value="username"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "username" ? " selected" : "" ?>>username</option>
+                                    <option value="email"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
+                                    <option value="institut"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && (($server['data']['export_settings']['auth_token']['attributes'][$name] === "institut") || !$server['data']['export_settings']['auth_token']['attributes'][$name]) ? " selected" : "" ?>><?= _("Heimateinrichtung") ?></option>
                                     <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
-                                        <option value="<?= $datafield->getId() ?>"<?= $server['data']['export_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
+                                        <option value="<?= $datafield->getId() ?>"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                     <? endforeach ?>
                                 </select>
                             </td>
                         </tr>
+                        <? if (!empty($server_data['export_settings']['auth_token']['attributes'])) : ?>
                         <? foreach ((array) $server_data['export_settings']['auth_token']['attributes'] as $name => $mapping) : ?>
                             <? if (!in_array($name, array("ecs_login", "ecs_email", "ecs_institution"))) : ?>
                                 <tr>
@@ -86,6 +88,7 @@ $server_data = $server->data->getArrayCopy();
                                 </tr>
                             <? endif ?>
                         <? endforeach ?>
+                        <? endif ?>
                     </tbody>
                     <tfoot>
                         <tr id="data__export_settings__auth_token__attributes_template" style="display: none;">
@@ -128,37 +131,37 @@ $server_data = $server->data->getArrayCopy();
             <td width="70%">
                 <label>
                     <?= _("Studienbereiche") ?>
-                    <input type="checkbox" name="data[export_settings][filter_sem_tree_activate]"<?= $server['data']['export_settings']['filter_sem_tree_activate'] ? " checked" : "" ?> value="1" onChange="jQuery('#filter_sem_tree').toggle('fade');">
+                    <input type="checkbox" name="data[export_settings][filter_sem_tree_activate]"<?= !empty($server['data']['export_settings']['filter_sem_tree_activate']) ? " checked" : "" ?> value="1" onChange="jQuery('#filter_sem_tree').toggle('fade');">
                 </label>
                 <br>
                 <label>
                     <?= _("Datenfelder") ?>
-                    <input type="checkbox" name="data[export_settings][filter_datafields_activate]"<?= $server['data']['export_settings']['filter_datafields_activate'] ? " checked" : "" ?> value="1" onChange="jQuery('#filter_datafields').toggle('fade');">
+                    <input type="checkbox" name="data[export_settings][filter_datafields_activate]"<?= !empty($server['data']['export_settings']['filter_datafields_activate']) ? " checked" : "" ?> value="1" onChange="jQuery('#filter_datafields').toggle('fade');">
                 </label>
             </td>
         </tr>
         <tr>
             <td colspan="2"><hr class="grey"></td>
         </tr>
-        <tr id="filter_sem_tree"<?= !$server['data']['export_settings']['filter_sem_tree_activate'] ? ' style="display: none; "' : "" ?>>
+        <tr id="filter_sem_tree"<?= empty($server['data']['export_settings']['filter_sem_tree_activate']) ? ' style="display: none; "' : "" ?>>
             <td>
                 <?= _("Filter nach Studiengängen") ?>
             </td>
             <td>
                 <?= _("Nur Veranstaltungen exportieren, die den folgenden Studienbereichen zugeordnet sind.") ?>
                 <?= CampusConnectStudyAreaSelector::create("data[export_settings][filter_sem_tree]", "multiple")
-                        ->setDefault(array_keys(array_filter((array) $server['data']['export_settings']['filter_sem_tree'])))
+                        ->setDefault(!empty($server['data']['export_settings']['filter_sem_tree']) ? array_keys(array_filter((array) $server['data']['export_settings']['filter_sem_tree'])) : [])
                         ->render() ?>
             </td>
         </tr>
-        <tr id="filter_datafields"<?= !$server['data']['export_settings']['filter_datafields_activate'] ? ' style="display: none;"' : "" ?>>
+        <tr id="filter_datafields"<?= empty($server['data']['export_settings']['filter_datafields_activate']) ? ' style="display: none;"' : "" ?>>
             <td>
                 <?= _("Filter nach Datenfeld") ?>
             </td>
             <td>
                 <select name="data[export_settings][filter_datafield]">
                 <? foreach ($datafields as $datafield) : ?>
-                    <option value="<?= htmlReady($datafield['datafield_id']) ?>"<?= $server['data']['export_settings']['filter_datafield'] === $datafield['datafield_id'] ? " selected" : "" ?>>
+                    <option value="<?= htmlReady($datafield['datafield_id']) ?>"<?= !empty($server['data']['export_settings']['filter_datafield']) && $server['data']['export_settings']['filter_datafield'] === $datafield['datafield_id'] ? " selected" : "" ?>>
                         <?= htmlReady($datafield['name']) ?>
                     </option>
                 <? endforeach ?>

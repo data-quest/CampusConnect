@@ -3,21 +3,8 @@
         <?= _("Statistik") ?>
     </div>
     <div>
-        <strong><?= _("Importierte Semester") ?></strong>:
-        <?= (int) $imported_semesters ?>
-        <br>
         <strong><?= _("Importierte Veranstaltungen") ?></strong>:
         <?= (int) $imported_courses ?>
-        <br>
-        <strong><?= _("Importierte Einrichtungen") ?></strong>:
-        <?= (int) $imported_institutes ?>
-        <br>
-        <strong><?= _("Importierte Studienbereiche") ?></strong>:
-        <?= (int) $imported_studyareas ?>
-        <br>
-        <strong><?= _("Importierte Nutzer") ?></strong>:
-        <?= (int) $imported_users ?>
-        <br>
     </div>
 </div>
 <div class="overview">

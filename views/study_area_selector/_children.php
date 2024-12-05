@@ -32,13 +32,14 @@
                foreach ($necessary[$sem_tree_id]['children'] as $entry_id) {
                     $subentries[$entry_id] = $necessary[$entry_id];
                } ?>
-            <?= $this->render_partial("study_area_selector/_children", array(
+            <?= $this->render_partial("study_area_selector/_children", [
                     "id" => $id,
                     "entry" => $entry,
                     "name" => $name,
                     "entries" => $subentries,
                     "defaults" => $defaults,
-                    "neccesary" => $necessary)) ?>
+                    "neccesary" => $necessary
+                ]) ?>
         <? endif ?></ol>
 
     </li>

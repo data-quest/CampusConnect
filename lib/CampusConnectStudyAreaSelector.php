@@ -64,6 +64,8 @@ class CampusConnectStudyAreaSelector {
         $entries = $entries->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_ASSOC);
         $entries = array_map(function ($a) { return $a[0]; }, $entries);
 
+        $necessary = [];
+
         if (count($this->defaults)) {
             $statement = \DBManager::get()->prepare("
                 SELECT * FROM sem_tree WHERE parent_id IN (
