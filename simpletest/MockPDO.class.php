@@ -16,9 +16,9 @@ class MockPDO extends StudipPDO {
         return parent::query($sql);
     }
 
-    public function exec($sql) {
-        $sql = $this->alterSQL($sql);
-        return parent::exec($sql);
+    public function exec(string $statement): int|false {
+        $sql = $this->alterSQL($statement);
+        return parent::exec($statement);
     }
 
     public function prepare($sql, $driver_options = array()) {
