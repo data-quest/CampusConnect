@@ -15,7 +15,6 @@ class CampusConnectTreeItemsTestCase extends UnitTestCase {
 
     function setUp()
     {
-        CampusConnectLog::get()->setLogLevel(10000);
         DBManager::get()->exec(
             "CREATE TABLE IF NOT EXISTS `campus_connect_entities` (
                 `item_id` varchar(256) NOT NULL,
@@ -80,33 +79,33 @@ class CampusConnectTreeItemsTestCase extends UnitTestCase {
 
     function test_map() {
         $db = DBManager::get();
-        
+
         $db->exec("
-            INSERT INTO sem_tree 
+            INSERT INTO sem_tree
             SET sem_tree_id = MD5('hallo'),
                 name = 'hallo',
                 parent_id = 'root'
         ");
         $anzahl = $db->query("SELECT COUNT(*) FROM sem_tree")->fetch(PDO::FETCH_COLUMN, 0);
         $this->assertEqual($anzahl, 1);
-        
+
         $tree_item = new CampusConnectTreeItems();
         $tree_item['item_id'] = 1;
         $tree_item['participant_id'] = 1;
         $tree_item['root_id'] = 1;
         $tree_item['title'] = "Yeah";
         $tree_item->store();
-        
+
         $tree_item->map(md5("hallo"));
-        
+
         $anzahl = $db->query("SELECT COUNT(*) FROM sem_tree")->fetch(PDO::FETCH_COLUMN, 0);
         $this->assertEqual($anzahl, 2);
-        
+
         $tree_item->map(null);
-        
+
         $anzahl = $db->query("SELECT COUNT(*) FROM sem_tree")->fetch(PDO::FETCH_COLUMN, 0);
         $this->assertEqual($anzahl, 1);
-        
+
         $tree_item2 = new CampusConnectTreeItems();
         $tree_item2['item_id'] = 2;
         $tree_item2['participant_id'] = 1;
@@ -114,22 +113,22 @@ class CampusConnectTreeItemsTestCase extends UnitTestCase {
         $tree_item2['parent_id'] = 1;
         $tree_item2['title'] = "Yeah 2";
         $tree_item2->store();
-        
+
         $tree_item->map(md5("hallo"));
-        
+
         $sem_tree = $db->query("SELECT * FROM sem_tree")->fetchAll(PDO::FETCH_ASSOC);
         $this->assertEqual(count($sem_tree), 3);
         foreach ($sem_tree as $s) {
             $this->assertEqual(in_array($s['name'], array("hallo","Yeah","Yeah 2")), true);
         }
-        
+
         $tree_item->map(null);
-        
+
         $anzahl = $db->query("SELECT COUNT(*) FROM sem_tree")->fetch(PDO::FETCH_COLUMN, 0);
         $this->assertEqual($anzahl, 1);
-        
+
         //Nun auch mit Kursen:
-        
+
         $course1 = new CampusConnectEntity();
         $course1['item_id'] = md5("kurs1");
         $course1['participant_id'] = 1;
@@ -139,17 +138,17 @@ class CampusConnectTreeItemsTestCase extends UnitTestCase {
         $data['degreeProgrammes'] = array(array('id' => 1));
         $course1['data'] = $data;
         $course1->store();
-        
+
         $anzahl = $db->query("SELECT COUNT(*) FROM seminar_sem_tree")->fetch(PDO::FETCH_COLUMN, 0);
         $this->assertEqual($anzahl, 0);
-        
+
         $tree_item->map(md5("hallo"));
-        
+
         $anzahl = $db->query("SELECT COUNT(*) FROM seminar_sem_tree")->fetch(PDO::FETCH_COLUMN, 0);
         $this->assertEqual($anzahl, 1);
-        
+
         $tree_item->map(null);
-        
+
         $anzahl = $db->query("SELECT COUNT(*) FROM seminar_sem_tree")->fetch(PDO::FETCH_COLUMN, 0);
         $this->assertEqual($anzahl, 0);
 
@@ -171,9 +170,9 @@ class CampusConnectTreeItemsTestCase extends UnitTestCase {
         $data['degreeProgrammes'] = array(array('id' => 2));
         $course1['data'] = $data;
         $course1->store();
-        
+
         $tree_item->map(md5("hallo"));
-        
+
         $anzahl = $db->query("SELECT COUNT(*) FROM seminar_sem_tree")->fetch(PDO::FETCH_COLUMN, 0);
         $this->assertEqual($anzahl, 2);
 

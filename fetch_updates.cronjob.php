@@ -20,7 +20,6 @@ class FetchUpdatesJob extends CronJob
 
     public function setUp() {
         require_once __DIR__.'/lib/CCParticipant.php';
-        require_once __DIR__.'/lib/CampusConnectLog.php';
         require_once __DIR__.'/lib/CampusConnectHelper.php';
         require_once __DIR__.'/lib/EcsClient.php';
         require_once __DIR__.'/lib/EcsResult.php';
@@ -31,9 +30,6 @@ class FetchUpdatesJob extends CronJob
         require_once __DIR__.'/lib/CCCourse.php';
         require_once __DIR__.'/lib/CCRessources.php';
         require_once __DIR__.'/lib/CampusConnector.php';
-        if (Config::get()->CAMPUSCONNECT_LOGFILE) {
-            CampusConnectLog::get()->setHandler($GLOBALS['TMP_PATH']."/".Config::get()->CAMPUSCONNECT_LOGFILE);
-        }
     }
 
     /**

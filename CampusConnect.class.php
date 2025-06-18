@@ -9,6 +9,10 @@
  */
 
 
+if (!interface_exists('AdminCourseWidgetPlugin')) {
+    interface AdminCourseWidgetPlugin {}
+}
+
 class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin, AdminCourseWidgetPlugin
 {
 
@@ -34,9 +38,6 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
 
             $navigation = new Navigation("Log", PluginEngine::getURL($this, array(), "log/view"));
             Navigation::addItem('/admin/campusconnect/log', $navigation);
-
-            $navigation = new Navigation("Log (old)", PluginEngine::getURL($this, array(), "log/view2"));
-            Navigation::addItem('/admin/campusconnect/log2', $navigation);
         }
 
         /*******************************************************************
@@ -126,24 +127,6 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
     public function getNotificationObjects($course_id, $since, $user_id)
     {
         return null;
-    }
-
-    /**
-    * This method dispatches and displays all actions. It uses the template
-    * method design pattern, so you may want to implement the methods #route
-    * and/or #display to adapt to your needs.
-    *
-    * @param  string  the part of the dispatch path, that were not consumed yet
-    *
-    * @return void
-    */
-    public function perform($unconsumed_path)
-    {
-        if (Config::Get()->CAMPUSCONNECT_LOGFILE) {
-            CampusConnectLog::get()->setHandler($GLOBALS['TMP_PATH']."/".Config::get()->CAMPUSCONNECT_LOGFILE);
-        }
-        CampusConnectLog::get()->setLogLevel(CampusConnectLog::DEBUG);
-        return parent::perform($unconsumed_path);
     }
 
     /**

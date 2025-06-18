@@ -26,34 +26,20 @@ class LogController extends PluginController
 
     public function view_action()
     {
-        if (Config::get()->CAMPUSCONNECT_LOGFILE) {
-            CampusConnectLog::get()->setHandler($GLOBALS['TMP_PATH']."/".Config::get()->CAMPUSCONNECT_LOGFILE);
-        }
         if (Request::get("type")) {
-            $this->entries = CCLog::read("log_type = ?", array(Request::get("type")));
+            $this->entries = CCLog::findBySQL("log_type = ? ORDER BY mkdate DESC ", [Request::get("type")]);
         } elseif (Request::get("text")) {
-            $this->entries = CCLog::read("log_text = ?", array(Request::get("text")));
-        } elseif (Request::get("mkdate")) {
-            $this->entries = CCLog::read("mkdate = ?", array(Request::get("mkdate")));
+            $this->entries = CCLog::findBySQL("log_text = ? ORDER BY mkdate DESC ", [Request::get("text")]);
         } elseif(Request::get("search")) {
-            $this->entries = CCLog::read("log_json LIKE ?", array("%".Request::get("search")."%"));
+            $this->entries = CCLog::findBySQL("log_json LIKE ? ORDER BY mkdate DESC ", ["%".Request::get("search")."%"]);
         } else {
-            $this->entries = CCLog::read();
+            $this->entries = CCLog::findBySQL("1 ORDER BY mkdate DESC");
         }
     }
 
     public function details_action($log_id) {
         PageLayout::setTitle(_("CC-Logeintrag auslesen"));
-        $this->entry = CCLog::read("log_id = ? ", array($log_id));
-        $this->entry = $this->entry[0];
-    }
-
-    function view2_action()
-    {
-        if (Config::get()->CAMPUSCONNECT_LOGFILE) {
-            CampusConnectLog::get()->setHandler($GLOBALS['TMP_PATH']."/".Config::get()->CAMPUSCONNECT_LOGFILE);
-        }
-        $this->logfile = $this->logfile ? $this->logfile : (CampusConnectLog::get()->getHandler() ?: $GLOBALS['TMP_PATH']."/studip.log");
+        $this->entry = CCLog::find($log_id);
     }
 }
 

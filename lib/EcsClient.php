@@ -150,26 +150,23 @@ class EcsClient
             return strlen($headerdata);
         };
         curl_setopt($c, CURLOPT_HEADERFUNCTION, $headerfunc);
-        CampusConnectLog::_(sprintf('curl_exec: %s, %s, %s',$this->getUrl($path), $this->request_method, print_r($header,1)), CampusConnectLog::DEBUG);
-
+        //CampusConnectLog::_(sprintf('curl_exec: %s, %s, %s',$this->getUrl($path), $this->request_method, print_r($header,1)), CampusConnectLog::DEBUG);
+        $path_entry = explode("/", $path);
+        $path_entry = array_pop($path_entry);
+        $log = CCLog::log(strtoupper($this->request_method."_".$path_entry), "cURL request");
         $result = curl_exec($c);
         $response_code = curl_getinfo($c, CURLINFO_HTTP_CODE);
         if ($result === false) {
             $this->last_error_number = curl_errno($c);
             $this->last_error = curl_error($c);
-            CampusConnectLog::_('curl_exec failed: ' . $this->last_error, CampusConnectLog::WARNING);
+            //CampusConnectLog::_('curl_exec failed: ' . $this->last_error, CampusConnectLog::WARNING);
+            $log->addLog(sprintf('curl_exec failed: %s',$this->last_error));
         } else {
             $this->last_error_number = null;
             $this->last_error = null;
-            CampusConnectLog::_(sprintf("curl_exec success: %s\n%s",$result, print_r($response_header,1)), CampusConnectLog::DEBUG);
-            switch ($path) {
-                case "/sys/memberships":
-                    CCLog::log(
-                        "CC-get_memberships",
-                        sprintf('curl_exec: %s',$this->getUrl($path)),
-                        json_decode($result, true)
-                    );
-            }
+            //CampusConnectLog::_(sprintf("curl_exec success: %s\n%s",$result, print_r($response_header,1)), CampusConnectLog::DEBUG);
+            $log->addLog(sprintf('curl_exec success: %s', print_r($response_header,1)));
+            $log->addLog($result);
         }
         curl_close($c);
         $this->unsetHeader();

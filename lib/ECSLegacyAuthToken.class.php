@@ -30,7 +30,7 @@ class ECSLegacyAuthToken {
         $this->debugging[] = sprintf("ECSLegacyAuthToken: Checking ecs-token-hash %s on ecs '%s'", $ecs_hash, $this->data['name']);
         $result = $ecs_client->checkAuths($ecs_hash);
         $this->token_data = $result->getResult();
-        CampusConnectLog::_(sprintf("ecs-auth: got result: %s", print_r($this->token_data, 1)), CampusConnectLog::DEBUG);
+        CCLog::log("ECS_LEGACY_AUTH", sprintf("Checking ecs-token-hash %s on ECS %s", $ecs_hash, $this->data['name']), print_r($this->token_data, 1));
         return $result->isError() ? false : $this->token_data;
     }
 
@@ -50,7 +50,7 @@ class ECSLegacyAuthToken {
             $parameter
         );
         if ($realm != $this->token_data['realm']) {
-            CampusConnectLog::_(sprintf("ecs-auth: realm does not match: %s", $realm), CampusConnectLog::DEBUG);
+            CCLog::log("ECS_AUTH_REALM_NOT_MATCHING", "realm does not match", $realm." and ".$this->token_data['realm']);
             $this->debugging[] = sprintf("ECSLegacyAuthToken: Constructed realm %s does not match token realm %s", $realm, $this->token_data['realm']);
         }
 
@@ -88,7 +88,7 @@ class ECSLegacyAuthToken {
         foreach ($parameter as $param_name => $param) {
             $output .= $param;
         }
-        CampusConnectLog::_(sprintf("ecs-auth: constructed realm before hashing: %s", $output), CampusConnectLog::DEBUG);
+        CCLog::log("ECS_AUTH_REALM", "constructed realm before hashing", $output);
         if ($this) {
             $this->debugging[] = sprintf("ECSLegacyAuthToken: Constructed realm before hashing: %s", $output);
         }

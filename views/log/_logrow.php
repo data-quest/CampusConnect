@@ -1,6 +1,9 @@
 <tr>
     <td>
         <a href="<?= PluginEngine::getLink($this->plugin, array('type' => $logentry['log_type']), "log/view") ?>">
+            <?= Icon::create("filter2")->asImg(20, ['class' => 'text-bottom']) ?>
+        </a>
+        <a href="<?= PluginEngine::getLink($this->plugin, array(), "log/details/".$logentry['log_id']) ?>" data-dialog>
             <?= htmlReady($logentry['log_type']) ?>
         </a>
     </td>

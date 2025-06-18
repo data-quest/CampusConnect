@@ -16,7 +16,7 @@ class EcsClientTestCase extends UnitTestCase {
 
     function setUp()
     {
-        CampusConnectLog::get()->setLogLevel(10000);
+
     }
 
 
@@ -27,7 +27,7 @@ class EcsClientTestCase extends UnitTestCase {
 
     function test_something()
     {
-        
+
     }
 
 }

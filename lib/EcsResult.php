@@ -88,7 +88,7 @@ class EcsResult
         {
             $parsed_result = json_decode($this->result, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                CampusConnectLog::_('json_decode() failed: ' . json_last_error(), CampusConnectLog::WARNING);
+                CCLog::log("PARSE_ERROR", 'json_decode() failed', json_last_error(). " ".$parsed_result);
             }
 
             $this->parsed_result = $parsed_result;

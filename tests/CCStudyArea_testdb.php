@@ -15,7 +15,6 @@ class CCStudyAreaCase extends UnitTestCase {
 
     function setUp()
     {
-        CampusConnectLog::get()->setLogLevel(10000);
         DBManager::get()->exec(
             "CREATE TABLE IF NOT EXISTS `campus_connect_entities` (
                 `item_id` varchar(256) NOT NULL,

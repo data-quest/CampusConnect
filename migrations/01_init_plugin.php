@@ -1,7 +1,7 @@
 <?php
 class InitPlugin extends Migration
 {
-	function up(){
+	function up() {
 	    DBManager::get()->exec(
             "CREATE TABLE IF NOT EXISTS `campus_connect_config` (
                 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

@@ -33,6 +33,7 @@
         </span>
     </div>
 </div>
+<!--
 <div class="overview">
     <div class="overview_header">
         <a href="#" onClick="STUDIP.CC.checks.test(); return false;">
@@ -45,6 +46,7 @@
     </div>
     <div id="progress_time" style="display: none;"><?= $_SESSION['unit_test_progress_time'] ? (int) $_SESSION['unit_test_progress_time'] : "8000" ?></div>
 </div>
+-->
 <div class="overview">
     <div class="overview_header">
         <a href="#" onClick="STUDIP.CC.ECS.export_everything(); return false;">

@@ -82,7 +82,7 @@ class ConfigController extends PluginController
         $result_header = $result->getResponseHeader();
         $this->render_json(array(
             'is_error' => $result->isError(),
-            'status'   => $result_header['Status'],
+            'status'   => $result_header['Status'] ?? '',
             'error'    => $client->last_cert_error ?: $client->last_error
         ));
     }

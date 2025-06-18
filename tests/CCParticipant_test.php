@@ -16,7 +16,6 @@ class CCParticipantTestCase extends UnitTestCase {
 
     function setUp()
     {
-        CampusConnectLog::get()->setLogLevel(10000);
         DBManager::get()->exec("CREATE TABLE IF NOT EXISTS `campus_connect_config` (
                 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                 `type` varchar(20) NOT NULL,

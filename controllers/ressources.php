@@ -8,10 +8,10 @@ class RessourcesController extends PluginController
         $ressource = new CCRessource($id);
         if ($ressource->isNew() || $ressource['mkdate'] < time() - 60 * 30) {
             $ressource->delete();
-            CampusConnectLog::_(sprintf("Unsuccessful lookup of ressource %s ",$id), CampusConnectLog::DEBUG);
+            CCLog::log("RESOURCE_LOOKUP_FAIL", sprintf("Unsuccessful lookup of ressource %s ",$id));
             throw new Exception("Unknown ressource");
         }
-        CampusConnectLog::_(sprintf("Successful lookup of ressource %s ",$id), CampusConnectLog::DEBUG);
+        CCLog::log("RESOURCE_LOOKUP_SUCCESS", sprintf("Successful lookup of ressource %s ",$id));
         $this->render_json($ressource['json']);
     }
 }
