@@ -59,6 +59,27 @@ function display_array($arr) {
 
 ?>
 
-<div class="json_object_list">
-    <?= display_array((json_decode($entry['log_json'], true))) ?>
-</div>
+<table class="default">
+    <thead>
+        <tr>
+            <th><?= _("Eintrag") ?></th>
+            <th class="actions"><?= _("Sekunden nach Beginn") ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <? foreach ($entry['log_json'] as $value) {
+            $content = $value[0];
+            $timestamp = $value[1];
+            $json = json_decode($content, true);
+            if (!empty($json)) {
+                $content = '<div class="json_object_list">'.display_array($json).'</div>';
+            } else {
+                $content = htmlReady($content);
+            }
+            echo '<tr><td>'.$content.'</td><td class="actions" valign="top">'.htmlReady($timestamp - $entry['mkdate']).'</td></tr>';
+        } ?>
+    </tbody>
+</table>
+
+
+
