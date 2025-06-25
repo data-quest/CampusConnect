@@ -170,7 +170,7 @@ $server; //server-data of participant
                                 <option value="user_id">user_id</option>
                                 <option value="username"<?= !empty($server['data']['import_settings']['auth_token']['id']) && $server['data']['import_settings']['auth_token']['id'] === "username" ? " selected" : "" ?>>username</option>
                                 <option value="email"<?= !empty($server['data']['import_settings']['auth_token']['id']) && $server['data']['import_settings']['auth_token']['id'] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
-                                <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
+                                <? foreach (DataField::findBySQL("object_type = 'user'") as $datafield) : ?>
                                     <option value="<?= $datafield->getId() ?>"<?= !empty($server['data']['import_settings']['auth_token']['id']) && $server['data']['import_settings']['auth_token']['id'] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                 <? endforeach ?>
                             </select>
@@ -185,7 +185,7 @@ $server; //server-data of participant
                                     <option value="user_id"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === "user_id" ? " selected" : "" ?>>user_id</option>
                                     <option value="username"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === "username" ? " selected" : "" ?>>username</option>
                                     <option value="email"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
-                                    <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
+                                    <? foreach (DataField::findBySQL("object_type = 'user'") as $datafield) : ?>
                                         <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                     <? endforeach ?>
                                 </select>
@@ -205,7 +205,7 @@ $server; //server-data of participant
                                     <option value="user_id">user_id</option>
                                     <option value="username"<?= $server['data']['import_settings']['auth_token']['id'] === "username" ? " selected" : "" ?>>username</option>
                                     <option value="email"<?= $server['data']['import_settings']['auth_token']['id'] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
-                                    <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
+                                    <? foreach (DataField::findBySQL("object_type = 'user'") as $datafield) : ?>
                                         <option value="<?= $datafield->getId() ?>"<?= $server['data']['import_settings']['auth_token']['id'] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                     <? endforeach ?>
                                 </select>

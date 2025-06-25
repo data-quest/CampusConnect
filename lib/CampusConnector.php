@@ -8,16 +8,17 @@ class CampusConnector {
         $ecs = CampusConnectConfig::findByType("server");
         foreach ($ecs as $ecs_server) {
             if ($ecs_server['active']) {
-                $ecs_client = new ECSClient($ecs_server['data']);
+                $ecs_client = new EcsClient($ecs_server['data']);
                 foreach ($changes as $change) {
+
                     //Für jeden Kurs müssen wir pro ECS generell zwei Nachrichten absetzen:
                     //Die erste für Courselinks und die zweite für Courses.
                     switch ($change['object_type']) {
                         case "course":
+
                             $course = new CCCourse($change['object_id']);
                             //Courselinks:
                             $path = "/campusconnect/courselinks";
-
                             $receiver_participants = $course->getReceivingParticipantsForECS($ecs_server, "kurslink");
                             $message = $course->getCourselinkMessage();
                             $resource_id = $course->already_synced('kurslink');
@@ -34,13 +35,20 @@ class CampusConnector {
                             } elseif(count($receiver_participants)) {
                                 $result = $ecs_client->createResourceMessage(
                                     $path,
-                                    $course->getCourselinkMessage(),
+                                    $message,
                                     $receiver_participants
                                 );
                                 $header = $result->getResponseHeader();
-                                $resource_id = strrpos($header['Location'], "/") !== false
-                                    ? substr($header['Location'], strrpos($header['Location'], "/") + 1)
-                                    : $header['Location'];
+                                $resource_id = false;
+                                foreach ($header as $key => $value) {
+                                    if (strtolower($key) === "location") {
+                                        if (strrpos($value, "/") !== false) {
+                                            $resource_id = substr($value, strrpos($value, "/") + 1);
+                                        } else {
+                                            $resource_id = $value;
+                                        }
+                                    }
+                                }
                                 if ($resource_id) {
                                     $sent_item = new CampusConnectSentItem();
                                     $sent_item['item_id'] = $course->getId();
@@ -75,6 +83,7 @@ class CampusConnector {
                 }
             }
         }
+        die("test");
         CampusConnectTriggerStack::clear();
     }
 
@@ -84,7 +93,7 @@ class CampusConnector {
         $participants = CCParticipant::findAll();
         foreach ($ecs as $ecs_server) {
             if ($ecs_server['active']) {
-                $ecs_client = new ECSClient($ecs_server['data']);
+                $ecs_client = new EcsClient($ecs_server['data']);
                 $result_object = $ecs_client->getAndRemoveEventsFifo(10); //gibt nur einen zurück
                 $i = 0;
                 while (count((array) $result_object->getResult()) > 0) {
@@ -232,7 +241,7 @@ class CampusConnector {
         $ecs = CampusConnectConfig::findByType("server");
         foreach ($ecs as $ecs_server) {
             if ($ecs_server['active']) {
-                $ecs_client = new ECSClient($ecs_server['data']);
+                $ecs_client = new EcsClient($ecs_server['data']);
                 foreach ($changes as $change) {
                     //Für jeden Kurs müssen wir pro ECS generell zwei Nachrichten absetzen:
                     //Die erste für Courselinks und die zweite für Courses.

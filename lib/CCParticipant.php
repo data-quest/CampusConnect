@@ -60,7 +60,7 @@ class CCParticipant extends CampusConnectConfig
                     break;
                 }
             }
-            if (!$community) {
+            if (empty($community)) {
                 $community = new CampusConnectConfig();
                 $community['type'] = "community";
                 $new_community = true;
@@ -90,7 +90,7 @@ class CCParticipant extends CampusConnectConfig
                         $participant = $p;
                     }
                 }
-                if (!$participant) {
+                if (empty($participant)) {
                     //Kennen wir den Teilnehmer von einer anderen Community bzw. einem anderen ECS?
                     foreach ($participants as $p) {
                         if ($p['data']['name'] === $participant_data['name']) {
@@ -98,7 +98,7 @@ class CCParticipant extends CampusConnectConfig
                         }
                     }
                 }
-                if (!$participant) {
+                if (empty($participant)) {
                     //Wir kennen den Teilnehmer scheinbar noch gar nicht
                     $participant = new CCParticipant();
                     $new = true;

@@ -40,4 +40,19 @@ class CampusConnectTriggerStack extends SimpleORMap
         "");
         return $statement->execute();
     }
+
+    public function getName() : String
+    {
+        switch ($this->object_type) {
+            case 'course':
+                $course = Course::find($this->object_id);
+                if ($course) {
+                    return $course->name;
+                } else {
+                    return _("Gelöschte Veranstaltung");
+                }
+            default:
+                return $this->object_id." (".$this->object_type.")";
+        }
+    }
 }

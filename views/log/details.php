@@ -22,12 +22,18 @@
 <?
 
 function isAssoc($arr) {
+    if (!is_array($arr)) {
+        return false;
+    }
     return array_keys($arr) !== range(0, count($arr) - 1);
 }
 
 
 function display_array($arr) {
     $output = "";
+    if (!is_array($arr)) {
+        $arr = [$arr];
+    }
     if (isAssoc($arr)) {
         $output .= "<table><tbody>";
         foreach ($arr as $key => $value) {
@@ -67,9 +73,16 @@ function display_array($arr) {
         </tr>
     </thead>
     <tbody>
+        <?
+        $logrows = $entry['log_json']->getArrayCopy();
+        if (empty($logrows[0]) || !is_array($logrows[0])) {
+            $logrows = [$logrows];
+        }
+
+        ?>
         <? foreach ($entry['log_json'] as $value) {
-            $content = $value[0];
-            $timestamp = $value[1];
+            $content = $value[0] ?? "";
+            $timestamp = is_numeric($value[1] ?? "") ? $value[1] : 0;
             $json = json_decode($content, true);
             if (!empty($json)) {
                 $content = '<div class="json_object_list">'.display_array($json).'</div>';

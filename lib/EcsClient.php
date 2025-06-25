@@ -126,10 +126,10 @@ class EcsClient
             default:
                 curl_setopt($c, CURLOPT_HTTPGET, true);
         }
-        $header = array();
+        $header = [];
         foreach($this->header as $a => $b) $header[] = "$a: $b";
         curl_setopt($c, CURLOPT_HTTPHEADER, $header);
-        $response_header = array();
+        $response_header = [];
         $headerfunc = function($handle, $headerdata) use (&$response_header)
         {
             foreach (explode("\r\n", $headerdata) as $line) {
@@ -154,20 +154,23 @@ class EcsClient
         $path_entry = explode("/", $path);
         $path_entry = array_pop($path_entry);
         $log = CCLog::log(strtoupper($this->request_method."_".$path_entry), "cURL request");
+        $log->addLog(json_encode($header));
+        $log->addLog($data);
         $result = curl_exec($c);
         $response_code = curl_getinfo($c, CURLINFO_HTTP_CODE);
         if ($result === false) {
             $this->last_error_number = curl_errno($c);
             $this->last_error = curl_error($c);
-            //CampusConnectLog::_('curl_exec failed: ' . $this->last_error, CampusConnectLog::WARNING);
             $log->addLog(sprintf('curl_exec failed: %s',$this->last_error));
         } else {
             $this->last_error_number = null;
             $this->last_error = null;
-            //CampusConnectLog::_(sprintf("curl_exec success: %s\n%s",$result, print_r($response_header,1)), CampusConnectLog::DEBUG);
             $log->addLog(sprintf('curl_exec success: %s', print_r($response_header,1)));
             $log->addLog($result);
         }
+        $log->addLog(json_encode($response_header));
+        $log->addLog($result);
+
         curl_close($c);
         $this->unsetHeader();
         return new EcsResult($result, $response_code, $response_header);
@@ -228,9 +231,12 @@ class EcsClient
         $this->setRequestMethod('POST');
         if ($receiver_memberships) {
             if (is_array($receiver_memberships)) {
+                var_dump($receiver_memberships);
                 $receiver_memberships = join(',', $receiver_memberships);
             }
             $this->setHeader('X-EcsReceiverMemberships', $receiver_memberships);
+            var_dump("X-EcsReceiverMemberships");
+            var_dump($receiver_memberships);
         }
         if ($receiver_communities) {
             if (is_array($receiver_communities)) {
@@ -240,7 +246,7 @@ class EcsClient
         }
         if ($secretly) {
             $this->setHeader('Content-Type', 'text/uri-list');
-            $ressource = new CCRessource();
+            $ressource = new CCRessources();
             $ressource['json'] = $message;
             $ressource->store();
             $message = $GLOBALS['ABSOLUTE_URI_STUDIP']."plugins.php/campusconnect/ressources/temporary_ressource/".$coursemember->getId();
@@ -270,7 +276,8 @@ class EcsClient
             $token = $this->getAuths($result->getSender(), "")->getResult();
 
             //Ressource abholen
-            $url = reset($result->getResult());
+            $parsed_result = $result->getResult();
+            $url = reset($parsed_result);
             $url = URLHelper::getURL($url, array('ecs_hash' => $token['hash']), true);
             $proxy_client = new EcsClient(array_merge($this->config, array('server' => $url)));
             $proxy_result =  $proxy_client->execute("");

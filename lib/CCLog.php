@@ -16,7 +16,7 @@ class CCLog extends SimpleORMap {
         $logentry = new static();
         $logentry->log_type = $type;
         $logentry->log_text = $text;
-        $logentry->log_json = $subtext ? [$subtext, time()] : [];
+        $logentry->log_json = $subtext ? [[$subtext, time()]] : [];
         $logentry->user_id = User::findCurrent()->id;
         $logentry->store();
         return $logentry;

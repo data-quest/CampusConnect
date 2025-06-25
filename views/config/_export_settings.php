@@ -29,7 +29,7 @@ $server_data = $server->data->getArrayCopy();
                                     <option value="username"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && (($server['data']['export_settings']['auth_token']['attributes'][$name] === "username") || !$server['data']['export_settings']['auth_token']['attributes'][$name]) ? " selected" : "" ?>>username</option>
                                     <option value="email"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
                                     <option value="institut"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "institut" ? " selected" : "" ?>><?= _("Heimateinrichtung") ?></option>
-                                    <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
+                                    <? foreach (DataField::findBySQL("object_type = 'user'") as $datafield) : ?>
                                         <option value="<?= $datafield->getId() ?>"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                     <? endforeach ?>
                                 </select>
@@ -45,7 +45,7 @@ $server_data = $server->data->getArrayCopy();
                                     <option value="username"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "username" ? " selected" : "" ?>>username</option>
                                     <option value="email"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && (($server['data']['export_settings']['auth_token']['attributes'][$name] === "email") || !$server['data']['export_settings']['auth_token']['attributes'][$name]) ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
                                     <option value="institut"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "institut" ? " selected" : "" ?>><?= _("Heimateinrichtung") ?></option>
-                                    <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
+                                    <? foreach (DataField::findBySQL("object_type = 'user'") as $datafield) : ?>
                                         <option value="<?= $datafield->getId() ?>"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                     <? endforeach ?>
                                 </select>
@@ -60,7 +60,7 @@ $server_data = $server->data->getArrayCopy();
                                     <option value="username"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "username" ? " selected" : "" ?>>username</option>
                                     <option value="email"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
                                     <option value="institut"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && (($server['data']['export_settings']['auth_token']['attributes'][$name] === "institut") || !$server['data']['export_settings']['auth_token']['attributes'][$name]) ? " selected" : "" ?>><?= _("Heimateinrichtung") ?></option>
-                                    <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
+                                    <? foreach (DataField::findBySQL("object_type = 'user'") as $datafield) : ?>
                                         <option value="<?= $datafield->getId() ?>"<?= !empty($server['data']['export_settings']['auth_token']['attributes'][$name]) && $server['data']['export_settings']['auth_token']['attributes'][$name] === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                     <? endforeach ?>
                                 </select>
@@ -77,7 +77,7 @@ $server_data = $server->data->getArrayCopy();
                                             <option value="username"<?= $mapping === "username" ? " selected" : "" ?>>username</option>
                                             <option value="email"<?= $mapping === "email" ? " selected" : "" ?>><?= _("Email-Adresse") ?></option>
                                             <option value="institut"<?= $mapping === "institut" ? " selected" : "" ?>><?= _("Heimateinrichtung") ?></option>
-                                            <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
+                                            <? foreach (DataField::findBySQL("object_type = 'user'") as $datafield) : ?>
                                                 <option value="<?= $datafield->getId() ?>"<?= $mapping === $datafield->getId() ? " selected" : "" ?>><?= htmlReady($datafield['name']) ?></option>
                                             <? endforeach ?>
                                         </select>
@@ -99,7 +99,7 @@ $server_data = $server->data->getArrayCopy();
                                     <option value="username">username</option>
                                     <option value="email"><?= _("Email-Adresse") ?></option>
                                     <option value="institut"><?= _("Heimateinrichtung") ?></option>
-                                    <? foreach (Datafield::findBySQL("object_type = 'user'") as $datafield) : ?>
+                                    <? foreach (DataField::findBySQL("object_type = 'user'") as $datafield) : ?>
                                         <option value="<?= $datafield->getId() ?>"><?= htmlReady($datafield['name']) ?></option>
                                     <? endforeach ?>
                                 </select>

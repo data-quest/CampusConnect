@@ -521,10 +521,10 @@ class CCCourse extends Course
     {
         $campus_connect_course = new CampusConnectEntity(array($this->getId(), "course"));
         if (!$campus_connect_course->isNew()) {
-            return array();
+            return [];
         }
         $participants = CampusConnectConfig::findByType("participants");
-        $receivers = array();
+        $receivers = [];
         foreach ($participants as $participant) {
             if ($participant['active'] && !empty($participant['data']['ecs']) && in_array($ecs['id'], $participant['data']['ecs']->getArrayCopy())) {
                 $export_settings = $participant['data']['export_settings'];
@@ -554,7 +554,8 @@ class CCCourse extends Course
                 if ($export) {
                     //TODO: nicht die erste mid zurückgeben, sondern konfigurierbar
                     //anhand der Datenfelder/Filterkriterien machen.
-                    foreach ((array) $participant['data']['mid'] as $cid => $mid) {
+                    $data = $participant['data']->getArrayCopy();
+                    foreach ($data['mid'] as $cid => $mid) {
                         $receivers[] = $mid;
                         break;
                     }
