@@ -109,8 +109,8 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
     public function getTabNavigation($course_id)
     {
         $navigation = new Navigation(_("Informationen"), PluginEngine::getURL($this, array(), "courselink/overview"));
-        $navigation->addSubNavigation('overview', new AutoNavigation(_("Informationen"), PluginEngine::getURL($this, array(), "courselink/overview")));
-        $navigation->addSubNavigation('details', new Navigation(_("Details"), URLHelper::getURL("details.php")));
+        $navigation->addSubNavigation('overview', new Navigation(_("Informationen"), PluginEngine::getURL($this, array('cid' => $course_id), "courselink/overview")));
+        $navigation->addSubNavigation('details', new Navigation(_("Details"), URLHelper::getURL("dispatch.php/course/details", ['cid' => $course_id])));
         return array('main' => $navigation);
     }
 

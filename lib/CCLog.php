@@ -13,11 +13,12 @@ class CCLog extends SimpleORMap {
 
     static public function log($type, $text, string $subtext = '')
     {
+        $user = User::findCurrent();
         $logentry = new static();
         $logentry->log_type = $type;
         $logentry->log_text = $text;
         $logentry->log_json = $subtext ? [[$subtext, time()]] : [];
-        $logentry->user_id = User::findCurrent()->id;
+        $logentry->user_id = $user ? $user->id : 'nobody';
         $logentry->store();
         return $logentry;
     }

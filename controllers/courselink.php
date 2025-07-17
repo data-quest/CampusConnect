@@ -87,7 +87,8 @@ class CourselinkController extends PluginController {
                     $token = new ECSLegacyAuthToken($participant['data']['ecs'][0]);
                     $auth_token_parameter['ecs_uid_hash'] = $user->getId();
                 }
-                $mid = array_values($participant['data']['mid']);
+                $participant_data = $participant['data']->getArrayCopy();
+                $mid = array_values($participant_data['mid']);
                 $ecs_auth = $token->getHash(
                     $mid[0],
                     $url,
@@ -110,7 +111,7 @@ class CourselinkController extends PluginController {
 //            CampusConnectLog::_(sprintf("ecs-auth: refering user now to %s", $url), CampusConnectLog::DEBUG);
 
             $logdata['protocol'][] = "We have ignition!";
-            CCLog::log("ECS_USER_JUMPS_OUT", sprintf("User '%s' wants to jump into another participant-system.", get_fullname()), $logdata);
+            CCLog::log("ECS_USER_JUMPS_OUT", sprintf("User '%s' wants to jump into another participant-system.", get_fullname()), implode("\n", $logdata));
             header("Location: ".$url);
             exit;
         }
@@ -134,7 +135,7 @@ class CourselinkController extends PluginController {
         );
         $log->addLog('$_REQUEST: '.print_r($_REQUEST,1));
 
-        $course_url = URLHelper::getURL("details.php", array('sem_id' => $cid));
+        $course_url = URLHelper::getURL("dispatch.php/course/details/index/".$cid);
         $ecs_hash = Request::get("ecs_hash")
             ? Request::get("ecs_hash")
             : Request::get("ecs_hash_url");

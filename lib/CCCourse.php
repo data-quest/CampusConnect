@@ -252,7 +252,11 @@ class CCCourse extends Course
             }
         }
         $semester = Semester::findNext();
-        return $semester ? $semester : Semester::findCurrent();
+        $semester = $semester ? $semester : Semester::findCurrent();
+        if (!$semester) {
+            CCLog::log("NO_SEMESTER", "There is not possible semester to import the course into.");
+        }
+        return $semester;
     }
 
     /**
