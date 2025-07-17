@@ -45,9 +45,9 @@ class EcsResult
         return  !($this->response_code >= 200 && $this->response_code <= 300);
     }
 
-    function getSender()
+    function getSender() : array
     {
-        return $this->sender;
+        return (array) $this->sender;
     }
 
     function setSender($sender)

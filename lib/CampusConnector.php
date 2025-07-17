@@ -83,7 +83,7 @@ class CampusConnector {
                 }
             }
         }
-        die("test");
+        die("end of sending changes - trigger stack not cleared");
         CampusConnectTriggerStack::clear();
     }
 
@@ -112,9 +112,11 @@ class CampusConnector {
                         $message = $response->getResult();
                         $allowed = false;
                         //schaue für alle Teilnehmer, ob der Kurslink erlaubt ist - eine Erlaubnis reicht aus
+                        //here the error occurs that $sender is empty. It should come from the X-EcsSender header.
                         foreach ($sender as $sender_key => $s) {
                             foreach ($participants as $participant) {
-                                if (in_array($s, $participant['data']['mid'])) {
+                                $participant_data = $participant['data']->getArrayCopy();
+                                if (isset($participant_data['mid']) && in_array($s, $participant_data['mid'])) {
                                     if ($participant['active']) {
                                         $active_participant = $participant;
                                         $allowed = true;

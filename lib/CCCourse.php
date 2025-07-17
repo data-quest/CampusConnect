@@ -38,12 +38,15 @@ class CCCourse extends Course
         $course['status'] = self::getCourselinkSemType($message['courseType'], $participant_id);
         $course->study_areas = self::getStudyAreas($message['degreeProgrammes'], $participant_id);
         $course['Institut_id'] = self::getInstitut($participant_id);
-        $course->start_semester = self::getSemester($message);
+        $course->setStartSemester(self::getSemester($message));
+        //$course->start_semester = self::getSemester($message);
         if ($course->isNew()) {
             $dozent = self::getDummyDozent();
             $course->members[] = $dozent;
             //Semester
-            $course['duration_time'] = 0;
+            if (StudipVersion::olderThan('5.6')) {
+                $course['duration_time'] = 0;
+            }
         }
         $course->store();
 
@@ -131,12 +134,14 @@ class CCCourse extends Course
 
         $institute = self::getCCInstitutes($message['organisationalUnits'], $participant_id);
         $course['Institut_id'] = $institute[0];
-        $course->start_semester = self::getSemester($message);
+        $course->setStartSemester(self::getSemester($message));
         if ($course->isNew()) {
             $dozent = self::getDummyDozent();
             $course->members[] = $dozent;
             //Semester
-            $course['duration_time'] = 0;
+            if (StudipVersion::olderThan('5.6')) {
+                $course['duration_time'] = 0;
+            }
         }
         //allocations? Welcher Baum ist das?
         //links? In Freie Informationsseite?
@@ -208,12 +213,20 @@ class CCCourse extends Course
         }
     }
 
+    /**
+     * Tries to identify and return a semester given by term-parameter or the datesAndVanues array.
+     * If no semester can be identified, the next semester is returned.
+     * If no semester can be found, the current semester is returned.
+     *
+     * @param array $message
+     * @return Semester
+     */
     static public function getSemester($message)
     {
         //Erster Versuch
         if ($message['term']) {
             $semester = Semester::findBySQL("name = ?", array($message['term']));
-            if ($semester[0]) {
+            if (!empty($semester[0])) {
                 return $semester[0];
             }
         }
@@ -279,15 +292,15 @@ class CCCourse extends Course
             );
             if (is_numeric($date['cycle']) && $date['cycle'] > 1) {
                 switch ($date['cycle']) {
-                    case "2": //t�glich
+                    case "2": //täglich
                         $factor = 86400;
                         break;
-                    case "3": //w�chentlich
+                    case "3": //wöchentlich
                         $factor = 86400 * 7;
                         break;
                     default:
                         if ($date['cycle'] >= 4) {
-                            //mehrw�chentlich
+                            //mehrwöchentlich
                             $factor = 86400 * 7 * ($date['cycle'] - 2);
                         }
                         break;
@@ -674,7 +687,7 @@ class CCCourse extends Course
         );
 
         //additional nondocumented infos
-        $resource['avatar'] = $GLOBALS['ABSOLUTE_URI_STUDIP'].CourseAvatar::getAvatar($this->getId())->getURL(Avatar::NORMAL);
+        $resource['avatar'] = CourseAvatar::getAvatar($this->getId())->getURL(Avatar::NORMAL);
 
         return $resource;
     }

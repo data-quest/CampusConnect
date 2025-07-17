@@ -133,7 +133,7 @@ class EcsClient
         $headerfunc = function($handle, $headerdata) use (&$response_header)
         {
             foreach (explode("\r\n", $headerdata) as $line) {
-                if (strpos($line, '.') === false) {
+                if (strpos($line, ':') === false) { //skip all headers without dots
                     continue;
                 }
                 list($a, $b) = explode(':', $line, 2);
@@ -150,7 +150,6 @@ class EcsClient
             return strlen($headerdata);
         };
         curl_setopt($c, CURLOPT_HEADERFUNCTION, $headerfunc);
-        //CampusConnectLog::_(sprintf('curl_exec: %s, %s, %s',$this->getUrl($path), $this->request_method, print_r($header,1)), CampusConnectLog::DEBUG);
         $path_entry = explode("/", $path);
         $path_entry = array_pop($path_entry);
         $log = CCLog::log(strtoupper($this->request_method."_".$path_entry), "cURL request");
@@ -231,12 +230,9 @@ class EcsClient
         $this->setRequestMethod('POST');
         if ($receiver_memberships) {
             if (is_array($receiver_memberships)) {
-                var_dump($receiver_memberships);
                 $receiver_memberships = join(',', $receiver_memberships);
             }
             $this->setHeader('X-EcsReceiverMemberships', $receiver_memberships);
-            var_dump("X-EcsReceiverMemberships");
-            var_dump($receiver_memberships);
         }
         if ($receiver_communities) {
             if (is_array($receiver_communities)) {
