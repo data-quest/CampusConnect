@@ -32,13 +32,13 @@ class ConnectorController extends PluginController
 
     function send_changes_action()
     {
-        CampusConnector::send_changes();
+        CampusConnector::sendChanges();
         $this->render_nothing();
     }
 
     function receive_action()
     {
-        CampusConnector::fetch_updates();
+        CampusConnector::fetchUpdates();
         $this->render_nothing();
     }
 

@@ -25,7 +25,7 @@ class CampusConnectLink extends StudIPPlugin implements StandardPlugin, SystemPl
     public function getTabNavigation($course_id)
     {
         $navigation = new Navigation($this->getDisplayName(), PluginEngine::getURL($this, array(), "courselink/link"));
-        return array('link' => $navigation);
+        return array('campusconnect_link' => $navigation);
     }
 
     public function getIconNavigation($course_id, $last_visit, $user_id) {

@@ -18,12 +18,12 @@
     </div>
     <div>
         <strong><?= _("Objekte, die synchronisiert werden müssen") ?></strong>:
-        <? $changes = CampusConnectTriggerStack::findAll() ?>
         <span id="items_to_be_synced">
-            <?= (int) count($changes) ?>
+            <?= htmlReady($countChanges) ?>
         </span>
 
         <div class="cc_item_names">
+            <? $changes = CampusConnectTriggerStack::findAll() ?>
             <? $i = 0 ?>
             <? foreach ($changes as $change) : ?>
                 <? $i++ ?>

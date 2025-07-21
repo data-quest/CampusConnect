@@ -2,7 +2,7 @@
 
 class CampusConnector {
 
-    static public function send_changes()
+    static public function sendChanges()
     {
         $changes = CampusConnectTriggerStack::findAll();
         $ecs = CampusConnectConfig::findByType("server");
@@ -83,11 +83,10 @@ class CampusConnector {
                 }
             }
         }
-        die("end of sending changes - trigger stack not cleared");
         CampusConnectTriggerStack::clear();
     }
 
-    static public function fetch_updates()
+    static public function fetchUpdates()
     {
         $ecs = CampusConnectConfig::findByType("server");
         $participants = CCParticipant::findAll();

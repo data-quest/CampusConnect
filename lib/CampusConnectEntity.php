@@ -6,6 +6,10 @@ class CampusConnectEntity extends SimpleORMap
     static protected function configure($config = array())
     {
         $config['db_table'] = 'campus_connect_entities';
+        $config['belongs_to']['participant'] = [
+            'class_name' => CampusConnectConfig::class,
+            'foreign_key' => 'participant_id'
+        ];
         $config['registered_callbacks']['before_store'][] = "cbSerializeData";
         $config['registered_callbacks']['after_store'][] = "cbUnserializeData";
         $config['registered_callbacks']['after_initialize'][] = "cbUnserializeData";

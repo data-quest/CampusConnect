@@ -27,10 +27,18 @@ class CampusConnectTriggerStack extends SimpleORMap
 
     static public function add($type, $object_id)
     {
-        $resource = new CampusConnectTriggerStack();
-        $resource['object_type'] = $type;
-        $resource['object_id'] = $object_id;
-        return (bool) $resource->store();
+        $statement = DBManager::get()->prepare("
+            INSERT INTO `campus_connect_trigger_stack`
+            SET `object_type` = :object_type,
+                `object_id` = :object_id,
+                `chdate` = UNIX_TIMESTAMP(),
+                `mkdate` = UNIX_TIMESTAMP()
+            ON DUPLICATE KEY UPDATE `chdate` = UNIX_TIMESTAMP()
+        ");
+        return $statement->execute([
+            'object_type' => $type,
+            'object_id' => $object_id
+        ]);
     }
 
     static public function clear()

@@ -58,14 +58,14 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
         /*******************************************************************
          *               Navigation für Kurse mit Kurs-URLs                *
          *******************************************************************/
-        if (Navigation::hasItem("/course") && Context::getId()) {
-            $course = new CCCourse(Context::getId());
-            $course_urls = $course->getCourseUrls();
-            if (count($course_urls) > 0) {
-                $tab = new AutoNavigation(_("Lernplattformen"), PluginEngine::getUrl($this, array(), 'courselink/extern'));
-                Navigation::addItem("/course/campusconnect_extern", $tab);
-            }
-        }
+//        if (Navigation::hasItem("/course") && Context::getId()) {
+//            $course = new CCCourse(Context::getId());
+//            $course_urls = $course->getCourseUrls();
+//            if (count($course_urls) > 0) {
+//                $tab = new AutoNavigation(_("Lernplattformen"), PluginEngine::getUrl($this, array(), 'courselink/extern'));
+//                Navigation::addItem("/course/campusconnect_extern", $tab);
+//            }
+//        }
     }
 
     /**
@@ -111,7 +111,7 @@ class CampusConnect extends StudIPPlugin implements SystemPlugin, StandardPlugin
         $navigation = new Navigation(_("Informationen"), PluginEngine::getURL($this, array(), "courselink/overview"));
         $navigation->addSubNavigation('overview', new Navigation(_("Informationen"), PluginEngine::getURL($this, array('cid' => $course_id), "courselink/overview")));
         $navigation->addSubNavigation('details', new Navigation(_("Details"), URLHelper::getURL("dispatch.php/course/details", ['cid' => $course_id])));
-        return array('main' => $navigation);
+        return array('campusconnect_main' => $navigation);
     }
 
     public function getIconNavigation($course_id, $last_visit, $user_id)

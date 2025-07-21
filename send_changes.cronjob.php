@@ -49,6 +49,6 @@ class SendChangesJob extends CronJob
      */
     public function execute($last_result, $parameters = array())
     {
-        CampusConnector::send_changes();
+        CampusConnector::sendChanges();
     }
 }

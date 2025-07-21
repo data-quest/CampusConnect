@@ -45,6 +45,6 @@ class FetchUpdatesJob extends CronJob
      */
     public function execute($last_result, $parameters = array())
     {
-        CampusConnector::fetch_updates();
+        CampusConnector::fetchUpdates();
     }
 }

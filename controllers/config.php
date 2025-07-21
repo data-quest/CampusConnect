@@ -30,11 +30,41 @@ class ConfigController extends PluginController
         $this->imported_users = count(CampusConnectEntity::findByType("user"));
         $this->imported_institutes = count(CampusConnectEntity::findByType("institute"));
         $this->imported_semesters = count(CampusConnectEntity::findByType("semester"));
-        $this->imported_studyareas = DBManager::get()->query(
-            "SELECT COUNT(*) " .
-            "FROM sem_tree " .
-                "INNER JOIN campus_connect_tree_items ON (campus_connect_tree_items.mapped_sem_tree_id = sem_tree.sem_tree_id) " .
-        "")->fetch(PDO::FETCH_COLUMN, 0);;
+        $this->imported_studyareas = DBManager::get()->query("
+            SELECT COUNT(*)
+            FROM sem_tree
+                INNER JOIN campus_connect_tree_items ON (campus_connect_tree_items.mapped_sem_tree_id = sem_tree.sem_tree_id)
+        ")->fetch(PDO::FETCH_COLUMN, 0);
+
+        $changes = CampusConnectTriggerStack::findAll();
+        $statement = DBManager::get()->prepare("SELECT * FROM `campus_connect_trigger_stack`");
+        $statement->execute();
+        $this->countChanges = 0;
+        $ecs = CampusConnectConfig::findByType("server");
+        while ($change = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $sync = false;
+            foreach ($ecs as $ecs_server) {
+                if ($ecs_server['active']) {
+                    if ($change['object_type'] === "course") {
+                        $course = new CCCourse($change['object_id']);
+                        //Courselinks:
+                        $path = "/campusconnect/courselinks";
+                        $receiver_participants = $course->getReceivingParticipantsForECS($ecs_server, "kurslink");
+                        if (count($receiver_participants) > 0) {
+                            $sync = true;
+                        }
+                    }
+
+                }
+            }
+            if ($sync) {
+                $this->countChanges++;
+            } else {
+                $change = CampusConnectTriggerStack::buildExisting($change);
+                $change->delete();
+            }
+        }
+
     }
 
     function ecs_action()

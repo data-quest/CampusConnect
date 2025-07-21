@@ -534,8 +534,11 @@ class CCCourse extends Course
      * returns the member_ids of all the receiving participants
      * @return array : array($member_id1, $member_id2, ...)
      */
-    public function getReceivingParticipantsForECS($ecs, $type = "kurslink")
+    public function getReceivingParticipantsForECS(CampusConnectConfig $ecs, $type = "kurslink")
     {
+        if (!$ecs['active']) {
+            return [];
+        }
         $campus_connect_course = new CampusConnectEntity(array($this->getId(), "course"));
         if (!$campus_connect_course->isNew()) {
             return [];
@@ -543,7 +546,7 @@ class CCCourse extends Course
         $participants = CampusConnectConfig::findByType("participants");
         $receivers = [];
         foreach ($participants as $participant) {
-            if ($participant['active'] && !empty($participant['data']['ecs']) && in_array($ecs['id'], $participant['data']['ecs']->getArrayCopy())) {
+            if ($participant['active'] && !empty($participant['data']['ecs']) && in_array($ecs['id'], $participant['data']['ecs']->getArrayCopy()) && $participant['data']['export']) {
                 $export_settings = $participant['data']['export_settings'];
                 $export = true;
                 if ($export_settings['course_entity_type'] !== $type) {

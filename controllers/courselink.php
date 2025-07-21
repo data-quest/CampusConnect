@@ -7,6 +7,7 @@ class CourselinkController extends PluginController {
         if (!$GLOBALS['perm']->have_studip_perm("user", Context::getId())) {
             throw new AccessDeniesException("Kein Zugriff");
         }
+        Navigation::activateItem('/course/campusconnect_main/overview');
         $this->course = new Course(Context::getId());
         $sem_type = $GLOBALS['SEM_TYPE'][$this->course['status']];
         $this->coursedata = new CampusConnectEntity(array(Context::getId(), "course"));

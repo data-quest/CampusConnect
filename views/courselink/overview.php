@@ -9,41 +9,20 @@
  *  the License, or (at your option) any later version.
  */
 ?>
-<style>
-    table.infobox td.infobox-img {
-        background-color: white;
-    }
-    .infobox-img > img {
-        border-top-left-radius: 16px;
-        width: 250px;
-    }
-    #info_header {
-        background-image: linear-gradient(to top, #cccccc, #fafafa, #f3f3f3);
-        background-size: 100% 100%;
-        padding: 1px;
-    }
-    #info_header h2 {
-        margin-top: 3px;
-        margin-bottom: 3px;
-    }
-    #info_header ul {
-        margin: 0px;
-        padding: 0px;
-    }
-    #info_header ul li {
-        display: inline-block;
-        margin-right: 3px;
-    }
-</style>
-<div class="overview">
-    <div class="overview_header"><?= htmlReady($course['name']) ?></div>
-    <table>
+
+<article class="studip">
+    <header><h1><?= htmlReady($course['name']) ?></h1></header>
+    <table class="default nohover">
         <tbody>
+            <tr>
+                <td><?= _('Standort') ?></td>
+                <td><?= htmlReady($coursedata->participant['data']['name']) ?></td>
+            </tr>
             <? if ($coursedata['data']['lecturers']) : ?>
             <tr>
                 <td><?= _("Dozenten") ?></td>
                 <td>
-                    <ul>
+                    <ul class="clean">
                     <? foreach ($coursedata['data']['lecturers'] as $key => $lecturer) : ?>
                         <li><?= htmlReady($lecturer['firstName']." ".$lecturer['lastName']) ?></li>
                     <? endforeach ?>
@@ -85,9 +64,9 @@
             <? endif ?>
             <? if (count($course->members) > 1) : ?>
             <tr>
-                <td><?= sprintf(_("Bekannte Teilnehmer von %s"), $GLOBALS['UNI_NAME_CLEAN']) ?></td>
+                <td><?= htmlReady(_("Bekannte Teilnehmer")) ?></td>
                 <td>
-                    <ul>
+                    <ul class="clean">
                     <? foreach ($course->members as $coursemember) : ?>
                         <? if ($coursemember['user_id'] !== CCCourse::getDummyDozent()->user_id) : ?>
                         <li>
@@ -104,28 +83,7 @@
             <? endif ?>
         </tbody>
     </table>
-</div>
+</article>
 
 
 
-<?
-
-$infobox = array(
-    array(
-        'kategorie' => _("Information"),
-        'eintrag' => array(
-            array(
-                'icon' => "icons/16/black/info",
-                'text' => sprintf(
-                            _("Diese Veranstaltung wird von einem angekoppeltem Fremdsystem angeboten. Wenn Sie hier daran angemeldet sind, werden Ihnen die Termine (sofern bekannt) in den Kalender eingetragen und Sie können über den %s direkt dorthin springen (das geht auch von der Seminarübersicht aus)."),
-                            '<a href="'.URLHelper::getLink("plugins.php/campusconnect/courselink/link").'">'.Icon::create("learnmodule")->asImg(20, array('class' => "text-bottom"))." "._("Direktlink").'</a>'
-                        )
-            )
-        )
-    )
-);
-$avatar = CourseAvatar::getAvatar($course->getId());
-$infobox = array(
-    'picture' => $avatar->is_customized() ? $avatar->getURL(Avatar::NORMAL) : $assets_url . "/images/library_infobox.jpg",
-    'content' => $infobox
-);
