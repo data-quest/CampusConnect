@@ -44,7 +44,7 @@ class ConnectorController extends PluginController
 
     function update_everything_action()
     {
-        CampusConnector::send_everything();
+        CampusConnector::sendEverything();
         $this->render_nothing();
     }
 
