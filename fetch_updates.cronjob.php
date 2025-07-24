@@ -19,6 +19,8 @@ class FetchUpdatesJob extends CronJob
     }
 
     public function setUp() {
+        require_once __DIR__.'/lib/CampusConnectConfig.php';
+        require_once __DIR__.'/lib/CCLog.php';
         require_once __DIR__.'/lib/CCParticipant.php';
         require_once __DIR__.'/lib/CampusConnectHelper.php';
         require_once __DIR__.'/lib/EcsClient.php';
@@ -30,6 +32,7 @@ class FetchUpdatesJob extends CronJob
         require_once __DIR__.'/lib/CCCourse.php';
         require_once __DIR__.'/lib/CCRessources.php';
         require_once __DIR__.'/lib/CampusConnector.php';
+
     }
 
     /**

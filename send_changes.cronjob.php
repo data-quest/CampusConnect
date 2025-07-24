@@ -19,6 +19,8 @@ class SendChangesJob extends CronJob
     }
 
     public function setUp() {
+        require_once __DIR__.'/lib/CampusConnectConfig.php';
+        require_once __DIR__.'/lib/CCLog.php';
         require_once __DIR__.'/lib/CCParticipant.php';
         require_once __DIR__.'/lib/CampusConnectLog.php';
         require_once __DIR__.'/lib/CampusConnectHelper.php';
