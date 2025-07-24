@@ -181,7 +181,7 @@ class CCCourse extends Course
         $neue_gruppen_ids = array();
         $db = DBManager::get();
         foreach ((array) $groups as $group) {
-            $mapping = CampusConnectEntity::findByForeignID("statusgruppe", $message['lectureID']."-".$group['id'], $participant_id);
+            $mapping = CampusConnectEntity::findByForeignID("statusgruppe", $message['courseID']."-".$group['id'], $participant_id);
             if ($mapping['item_id']) {
                 $statusgruppe = new CCStatusgruppe($mapping['item_id']);
             } else {
@@ -192,7 +192,7 @@ class CCCourse extends Course
             $statusgruppe->store();
 
             $mapping = new CampusConnectEntity(array($statusgruppe->getId(), "statusgruppe"));
-            $mapping['foreign_id'] = $message['lectureID']."-".$group['id'];
+            $mapping['foreign_id'] = $message['courseID']."-".$group['id'];
             $mapping['participant_id'] = $participant_id;
             $mapping['data'] = $group;
             $mapping->store();
@@ -282,8 +282,8 @@ class CCCourse extends Course
         "");
         foreach ($datesAndVenues as $date) {
             //Problem metadates!! Die seminar_cycle_dates sind leider nicht
-            //m�chtig genug, um alle eingehenden regelm��igen Termine zu umfassen.
-            //In Stud.IP gehen cycle_dates immer �ber die gesamte Laufzeit der
+            //mächtig genug, um alle eingehenden regelmäßigen Termine zu umfassen.
+            //In Stud.IP gehen cycle_dates immer über die gesamte Laufzeit der
             //Veranstaltung.
             //Deswegen wird einfach alles als Einzeltermin gespeichert.
             $first = array(
@@ -666,6 +666,8 @@ class CCCourse extends Course
 
         $resource = array();
         $resource['title'] = $this['Name'];
+        $resource['abstract'] = $this['beschreibung'];
+        $resource['courseID'] = $this->getId();
         $resource['url'] = $GLOBALS['ABSOLUTE_URI_STUDIP']."plugins.php/campusconnect/courselink/to/".$this->getId();
         $resource['lang'] = Config::get()->DEFAULT_LANGUAGE ?? 'de_DE';
         $resource['hoursPerWeek'] = 0;
@@ -775,6 +777,8 @@ class CCCourse extends Course
 
         $resource = array();
         $resource['title'] = $this['Name'];
+        $resource['abstract'] = $this['beschreibung'];
+        $resource['courseID'] = $this->getId();
         $resource['hoursPerWeek'] = "";
         $resource['lectureID'] = $this->getId();
         $resource['number'] = $this['VeranstaltungsNummer'];

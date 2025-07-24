@@ -25,19 +25,18 @@
         <? endif ?>
     </tbody>
     <tfoot>
-        <? if (!empty($more)) : ?>
-            <tr id="more">
-                <td colspan="4" style="text-align: center;"><?= Assets::img("ajax_indicator_small.gif") ?></td>
-            </tr>
-        <? endif ?>
+        <tr >
+            <td colspan="4" style="text-align: right;">
+                <?= $pagination->asLinks() ?>
+            </td>
+        </tr>
     </tfoot>
 </table>
 
 
 <?
 
-if (class_exists("Sidebar")) {
-    $search = new SearchWidget(PluginEngine::getURL($this->plugin, array(), "log/view"));
-    $search->addNeedle(_("ID, Eigenschaft, Name"), "search", true);
-    Sidebar::Get()->addWidget($search);
-}
+$search = new SearchWidget(PluginEngine::getURL($this->plugin, array(), "log/view"));
+$search->addNeedle(_("ID, Eigenschaft, Name"), "search", true);
+Sidebar::Get()->addWidget($search);
+

@@ -18,7 +18,7 @@
                 <td><?= _('Standort') ?></td>
                 <td><?= htmlReady($coursedata->participant['data']['name']) ?></td>
             </tr>
-            <? if ($coursedata['data']['lecturers']) : ?>
+            <? if (!empty($coursedata['data']['lecturers'])) : ?>
             <tr>
                 <td><?= _("Dozenten") ?></td>
                 <td>
@@ -32,31 +32,38 @@
             <? endif ?>
             <tr>
                 <td><?= _("Veranstaltungstyp") ?></td>
-                <td><?= htmlReady($coursedata['data']['courseType']) ?></td>
+                <? $semType = $course->getSemType() ?>
+                <td><?= htmlReady($coursedata['data']['courseType'] ?? $semType['name']) ?></td>
             </tr>
             <tr>
                 <td><?= _("Semester") ?></td>
                 <td>
-                    <? $term = $coursedata['data']['term'] ? $coursedata['data']['term'] : $course->start_semester['name'] ?>
+                    <? $term = !empty($coursedata['data']['term']) ? $coursedata['data']['term'] : $course->start_semester['name'] ?>
                     <?= htmlReady($term) ?>
                     <? if (($term !== $course->start_semester['name']) && $course->start_semester['name']) : ?>
                     (<?= sprintf(_("%s in Stud.IP"), htmlReady($course->start_semester['name'])) ?>)
                     <? endif ?>
                 </td>
             </tr>
-            <? if ($coursedata['data']['number']) : ?>
-            <tr>
-                <td><?= _("Veranstaltungsnummer") ?></td>
-                <td><?= htmlReady($coursedata['data']['number']) ?></td>
-            </tr>
+            <? if (!empty($coursedata['data']['number'])) : ?>
+                <tr>
+                    <td><?= _("Veranstaltungsnummer") ?></td>
+                    <td><?= htmlReady($coursedata['data']['number']) ?></td>
+                </tr>
             <? endif ?>
-            <? if ($coursedata['data']['hoursPerWeek']) : ?>
+            <? if (!empty($coursedata['data']['abstract'])) : ?>
+                <tr>
+                    <td><?= _("Beschreibung") ?></td>
+                    <td><?= htmlReady($coursedata['data']['abstract']) ?></td>
+                </tr>
+            <? endif ?>
+            <? if (!empty($coursedata['data']['hoursPerWeek'])) : ?>
             <tr>
                 <td><?= _("Wochenstunden") ?></td>
                 <td><?= htmlReady($coursedata['data']['hoursPerWeek']) ?></td>
             </tr>
             <? endif ?>
-            <? if ($coursedata['data']['credits']) : ?>
+            <? if (!empty($coursedata['data']['credits'])) : ?>
             <tr>
                 <td><?= _("ECTS-Punkte") ?></td>
                 <td><?= htmlReady($coursedata['data']['credits']) ?></td>

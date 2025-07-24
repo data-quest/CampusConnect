@@ -50,5 +50,6 @@ class SendChangesJob extends CronJob
     public function execute($last_result, $parameters = array())
     {
         CampusConnector::sendChanges();
+        CCLog::deleteBySQL("`mkdate` < UNIX_TIMESTAMP() - 86400 * 30 * 6");
     }
 }

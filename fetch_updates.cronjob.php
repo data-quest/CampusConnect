@@ -46,5 +46,6 @@ class FetchUpdatesJob extends CronJob
     public function execute($last_result, $parameters = array())
     {
         CampusConnector::fetchUpdates();
+        CCLog::deleteBySQL("`mkdate` < UNIX_TIMESTAMP() - 86400 * 30 * 6");
     }
 }
