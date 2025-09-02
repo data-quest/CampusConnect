@@ -127,6 +127,7 @@ class CCCourse extends Course
         //$course[] = $message['linkToCurriculum'];
         //$course[] = $message['comment1']; .. comment3
         //Datenfelder hierfür verwenden?
+        $course['beschreibung'] = $message['abstract'];
         $course['vorrausetzungen'] = $message['prerequisites'];
         $course['leistungsnachweis'] = $message['courseAssessmentMethod'];
         $course['Beschreibung'] = $message['courseTopics'];
